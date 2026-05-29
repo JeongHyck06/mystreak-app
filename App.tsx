@@ -208,6 +208,7 @@ export default function App() {
             pods={pods}
             stats={stats}
             onOpenNotifications={() => setScreen("notifications")}
+            onOpenProfile={() => setScreen("profile")}
             onOpenPod={openPod}
             onUpload={() => setScreen("upload")}
             onAddPod={() => setScreen("podActions")}

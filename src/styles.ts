@@ -822,10 +822,24 @@ export const styles = StyleSheet.create({
     borderRadius: 36,
     backgroundColor: colors.primaryLight
   },
+  profileInfo: {
+    gap: 6
+  },
   profileName: {
     color: colors.text,
     fontSize: 24,
     fontWeight: "900"
+  },
+  profileHandle: {
+    color: colors.accent,
+    fontSize: 14,
+    fontWeight: "700"
+  },
+  profileStreakLine: {
+    color: colors.secondaryText,
+    fontSize: 13,
+    fontWeight: "600",
+    marginTop: 2
   },
   profileBio: {
     width: "100%",
@@ -1086,13 +1100,19 @@ export const styles = StyleSheet.create({
     gap: 18
   },
   editHero: {
-    minHeight: 132,
     backgroundColor: colors.surface,
-    borderBottomWidth: 1,
-    borderTopWidth: 1,
+    borderWidth: 1,
     borderColor: colors.border,
+    borderRadius: 24,
+    paddingVertical: 22,
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
+    gap: 12
+  },
+  editHeroHint: {
+    color: colors.accent,
+    fontSize: 13,
+    fontWeight: "800"
   },
   profileAvatarLarge: {
     width: 80,
@@ -1112,10 +1132,10 @@ export const styles = StyleSheet.create({
     justifyContent: "center"
   },
   accountCard: {
-    marginHorizontal: 24,
     backgroundColor: colors.surface,
     borderWidth: 1,
     borderColor: colors.border,
+    borderRadius: 20,
     padding: 16,
     gap: 18
   }

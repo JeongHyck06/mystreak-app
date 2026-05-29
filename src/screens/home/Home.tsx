@@ -9,6 +9,7 @@ export function Home({
   pods,
   stats,
   onOpenNotifications,
+  onOpenProfile,
   onOpenPod,
   onUpload,
   onAddPod,
@@ -18,6 +19,7 @@ export function Home({
   pods: Pod[];
   stats: Stats | null;
   onOpenNotifications: () => void;
+  onOpenProfile: () => void;
   onOpenPod: (podId: string) => void;
   onUpload: () => void;
   onAddPod: () => void;
@@ -35,7 +37,9 @@ export function Home({
     <View style={styles.flex}>
       <ScrollView contentContainerStyle={styles.screenWithTab}>
         <View style={styles.homeHeader}>
-          <View style={styles.avatar} />
+          <Pressable onPress={onOpenProfile} accessibilityRole="button" accessibilityLabel="프로필 열기">
+            <View style={styles.avatar} />
+          </Pressable>
           <View style={styles.flex}>
             <Text style={styles.caption}>안녕하세요</Text>
             <Text style={styles.headerName}>{firstName}, 오늘도 화이팅!</Text>

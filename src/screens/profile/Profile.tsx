@@ -27,10 +27,10 @@ export function Profile({
         <Text style={styles.pageTitle}>프로필</Text>
         <View style={styles.profileCard}>
           <View style={styles.profileAvatar} />
-          <View style={styles.flex}>
+          <View style={[styles.flex, styles.profileInfo]}>
             <Text style={styles.profileName}>{profile?.name || "프로필 이름 없음"}</Text>
-            <Text style={styles.secondaryText}>{profile?.handle || "@handle"}</Text>
-            <Text style={styles.secondaryText}>{currentStreak}일째 스트릭 도전중</Text>
+            <Text style={styles.profileHandle}>{profile?.handle || "@handle"}</Text>
+            <Text style={styles.profileStreakLine}>{currentStreak}일째 스트릭 도전중</Text>
           </View>
           <Pressable style={styles.softButton} onPress={onEdit}>
             <Text style={styles.softButtonText}>프로필 편집</Text>
