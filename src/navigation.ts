@@ -8,6 +8,7 @@ export type Screen =
   | "profile"
   | "notifications"
   | "podActions"
+  | "managePods"
   | "createPod"
   | "invitePod"
   | "joinPod"

@@ -15,6 +15,7 @@ import {
   Onboarding,
   PodActions,
   PodDetail,
+  PodManagement,
   Profile,
   Stats,
   Upload
@@ -77,11 +78,12 @@ export default function App() {
         {screen === "profile" && (
           <Profile
             onEdit={() => setScreen("editProfile")}
-            onManage={() => setScreen("invitePod")}
+            onManage={() => setScreen("managePods")}
             onTab={(tab) => setScreen(tabScreens[tab])}
           />
         )}
         {screen === "notifications" && <Notifications onBack={goHome} />}
+        {screen === "managePods" && <PodManagement onBack={() => setScreen("profile")} onOpenPod={openPod} />}
         {screen === "podActions" && (
           <PodActions
             onBack={goHome}

@@ -6,6 +6,7 @@ export { Notifications } from "./notifications/Notifications";
 export { CreatePod } from "./pods/CreatePod";
 export { InvitePod } from "./pods/InvitePod";
 export { JoinPod } from "./pods/JoinPod";
+export { PodManagement } from "./pods/PodManagement";
 export { PodActions } from "./pods/PodActions";
 export { PodDetail } from "./pods/PodDetail";
 export { EditProfile } from "./profile/EditProfile";
