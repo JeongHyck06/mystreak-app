@@ -446,6 +446,20 @@ export const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: "900"
   },
+  donePill: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    backgroundColor: colors.primary,
+    borderRadius: 14,
+    paddingHorizontal: 12,
+    paddingVertical: 10
+  },
+  donePillText: {
+    color: colors.surface,
+    fontSize: 13,
+    fontWeight: "900"
+  },
   smallCta: {
     backgroundColor: colors.accent,
     borderRadius: 12,
@@ -636,6 +650,100 @@ export const styles = StyleSheet.create({
     color: colors.text,
     fontSize: 13,
     fontWeight: "800"
+  },
+  feedMetaActive: {
+    color: colors.accent
+  },
+  checkButtonDone: {
+    backgroundColor: colors.primaryLight
+  },
+  checkButtonDoneText: {
+    color: colors.accent
+  },
+  mineBadge: {
+    borderRadius: 18,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    backgroundColor: colors.primaryLight
+  },
+  mineBadgeText: {
+    color: colors.accent,
+    fontSize: 13,
+    fontWeight: "900"
+  },
+  ownerActions: {
+    flexDirection: "row",
+    gap: 14,
+    alignItems: "center"
+  },
+  ownerActionText: {
+    color: colors.secondaryText,
+    fontSize: 13,
+    fontWeight: "800"
+  },
+  editActions: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    alignItems: "center",
+    gap: 14
+  },
+  editCancel: {
+    paddingHorizontal: 12,
+    paddingVertical: 10
+  },
+  commentBox: {
+    borderTopWidth: 1,
+    borderColor: colors.border,
+    paddingTop: 12,
+    gap: 10
+  },
+  commentRow: {
+    gap: 2
+  },
+  commentAuthor: {
+    color: colors.text,
+    fontSize: 13,
+    fontWeight: "800"
+  },
+  commentText: {
+    color: colors.text,
+    fontSize: 14,
+    lineHeight: 19
+  },
+  commentInputRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    marginTop: 2
+  },
+  commentInput: {
+    flex: 1,
+    minHeight: 44,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: colors.border,
+    paddingHorizontal: 14,
+    color: colors.text,
+    backgroundColor: "rgba(255,255,255,0.52)"
+  },
+  commentSend: {
+    backgroundColor: colors.accent,
+    borderRadius: 14,
+    paddingHorizontal: 16,
+    paddingVertical: 12
+  },
+  doneButton: {
+    minHeight: 56,
+    borderRadius: 16,
+    backgroundColor: colors.primaryLight,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 18
+  },
+  doneButtonText: {
+    color: colors.accent,
+    fontSize: 16,
+    fontWeight: "900"
   },
   podInfoGrid: {
     flexDirection: "row",

@@ -1,7 +1,20 @@
 import { useEffect, useState } from "react";
-import { Pressable, ScrollView, Text, View } from "react-native";
+import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
 import { PrimaryButton, TopBar } from "../../components";
-import { fetchPodFeed, fetchPodMembers, reactToCheckIn, type CheckIn, type Pod, type PodMember } from "../../api";
+import {
+  addComment,
+  deleteCheckIn,
+  fetchComments,
+  fetchPodFeed,
+  fetchPodMembers,
+  likeCheckIn,
+  reactToCheckIn,
+  updateCheckIn,
+  type CheckIn,
+  type CheckInComment,
+  type Pod,
+  type PodMember
+} from "../../api";
 import { styles } from "../../styles";
 
 type PodDetailTab = "feed" | "members" | "info";
@@ -14,7 +27,8 @@ export function PodDetail({
   onNextPod,
   onPreviousPod,
   onSelectPod,
-  onUpload
+  onUpload,
+  onChanged
 }: {
   pod: Pod;
   pods: Pod[];
@@ -24,12 +38,18 @@ export function PodDetail({
   onPreviousPod: () => void;
   onSelectPod: (podId: string) => void;
   onUpload: () => void;
+  onChanged: () => Promise<void> | void;
 }) {
   const [isPickerOpen, setIsPickerOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<PodDetailTab>("feed");
   const [feed, setFeed] = useState<CheckIn[]>([]);
   const [members, setMembers] = useState<PodMember[]>([]);
   const [error, setError] = useState("");
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editText, setEditText] = useState("");
+  const [openCommentsId, setOpenCommentsId] = useState<string | null>(null);
+  const [comments, setComments] = useState<Record<string, CheckInComment[]>>({});
+  const [commentDraft, setCommentDraft] = useState("");
 
   useEffect(() => {
     let isActive = true;
@@ -52,18 +72,72 @@ export function PodDetail({
     };
   }, [pod.id]);
 
+  const replaceItem = (next: CheckIn) =>
+    setFeed((items) => items.map((item) => (item.id === next.id ? next : item)));
+
+  const runAction = async (action: () => Promise<void>) => {
+    setError("");
+    try {
+      await action();
+    } catch (error) {
+      setError(error instanceof Error ? error.message : "요청을 처리하지 못했습니다.");
+    }
+  };
+
   const handleSelectPod = (podId: string) => {
     onSelectPod(podId);
     setIsPickerOpen(false);
   };
-  const handleCheck = async (checkInId: string) => {
-    const reaction = await reactToCheckIn(checkInId);
-    setFeed((items) =>
-      items.map((item) =>
-        item.id === checkInId ? { ...item, checkedByMe: reaction.checkedByMe, likes: reaction.likes } : item
-      )
-    );
+  const handleCheck = (checkInId: string) =>
+    runAction(async () => replaceItem(await reactToCheckIn(checkInId)));
+  const handleLike = (checkInId: string) =>
+    runAction(async () => replaceItem(await likeCheckIn(checkInId)));
+
+  const handleToggleComments = (checkInId: string) =>
+    runAction(async () => {
+      if (openCommentsId === checkInId) {
+        setOpenCommentsId(null);
+        return;
+      }
+      const list = await fetchComments(checkInId);
+      setComments((current) => ({ ...current, [checkInId]: list }));
+      setOpenCommentsId(checkInId);
+      setCommentDraft("");
+    });
+
+  const handleAddComment = (checkInId: string) =>
+    runAction(async () => {
+      const text = commentDraft.trim();
+      if (!text) {
+        return;
+      }
+      const comment = await addComment(checkInId, text);
+      setComments((current) => ({
+        ...current,
+        [checkInId]: [...(current[checkInId] ?? []), comment]
+      }));
+      setCommentDraft("");
+      setFeed((items) =>
+        items.map((item) => (item.id === checkInId ? { ...item, comments: item.comments + 1 } : item))
+      );
+    });
+
+  const startEdit = (item: CheckIn) => {
+    setEditingId(item.id);
+    setEditText(item.text);
   };
+  const handleSaveEdit = (checkInId: string) =>
+    runAction(async () => {
+      replaceItem(await updateCheckIn(checkInId, editText.trim()));
+      setEditingId(null);
+      setEditText("");
+    });
+  const handleDelete = (checkInId: string) =>
+    runAction(async () => {
+      await deleteCheckIn(checkInId);
+      setFeed((items) => items.filter((item) => item.id !== checkInId));
+      await onChanged();
+    });
 
   return (
     <ScrollView contentContainerStyle={styles.screen}>
@@ -125,28 +199,107 @@ export function PodDetail({
           <Text style={activeTab === "info" ? styles.segmentActive : styles.segment}>정보</Text>
         </Pressable>
       </View>
-      {error ? <Text style={styles.caption}>{error}</Text> : null}
+      {error ? <Text style={[styles.caption, styles.helperDanger]}>{error}</Text> : null}
       {activeTab === "feed" ? (
         <>
           {feed.length > 0 ? feed.map((item) => (
             <View style={styles.feedCard} key={item.id}>
               <View style={styles.feedHeader}>
                 <View style={styles.smallAvatar} />
-                <View>
+                <View style={styles.flex}>
                   <Text style={styles.cardTitle}>{item.author}</Text>
                   <Text style={styles.caption}>{item.meta}</Text>
                 </View>
+                {item.mine ? (
+                  <View style={styles.ownerActions}>
+                    <Pressable onPress={() => startEdit(item)} hitSlop={8}>
+                      <Text style={styles.ownerActionText}>수정</Text>
+                    </Pressable>
+                    <Pressable onPress={() => handleDelete(item.id)} hitSlop={8}>
+                      <Text style={[styles.ownerActionText, styles.helperDanger]}>삭제</Text>
+                    </Pressable>
+                  </View>
+                ) : null}
               </View>
-              <Text style={styles.feedText}>{item.text}</Text>
+              {editingId === item.id ? (
+                <>
+                  <TextInput
+                    style={styles.memoInput}
+                    value={editText}
+                    onChangeText={setEditText}
+                    multiline
+                    maxLength={60}
+                  />
+                  <View style={styles.editActions}>
+                    <Pressable
+                      style={styles.editCancel}
+                      onPress={() => {
+                        setEditingId(null);
+                        setEditText("");
+                      }}
+                    >
+                      <Text style={styles.secondaryText}>취소</Text>
+                    </Pressable>
+                    <Pressable style={styles.checkButton} onPress={() => handleSaveEdit(item.id)}>
+                      <Text style={styles.checkButtonText}>저장</Text>
+                    </Pressable>
+                  </View>
+                </>
+              ) : (
+                <Text style={styles.feedText}>{item.text}</Text>
+              )}
               <View style={styles.photoPlaceholder} />
               <View style={styles.feedActions}>
-                <Pressable style={styles.checkButton} onPress={() => handleCheck(item.id)}>
-                  <Text style={styles.checkButtonText}>{item.checkedByMe ? "✓ 체크됨" : "✓ 체크하기"}</Text>
+                {item.mine ? (
+                  <View style={styles.mineBadge}>
+                    <Text style={styles.mineBadgeText}>내 인증</Text>
+                  </View>
+                ) : (
+                  <Pressable
+                    style={[styles.checkButton, item.checkedByMe && styles.checkButtonDone]}
+                    onPress={() => handleCheck(item.id)}
+                  >
+                    <Text style={[styles.checkButtonText, item.checkedByMe && styles.checkButtonDoneText]}>
+                      {item.checkedByMe ? `✓ 체크됨 ${item.checks}` : `✓ 체크하기 ${item.checks}`}
+                    </Text>
+                  </Pressable>
+                )}
+                <Pressable onPress={() => handleLike(item.id)} hitSlop={8}>
+                  <Text style={[styles.feedMeta, item.likedByMe && styles.feedMetaActive]}>
+                    {item.likedByMe ? "♥" : "♡"} {item.likes}
+                  </Text>
                 </Pressable>
-                <Text style={styles.feedMeta}>♥ {item.likes}</Text>
-                <Text style={styles.feedMeta}>댓글 {item.comments}</Text>
-                <Text style={styles.feedMeta}>↑</Text>
+                <Pressable onPress={() => handleToggleComments(item.id)} hitSlop={8}>
+                  <Text style={[styles.feedMeta, openCommentsId === item.id && styles.feedMetaActive]}>
+                    댓글 {item.comments}
+                  </Text>
+                </Pressable>
               </View>
+              {openCommentsId === item.id ? (
+                <View style={styles.commentBox}>
+                  {(comments[item.id] ?? []).map((comment) => (
+                    <View style={styles.commentRow} key={comment.id}>
+                      <Text style={styles.commentAuthor}>{comment.author}</Text>
+                      <Text style={styles.commentText}>{comment.text}</Text>
+                    </View>
+                  ))}
+                  {(comments[item.id] ?? []).length === 0 ? (
+                    <Text style={styles.caption}>아직 댓글이 없어요. 첫 응원을 남겨보세요!</Text>
+                  ) : null}
+                  <View style={styles.commentInputRow}>
+                    <TextInput
+                      style={styles.commentInput}
+                      value={commentDraft}
+                      onChangeText={setCommentDraft}
+                      placeholder="댓글 달기"
+                      maxLength={300}
+                    />
+                    <Pressable style={styles.commentSend} onPress={() => handleAddComment(item.id)}>
+                      <Text style={styles.checkButtonText}>등록</Text>
+                    </Pressable>
+                  </View>
+                </View>
+              ) : null}
             </View>
           )) : <Text style={styles.bodyCopy}>아직 올라온 인증이 없습니다.</Text>}
         </>
@@ -188,7 +341,13 @@ export function PodDetail({
           <Text style={styles.cardTitle}>{pod.tagLine}</Text>
         </View>
       </View> : null}
-      <PrimaryButton label="인증하기" onPress={onUpload} />
+      {pod.needsCheckIn ? (
+        <PrimaryButton label="인증하기" onPress={onUpload} />
+      ) : (
+        <View style={styles.doneButton}>
+          <Text style={styles.doneButtonText}>✓ 오늘 인증 완료</Text>
+        </View>
+      )}
     </ScrollView>
   );
 }

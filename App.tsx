@@ -225,6 +225,7 @@ export default function App() {
             onPreviousPod={() => selectAdjacentPod(-1)}
             onSelectPod={setSelectedPodId}
             onUpload={() => setScreen("upload")}
+            onChanged={refreshAppData}
           />
         )}
         {screen === "upload" && <Upload pod={selectedPod} onClose={goHome} onSubmit={handleUpload} />}

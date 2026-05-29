@@ -37,13 +37,27 @@ export type Pod = {
 export type CheckIn = {
   id: string;
   podId: string;
+  authorId: string;
   author: string;
   meta: string;
   text: string;
   mediaUrl?: string | null;
   likes: number;
-  comments: number;
+  likedByMe: boolean;
+  checks: number;
   checkedByMe: boolean;
+  comments: number;
+  mine: boolean;
+};
+
+export type CheckInComment = {
+  id: string;
+  checkInId: string;
+  authorId: string;
+  author: string;
+  text: string;
+  meta: string;
+  mine: boolean;
 };
 
 export type PodMember = {
@@ -155,15 +169,28 @@ export const fetchPodFeed = (podId: string) =>
 export const fetchPodMembers = (podId: string) =>
   request<PodMember[]>(`/api/pods/${encodeURIComponent(podId)}/members`);
 export const reactToCheckIn = (checkInId: string) =>
-  request<{ checkInId: string; checkedByMe: boolean; likes: number }>(
-    `/api/check-ins/${encodeURIComponent(checkInId)}/checks`,
-    { method: "POST" }
-  );
+  request<CheckIn>(`/api/check-ins/${encodeURIComponent(checkInId)}/checks`, { method: "POST" });
+export const likeCheckIn = (checkInId: string) =>
+  request<CheckIn>(`/api/check-ins/${encodeURIComponent(checkInId)}/likes`, { method: "POST" });
+export const fetchComments = (checkInId: string) =>
+  request<CheckInComment[]>(`/api/check-ins/${encodeURIComponent(checkInId)}/comments`);
+export const addComment = (checkInId: string, text: string) =>
+  request<CheckInComment>(`/api/check-ins/${encodeURIComponent(checkInId)}/comments`, {
+    method: "POST",
+    body: JSON.stringify({ text })
+  });
 export const createCheckIn = (podId: string, text: string, mediaUrl?: string | null) =>
   request<CheckIn>(`/api/pods/${encodeURIComponent(podId)}/check-ins`, {
     method: "POST",
     body: JSON.stringify({ text, mediaUrl })
   });
+export const updateCheckIn = (checkInId: string, text: string) =>
+  request<CheckIn>(`/api/check-ins/${encodeURIComponent(checkInId)}`, {
+    method: "PATCH",
+    body: JSON.stringify({ text })
+  });
+export const deleteCheckIn = (checkInId: string) =>
+  request<void>(`/api/check-ins/${encodeURIComponent(checkInId)}`, { method: "DELETE" });
 export const createPod = (pod: {
   name: string;
   description: string;
