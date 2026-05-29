@@ -1,7 +1,5 @@
 # My Streak App
 
-Figma channel `maz2y9sw`의 모바일 화면을 바탕으로 만든 Expo React Native 프로토타입입니다.
-
 ## 실행
 
 ```bash
