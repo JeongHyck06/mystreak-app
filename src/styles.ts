@@ -213,9 +213,12 @@ export const styles = StyleSheet.create({
     justifyContent: "space-between"
   },
   passwordDots: {
+    flex: 1,
+    minHeight: 56,
     color: colors.text,
     fontSize: 16,
-    fontWeight: "800"
+    fontWeight: "800",
+    paddingVertical: 0
   },
   divider: {
     flexDirection: "row",

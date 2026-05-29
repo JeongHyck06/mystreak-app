@@ -1,6 +1,7 @@
 export type Screen =
   | "onboarding"
   | "login"
+  | "signup"
   | "home"
   | "pod"
   | "upload"

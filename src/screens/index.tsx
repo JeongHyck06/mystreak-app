@@ -1,5 +1,6 @@
 export { Login } from "./auth/Login";
 export { Onboarding } from "./auth/Onboarding";
+export { SignUp } from "./auth/SignUp";
 export { Upload } from "./checkin/Upload";
 export { Home } from "./home/Home";
 export { Notifications } from "./notifications/Notifications";
