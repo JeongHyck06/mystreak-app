@@ -1,0 +1,23 @@
+{
+  "expo": {
+    "name": "My Streak",
+    "slug": "mystreak",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": false
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#f5faf5"
+      }
+    },
+    "plugins": [
+      "expo-status-bar"
+    ]
+  }
+}
