@@ -52,13 +52,6 @@ export function Stats({ onTab }: { onTab: (tab: Tab) => void }) {
               <HeatCell key={index} level={level} index={index} />
             ))}
           </View>
-          <View style={styles.rowBetween}>
-            <Text style={styles.caption}>적음</Text>
-            <View style={styles.legend}>
-              {[0, 1, 2, 3, 4, 5].map((level) => <HeatCell key={level} level={level} small />)}
-            </View>
-            <Text style={styles.caption}>많음</Text>
-          </View>
         </View>
         <View style={styles.card}>
           <Text style={styles.caption}>최근 얻은 트로피</Text>
