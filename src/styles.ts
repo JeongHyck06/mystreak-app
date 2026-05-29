@@ -213,9 +213,12 @@ export const styles = StyleSheet.create({
     justifyContent: "space-between"
   },
   passwordDots: {
+    flex: 1,
+    minHeight: 56,
     color: colors.text,
     fontSize: 16,
-    fontWeight: "800"
+    fontWeight: "800",
+    paddingVertical: 0
   },
   divider: {
     flexDirection: "row",
@@ -634,6 +637,17 @@ export const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: "800"
   },
+  podInfoGrid: {
+    flexDirection: "row",
+    gap: 10
+  },
+  podInfoItem: {
+    flex: 1,
+    borderRadius: radii.md,
+    backgroundColor: colors.primaryLight,
+    padding: 14,
+    gap: 6
+  },
   uploadBox: {
     height: 380,
     backgroundColor: colors.primaryLight,
@@ -818,6 +832,19 @@ export const styles = StyleSheet.create({
   softButtonText: {
     color: colors.accent,
     fontSize: 12,
+    fontWeight: "900"
+  },
+  managePodCard: {
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: 24,
+    padding: 16,
+    gap: 16
+  },
+  manageDangerText: {
+    color: colors.danger,
+    fontSize: 13,
     fontWeight: "900"
   },
   profilePods: {

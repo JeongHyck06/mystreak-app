@@ -1,6 +1,7 @@
 export type Screen =
   | "onboarding"
   | "login"
+  | "signup"
   | "home"
   | "pod"
   | "upload"
@@ -8,6 +9,7 @@ export type Screen =
   | "profile"
   | "notifications"
   | "podActions"
+  | "managePods"
   | "createPod"
   | "invitePod"
   | "joinPod"

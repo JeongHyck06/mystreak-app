@@ -1,34 +1,73 @@
+import { useState } from "react";
 import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
 import { Divider, PrimaryButton, TopBar } from "../../components";
 import { styles } from "../../styles";
 
-export function Login({ onBack, onDone }: { onBack: () => void; onDone: () => void }) {
+export function Login({
+  onBack,
+  onLogin,
+  onOpenSignUp
+}: {
+  onBack: () => void;
+  onLogin: (email: string, password: string) => Promise<void>;
+  onOpenSignUp: () => void;
+}) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const submit = async () => {
+    setError("");
+    setIsSubmitting(true);
+    try {
+      await onLogin(email.trim(), password);
+    } catch (error) {
+      setError(error instanceof Error ? error.message : "로그인에 실패했습니다.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.screen}>
       <TopBar left="‹" onLeft={onBack} />
       <Text style={styles.brand}>My Streak</Text>
       <Text style={styles.pageTitle}>만나서 반가워요!</Text>
       <Text style={styles.bodyCopy}>이메일로 로그인하고 오늘의 스트릭을 이어가세요.</Text>
-      <TextInput style={styles.input} value="your@example.com" editable={false} />
+      <TextInput
+        style={styles.input}
+        value={email}
+        onChangeText={setEmail}
+        autoCapitalize="none"
+        keyboardType="email-address"
+        placeholder="your@example.com"
+      />
       <View style={styles.passwordRow}>
-        <Text style={styles.passwordDots}>••••••••••</Text>
-        <Text style={styles.secondaryText}>표시</Text>
+        <TextInput
+          style={styles.passwordDots}
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
+          placeholder="비밀번호"
+        />
       </View>
+      {error ? <Text style={styles.caption}>{error}</Text> : null}
       <Pressable style={styles.textButton}>
         <Text style={styles.accentText}>비밀번호를 잊으셨나요?</Text>
       </Pressable>
-      <PrimaryButton label="로그인" onPress={onDone} />
+      <PrimaryButton label={isSubmitting ? "처리 중..." : "로그인"} onPress={submit} />
       <Divider label="또는" />
-      <Pressable style={[styles.socialButton, styles.kakaoButton]} onPress={onDone}>
+      <Pressable style={[styles.socialButton, styles.kakaoButton]}>
         <Text style={styles.socialStrong}>카카오로 시작하기</Text>
       </Pressable>
-      <Pressable style={[styles.socialButton, styles.appleButton]} onPress={onDone}>
+      <Pressable style={[styles.socialButton, styles.appleButton]}>
         <Text style={styles.socialLight}>Apple로 시작하기</Text>
       </Pressable>
-      <Pressable style={styles.socialButton} onPress={onDone}>
+      <Pressable style={styles.socialButton}>
         <Text style={styles.socialStrong}>G Google로 시작하기</Text>
       </Pressable>
-      <Pressable style={styles.textButton} onPress={onDone}>
+      <Pressable style={styles.textButton} onPress={onOpenSignUp}>
         <Text style={styles.secondaryText}>처음이신가요? 회원가입하기</Text>
       </Pressable>
     </ScrollView>
