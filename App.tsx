@@ -52,6 +52,10 @@ export default function App() {
   const [pods, setPods] = useState<Pod[]>([]);
   const [stats, setStats] = useState<StatsData | null>(null);
   const [notifications, setNotifications] = useState<AppNotification[]>([]);
+  const [statsMonth, setStatsMonth] = useState(() => {
+    const now = new Date();
+    return { year: now.getFullYear(), month: now.getMonth() + 1 };
+  });
   const [selectedPodId, setSelectedPodId] = useState<string | null>(null);
   const selectedPod = useMemo(
     () => pods.find((pod) => pod.id === selectedPodId) ?? pods[0] ?? null,
@@ -79,17 +83,31 @@ export default function App() {
   }, []);
 
   const refreshAppData = async () => {
+    const now = new Date();
+    const currentMonth = { year: now.getFullYear(), month: now.getMonth() + 1 };
     const [nextProfile, nextPods, nextStats, nextNotifications] = await Promise.all([
       fetchProfile(),
       fetchPods(),
-      fetchStats(),
+      fetchStats(currentMonth.year, currentMonth.month),
       fetchNotifications()
     ]);
     setProfile(nextProfile);
     setPods(nextPods);
     setStats(nextStats);
+    setStatsMonth(currentMonth);
     setNotifications(nextNotifications);
     setSelectedPodId((current) => current ?? nextPods[0]?.id ?? null);
+  };
+
+  const loadStatsForMonth = async (year: number, month: number) => {
+    const nextStats = await fetchStats(year, month);
+    setStats(nextStats);
+    setStatsMonth({ year, month });
+  };
+
+  const shiftStatsMonth = (direction: -1 | 1) => {
+    const base = new Date(statsMonth.year, statsMonth.month - 1 + direction, 1);
+    return loadStatsForMonth(base.getFullYear(), base.getMonth() + 1);
   };
 
   const handleLogin = async (email: string, password: string) => {
@@ -209,7 +227,14 @@ export default function App() {
           />
         )}
         {screen === "upload" && <Upload pod={selectedPod} onClose={goHome} onSubmit={handleUpload} />}
-        {screen === "stats" && <Stats stats={stats} onTab={(tab) => setScreen(tabScreens[tab])} />}
+        {screen === "stats" && (
+          <Stats
+            stats={stats}
+            onTab={(tab) => setScreen(tabScreens[tab])}
+            onPreviousMonth={() => shiftStatsMonth(-1)}
+            onNextMonth={() => shiftStatsMonth(1)}
+          />
+        )}
         {screen === "profile" && (
           <Profile
             profile={profile}

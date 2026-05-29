@@ -1,11 +1,23 @@
-import { ScrollView, Text, View } from "react-native";
+import { Pressable, ScrollView, Text, View } from "react-native";
 import { BottomTabs, HeatCell } from "../../components";
 import type { Stats as StatsData } from "../../api";
 import type { Tab } from "../../navigation";
 import { styles } from "../../styles";
 
-export function Stats({ stats, onTab }: { stats: StatsData | null; onTab: (tab: Tab) => void }) {
+export function Stats({
+  stats,
+  onTab,
+  onPreviousMonth,
+  onNextMonth
+}: {
+  stats: StatsData | null;
+  onTab: (tab: Tab) => void;
+  onPreviousMonth: () => void;
+  onNextMonth: () => void;
+}) {
   const heatmap = stats?.heatmap ?? [];
+  const year = stats?.year ?? new Date().getFullYear();
+  const month = stats?.month ?? new Date().getMonth() + 1;
 
   return (
     <View style={styles.flex}>
@@ -13,9 +25,15 @@ export function Stats({ stats, onTab }: { stats: StatsData | null; onTab: (tab: 
         <View style={styles.rowBetween}>
           <Text style={styles.pageTitle}>나의 스트릭</Text>
           <View style={styles.monthPill}>
+            <Pressable onPress={onPreviousMonth} hitSlop={10} accessibilityLabel="이전 달">
+              <Text style={styles.monthArrow}>‹</Text>
+            </Pressable>
             <Text style={styles.cardTitle}>
-              ‹ {stats?.year ?? new Date().getFullYear()}년 {stats?.month ?? new Date().getMonth() + 1}월 ›
+              {year}년 {month}월
             </Text>
+            <Pressable onPress={onNextMonth} hitSlop={10} accessibilityLabel="다음 달">
+              <Text style={styles.monthArrow}>›</Text>
+            </Pressable>
           </View>
         </View>
         <View style={styles.statsRow}>
@@ -49,7 +67,7 @@ export function Stats({ stats, onTab }: { stats: StatsData | null; onTab: (tab: 
           </View>
         </View>
         <View style={styles.card}>
-          <Text style={styles.title}>{stats?.month ?? new Date().getMonth() + 1}월 인증 히트맵</Text>
+          <Text style={styles.title}>{month}월 인증 히트맵</Text>
           <Text style={styles.caption}>높은 톤은 더 많은 인증, 회색은 비워있는 날</Text>
           <View style={styles.heatmap}>
             {heatmap.map((level, index) => (

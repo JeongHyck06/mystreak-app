@@ -135,7 +135,17 @@ export async function logout() {
 
 export const fetchProfile = () => request<Profile>("/api/profile/me");
 export const fetchPods = () => request<Pod[]>("/api/pods");
-export const fetchStats = () => request<Stats>("/api/stats/me");
+export const fetchStats = (year?: number, month?: number) => {
+  const params = new URLSearchParams();
+  if (year != null) {
+    params.set("year", String(year));
+  }
+  if (month != null) {
+    params.set("month", String(month));
+  }
+  const query = params.toString();
+  return request<Stats>(`/api/stats/me${query ? `?${query}` : ""}`);
+};
 export const fetchNotifications = (type?: string) =>
   request<AppNotification[]>(`/api/notifications${type ? `?type=${encodeURIComponent(type)}` : ""}`);
 export const markNotificationsRead = () =>

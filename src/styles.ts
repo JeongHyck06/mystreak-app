@@ -718,12 +718,21 @@ export const styles = StyleSheet.create({
     fontWeight: "700"
   },
   monthPill: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
     backgroundColor: colors.surface,
     borderWidth: 1,
     borderColor: colors.border,
     borderRadius: 18,
-    paddingHorizontal: 18,
-    paddingVertical: 10
+    paddingHorizontal: 16,
+    paddingVertical: 8
+  },
+  monthArrow: {
+    color: colors.accent,
+    fontSize: 22,
+    lineHeight: 24,
+    fontWeight: "900"
   },
   statLarge: {
     flex: 1,
