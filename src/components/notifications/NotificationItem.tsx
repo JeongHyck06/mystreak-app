@@ -1,8 +1,8 @@
 import { Text, View } from "react-native";
-import { notifications } from "../../mockData";
+import type { AppNotification } from "../../api";
 import { styles } from "../../styles";
 
-export function NotificationItem({ item }: { item: (typeof notifications)[number] }) {
+export function NotificationItem({ item }: { item: AppNotification }) {
   return (
     <View style={[styles.notificationCard, item.urgent && styles.notificationUrgent]}>
       <View style={styles.smallAvatar}>

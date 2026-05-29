@@ -1,18 +1,26 @@
 import { Pressable, ScrollView, Text, View } from "react-native";
 import { BottomTabs, SectionHeader, StatCard } from "../../components";
-import { pods, user } from "../../mockData";
+import type { Pod, Profile as ProfileData } from "../../api";
 import type { Tab } from "../../navigation";
 import { styles } from "../../styles";
 
 export function Profile({
+  profile,
+  pods,
   onEdit,
   onManage,
+  onLogout,
   onTab
 }: {
+  profile: ProfileData | null;
+  pods: Pod[];
   onEdit: () => void;
   onManage: () => void;
+  onLogout: () => void;
   onTab: (tab: Tab) => void;
 }) {
+  const currentStreak = profile?.currentStreak ?? 0;
+
   return (
     <View style={styles.flex}>
       <ScrollView contentContainerStyle={styles.screenWithTab}>
@@ -20,19 +28,19 @@ export function Profile({
         <View style={styles.profileCard}>
           <View style={styles.profileAvatar} />
           <View style={styles.flex}>
-            <Text style={styles.profileName}>{user.name}</Text>
-            <Text style={styles.secondaryText}>{user.handle}</Text>
-            <Text style={styles.secondaryText}>12일째 스트릭 도전중</Text>
+            <Text style={styles.profileName}>{profile?.name || "프로필 이름 없음"}</Text>
+            <Text style={styles.secondaryText}>{profile?.handle || "@handle"}</Text>
+            <Text style={styles.secondaryText}>{currentStreak}일째 스트릭 도전중</Text>
           </View>
           <Pressable style={styles.softButton} onPress={onEdit}>
             <Text style={styles.softButtonText}>프로필 편집</Text>
           </Pressable>
-          <Text style={styles.profileBio}>{user.bio}</Text>
+          <Text style={styles.profileBio}>{profile?.bio || "한 줄 소개를 등록해 주세요."}</Text>
         </View>
         <View style={styles.statsRow}>
-          <StatCard label="참여 팟" value="3" />
-          <StatCard label="누적 인증" value="146" />
-          <StatCard label="얻은 트로피 수" value="38" />
+          <StatCard label="참여 팟" value={`${pods.length}`} />
+          <StatCard label="누적 인증" value={`${profile?.totalChecks ?? 0}`} />
+          <StatCard label="얻은 트로피 수" value={`${profile?.trophies ?? 0}`} />
         </View>
         <SectionHeader title="참여 중인 팟" action="관리 ›" onAction={onManage} />
         <View style={styles.profilePods}>
@@ -51,7 +59,9 @@ export function Profile({
               <Text style={styles.caption}>›</Text>
             </View>
           ))}
-          <Text style={styles.logoutText}>로그아웃</Text>
+          <Pressable onPress={onLogout}>
+            <Text style={styles.logoutText}>로그아웃</Text>
+          </Pressable>
         </View>
       </ScrollView>
       <BottomTabs active="profile" onTab={onTab} />
