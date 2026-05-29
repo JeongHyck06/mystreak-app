@@ -98,8 +98,8 @@ export default function App() {
     setScreen("home");
   };
 
-  const handleSignUp = async (email: string, password: string) => {
-    await signUp(email, password);
+  const handleSignUp = async (email: string, password: string, name: string, handle: string) => {
+    await signUp(email, password, name, handle);
     await refreshAppData();
     setScreen("home");
   };

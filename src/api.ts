@@ -112,10 +112,10 @@ export async function login(email: string, password: string) {
   return session;
 }
 
-export async function signUp(email: string, password: string) {
+export async function signUp(email: string, password: string, name: string, handle: string) {
   const auth = await request<AuthResponse>("/api/auth/signup", {
     method: "POST",
-    body: JSON.stringify({ email, password }),
+    body: JSON.stringify({ email, password, name, handle }),
     skipAuth: true
   });
   const session = toSession(auth);
