@@ -1,14 +1,18 @@
 import { Pressable, ScrollView, Text, View } from "react-native";
-import { pods } from "../../mockData";
+import type { Pod } from "../../api";
 import { styles } from "../../styles";
 import { TopBar } from "../../components";
 
 export function PodManagement({
+  pods,
   onBack,
-  onOpenPod
+  onOpenPod,
+  onLeavePod
 }: {
+  pods: Pod[];
   onBack: () => void;
   onOpenPod: (podId: string) => void;
+  onLeavePod: (podId: string) => void;
 }) {
   return (
     <ScrollView contentContainerStyle={styles.screen}>
@@ -30,7 +34,9 @@ export function PodManagement({
             <Pressable style={styles.softButton} onPress={() => onOpenPod(pod.id)}>
               <Text style={styles.softButtonText}>상세 보기</Text>
             </Pressable>
-            <Text style={styles.manageDangerText}>나가기</Text>
+            <Pressable onPress={() => onLeavePod(pod.id)}>
+              <Text style={styles.manageDangerText}>나가기</Text>
+            </Pressable>
           </View>
         </View>
       ))}

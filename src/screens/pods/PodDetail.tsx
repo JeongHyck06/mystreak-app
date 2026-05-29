@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
 import { PrimaryButton, TopBar } from "../../components";
-import { feed, type Pod } from "../../mockData";
+import { fetchPodFeed, fetchPodMembers, reactToCheckIn, type CheckIn, type Pod, type PodMember } from "../../api";
 import { styles } from "../../styles";
 
 type PodDetailTab = "feed" | "members" | "info";
@@ -27,9 +27,42 @@ export function PodDetail({
 }) {
   const [isPickerOpen, setIsPickerOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<PodDetailTab>("feed");
+  const [feed, setFeed] = useState<CheckIn[]>([]);
+  const [members, setMembers] = useState<PodMember[]>([]);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    let isActive = true;
+    setError("");
+    Promise.all([fetchPodFeed(pod.id), fetchPodMembers(pod.id)])
+      .then(([nextFeed, nextMembers]) => {
+        if (isActive) {
+          setFeed(nextFeed);
+          setMembers(nextMembers);
+        }
+      })
+      .catch((error) => {
+        if (isActive) {
+          setError(error instanceof Error ? error.message : "팟 정보를 불러오지 못했습니다.");
+        }
+      });
+
+    return () => {
+      isActive = false;
+    };
+  }, [pod.id]);
+
   const handleSelectPod = (podId: string) => {
     onSelectPod(podId);
     setIsPickerOpen(false);
+  };
+  const handleCheck = async (checkInId: string) => {
+    const reaction = await reactToCheckIn(checkInId);
+    setFeed((items) =>
+      items.map((item) =>
+        item.id === checkInId ? { ...item, checkedByMe: reaction.checkedByMe, likes: reaction.likes } : item
+      )
+    );
   };
 
   return (
@@ -76,7 +109,7 @@ export function PodDetail({
           </View>
         ) : null}
         <Text style={styles.accentText}>
-          {pod.memberCount}명 · 평균 스트릭 27일
+          {pod.memberCount}명 · 현재 스트릭 {pod.streak}일
         </Text>
         <Text style={styles.podDescription}>{pod.description}</Text>
         <Text style={styles.tagLine}>{pod.tags.join("  ")}</Text>
@@ -92,9 +125,10 @@ export function PodDetail({
           <Text style={activeTab === "info" ? styles.segmentActive : styles.segment}>정보</Text>
         </Pressable>
       </View>
+      {error ? <Text style={styles.caption}>{error}</Text> : null}
       {activeTab === "feed" ? (
         <>
-          {feed.map((item) => (
+          {feed.length > 0 ? feed.map((item) => (
             <View style={styles.feedCard} key={item.id}>
               <View style={styles.feedHeader}>
                 <View style={styles.smallAvatar} />
@@ -106,15 +140,15 @@ export function PodDetail({
               <Text style={styles.feedText}>{item.text}</Text>
               <View style={styles.photoPlaceholder} />
               <View style={styles.feedActions}>
-                <Pressable style={styles.checkButton}>
-                  <Text style={styles.checkButtonText}>✓ 체크하기</Text>
+                <Pressable style={styles.checkButton} onPress={() => handleCheck(item.id)}>
+                  <Text style={styles.checkButtonText}>{item.checkedByMe ? "✓ 체크됨" : "✓ 체크하기"}</Text>
                 </Pressable>
                 <Text style={styles.feedMeta}>♥ {item.likes}</Text>
                 <Text style={styles.feedMeta}>댓글 {item.comments}</Text>
                 <Text style={styles.feedMeta}>↑</Text>
               </View>
             </View>
-          ))}
+          )) : <Text style={styles.bodyCopy}>아직 올라온 인증이 없습니다.</Text>}
         </>
       ) : null}
       {activeTab === "members" ? <View style={styles.card}>
@@ -122,18 +156,18 @@ export function PodDetail({
           <Text style={styles.title}>멤버</Text>
           <Text style={styles.accentText}>{pod.memberCount}명 참여 중</Text>
         </View>
-        {["김다혜", "이서정", "박지수"].map((name, index) => (
-          <View style={styles.memberRow} key={name}>
+        {members.length > 0 ? members.map((member) => (
+          <View style={styles.memberRow} key={member.id}>
             <View style={styles.smallAvatar} />
             <View style={styles.flex}>
-              <Text style={styles.cardTitle}>{name}</Text>
-              <Text style={styles.caption}>{index === 0 ? "오늘 인증 완료" : `${pod.streak + index}일째 참여 중`}</Text>
+              <Text style={styles.cardTitle}>{member.name}</Text>
+              <Text style={styles.caption}>
+                {member.checkedInToday ? "오늘 인증 완료" : `${member.streak}일째 참여 중`}
+              </Text>
             </View>
-            <Text style={index === 0 ? styles.accentText : styles.caption}>
-              {index === 0 ? "나" : "멤버"}
-            </Text>
+            <Text style={member.role === "나" ? styles.accentText : styles.caption}>{member.role}</Text>
           </View>
-        ))}
+        )) : <Text style={styles.bodyCopy}>멤버 정보를 불러오는 중입니다.</Text>}
       </View> : null}
       {activeTab === "info" ? <View style={styles.card}>
         <Text style={styles.title}>정보</Text>

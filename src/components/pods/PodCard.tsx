@@ -1,5 +1,5 @@
 import { Text, View } from "react-native";
-import type { Pod } from "../../mockData";
+import type { Pod } from "../../api";
 import { styles } from "../../styles";
 import { PressScale } from "../ui/PressScale";
 
