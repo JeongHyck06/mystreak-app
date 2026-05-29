@@ -4,6 +4,8 @@ import { PrimaryButton, TopBar } from "../../components";
 import { feed, type Pod } from "../../mockData";
 import { styles } from "../../styles";
 
+type PodDetailTab = "feed" | "members" | "info";
+
 export function PodDetail({
   pod,
   pods,
@@ -24,6 +26,7 @@ export function PodDetail({
   onUpload: () => void;
 }) {
   const [isPickerOpen, setIsPickerOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<PodDetailTab>("feed");
   const handleSelectPod = (podId: string) => {
     onSelectPod(podId);
     setIsPickerOpen(false);
@@ -79,31 +82,78 @@ export function PodDetail({
         <Text style={styles.tagLine}>{pod.tags.join("  ")}</Text>
       </View>
       <View style={styles.segmentRow}>
-        <Text style={styles.segmentActive}>피드</Text>
-        <Text style={styles.segment}>멤버</Text>
-        <Text style={styles.segment}>정보</Text>
+        <Pressable onPress={() => setActiveTab("feed")}>
+          <Text style={activeTab === "feed" ? styles.segmentActive : styles.segment}>피드</Text>
+        </Pressable>
+        <Pressable onPress={() => setActiveTab("members")}>
+          <Text style={activeTab === "members" ? styles.segmentActive : styles.segment}>멤버</Text>
+        </Pressable>
+        <Pressable onPress={() => setActiveTab("info")}>
+          <Text style={activeTab === "info" ? styles.segmentActive : styles.segment}>정보</Text>
+        </Pressable>
       </View>
-      {feed.map((item) => (
-        <View style={styles.feedCard} key={item.id}>
-          <View style={styles.feedHeader}>
-            <View style={styles.smallAvatar} />
-            <View>
-              <Text style={styles.cardTitle}>{item.author}</Text>
-              <Text style={styles.caption}>{item.meta}</Text>
+      {activeTab === "feed" ? (
+        <>
+          {feed.map((item) => (
+            <View style={styles.feedCard} key={item.id}>
+              <View style={styles.feedHeader}>
+                <View style={styles.smallAvatar} />
+                <View>
+                  <Text style={styles.cardTitle}>{item.author}</Text>
+                  <Text style={styles.caption}>{item.meta}</Text>
+                </View>
+              </View>
+              <Text style={styles.feedText}>{item.text}</Text>
+              <View style={styles.photoPlaceholder} />
+              <View style={styles.feedActions}>
+                <Pressable style={styles.checkButton}>
+                  <Text style={styles.checkButtonText}>✓ 체크하기</Text>
+                </Pressable>
+                <Text style={styles.feedMeta}>♥ {item.likes}</Text>
+                <Text style={styles.feedMeta}>댓글 {item.comments}</Text>
+                <Text style={styles.feedMeta}>↑</Text>
+              </View>
             </View>
+          ))}
+        </>
+      ) : null}
+      {activeTab === "members" ? <View style={styles.card}>
+        <View style={styles.rowBetween}>
+          <Text style={styles.title}>멤버</Text>
+          <Text style={styles.accentText}>{pod.memberCount}명 참여 중</Text>
+        </View>
+        {["김다혜", "이서정", "박지수"].map((name, index) => (
+          <View style={styles.memberRow} key={name}>
+            <View style={styles.smallAvatar} />
+            <View style={styles.flex}>
+              <Text style={styles.cardTitle}>{name}</Text>
+              <Text style={styles.caption}>{index === 0 ? "오늘 인증 완료" : `${pod.streak + index}일째 참여 중`}</Text>
+            </View>
+            <Text style={index === 0 ? styles.accentText : styles.caption}>
+              {index === 0 ? "나" : "멤버"}
+            </Text>
           </View>
-          <Text style={styles.feedText}>{item.text}</Text>
-          <View style={styles.photoPlaceholder} />
-          <View style={styles.feedActions}>
-            <Pressable style={styles.checkButton}>
-              <Text style={styles.checkButtonText}>✓ 체크하기</Text>
-            </Pressable>
-            <Text style={styles.feedMeta}>♥ {item.likes}</Text>
-            <Text style={styles.feedMeta}>댓글 {item.comments}</Text>
-            <Text style={styles.feedMeta}>↑</Text>
+        ))}
+      </View> : null}
+      {activeTab === "info" ? <View style={styles.card}>
+        <Text style={styles.title}>정보</Text>
+        <View style={styles.podInfoGrid}>
+          <View style={styles.podInfoItem}>
+            <Text style={styles.caption}>오늘 인증</Text>
+            <Text style={styles.cardTitle}>
+              {pod.certifiedToday}/{pod.maxMembers}명
+            </Text>
+          </View>
+          <View style={styles.podInfoItem}>
+            <Text style={styles.caption}>현재 스트릭</Text>
+            <Text style={styles.cardTitle}>{pod.streak}일째</Text>
           </View>
         </View>
-      ))}
+        <View style={styles.podInfoItem}>
+          <Text style={styles.caption}>인증 방식</Text>
+          <Text style={styles.cardTitle}>{pod.tagLine}</Text>
+        </View>
+      </View> : null}
       <PrimaryButton label="인증하기" onPress={onUpload} />
     </ScrollView>
   );
