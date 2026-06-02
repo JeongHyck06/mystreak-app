@@ -1114,6 +1114,19 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 4,
     gap: 8
   },
+  copyField: {
+    minHeight: 56,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: "rgba(255,255,255,0.48)",
+    paddingHorizontal: 16,
+    justifyContent: "center"
+  },
+  copyFieldText: {
+    color: colors.secondaryText,
+    fontSize: 15
+  },
   helperDanger: {
     color: colors.danger
   },

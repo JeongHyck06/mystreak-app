@@ -51,6 +51,12 @@ export function PodDetail({
   const [comments, setComments] = useState<Record<string, CheckInComment[]>>({});
   const [commentDraft, setCommentDraft] = useState("");
 
+  const loadPodData = async () => {
+    const [nextFeed, nextMembers] = await Promise.all([fetchPodFeed(pod.id), fetchPodMembers(pod.id)]);
+    setFeed(nextFeed);
+    setMembers(nextMembers);
+  };
+
   useEffect(() => {
     let isActive = true;
     setError("");
@@ -72,6 +78,8 @@ export function PodDetail({
     };
   }, [pod.id]);
 
+  const memberCount = members.length > 0 ? members.length : pod.memberCount;
+
   const replaceItem = (next: CheckIn) =>
     setFeed((items) => items.map((item) => (item.id === next.id ? next : item)));
 
@@ -89,7 +97,11 @@ export function PodDetail({
     setIsPickerOpen(false);
   };
   const handleCheck = (checkInId: string) =>
-    runAction(async () => replaceItem(await reactToCheckIn(checkInId)));
+    runAction(async () => {
+      replaceItem(await reactToCheckIn(checkInId));
+      // 인증 체크는 글 작성자의 스트릭/팟 진행률을 바꾸므로 멤버 목록과 앱 전역 데이터를 다시 불러온다.
+      await Promise.all([loadPodData(), onChanged()]);
+    });
   const handleLike = (checkInId: string) =>
     runAction(async () => replaceItem(await likeCheckIn(checkInId)));
 
@@ -183,7 +195,7 @@ export function PodDetail({
           </View>
         ) : null}
         <Text style={styles.accentText}>
-          {pod.memberCount}명 · 현재 스트릭 {pod.streak}일
+          {memberCount}명 · 현재 스트릭 {pod.streak}일
         </Text>
         <Text style={styles.podDescription}>{pod.description}</Text>
         <Text style={styles.tagLine}>{pod.tags.join("  ")}</Text>
@@ -307,7 +319,7 @@ export function PodDetail({
       {activeTab === "members" ? <View style={styles.card}>
         <View style={styles.rowBetween}>
           <Text style={styles.title}>멤버</Text>
-          <Text style={styles.accentText}>{pod.memberCount}명 참여 중</Text>
+          <Text style={styles.accentText}>{memberCount}명 참여 중</Text>
         </View>
         {members.length > 0 ? members.map((member) => (
           <View style={styles.memberRow} key={member.id}>

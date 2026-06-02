@@ -2,6 +2,7 @@
   "expo": {
     "name": "My Streak",
     "slug": "mystreak",
+    "scheme": "mystreak",
     "version": "0.1.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
@@ -17,7 +18,8 @@
       }
     },
     "plugins": [
-      "expo-status-bar"
+      "expo-status-bar",
+      "expo-web-browser"
     ]
   }
 }

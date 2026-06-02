@@ -1,10 +1,7 @@
 import { clearSession, loadSession, saveSession, type Session } from "./session";
 
-const env = globalThis as unknown as {
-  process?: { env?: Record<string, string | undefined> };
-};
-
-const API_BASE_URL = env.process?.env?.EXPO_PUBLIC_API_URL ?? "http://localhost:8080";
+// Expo 는 process.env.EXPO_PUBLIC_* 를 직접 참조할 때만 빌드시 값을 주입한다(별칭 우회 X).
+const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL ?? "http://localhost:8080";
 
 let currentSession: Session | null = null;
 
@@ -109,6 +106,10 @@ export function setApiSession(session: Session | null) {
   currentSession = session;
 }
 
+export function getApiSession() {
+  return currentSession;
+}
+
 export async function restoreApiSession() {
   currentSession = await loadSession();
   return currentSession;
@@ -133,6 +134,17 @@ export async function signUp(email: string, password: string, name: string, hand
     skipAuth: true
   });
   const session = toSession(auth);
+  setApiSession(session);
+  await saveSession(session);
+  return session;
+}
+
+export async function kakaoLogin(tokens: { accessToken: string; refreshToken?: string; expiresAt?: number }) {
+  const session: Session = {
+    accessToken: tokens.accessToken,
+    refreshToken: tokens.refreshToken,
+    expiresAt: tokens.expiresAt
+  };
   setApiSession(session);
   await saveSession(session);
   return session;

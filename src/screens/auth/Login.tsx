@@ -1,21 +1,25 @@
 import { useState } from 'react';
 import { Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 import { Divider, PrimaryButton, TopBar } from '../../components';
+import { useKakaoAuth, type KakaoAuthResult } from '../../kakaoAuth';
 import { styles } from '../../styles';
 
 export function Login({
     onBack,
     onLogin,
+    onKakaoLogin,
     onOpenSignUp,
 }: {
     onBack: () => void;
     onLogin: (email: string, password: string) => Promise<void>;
+    onKakaoLogin: (result: KakaoAuthResult) => Promise<void>;
     onOpenSignUp: () => void;
 }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const { promptKakao, ready: kakaoReady } = useKakaoAuth();
 
     const submit = async () => {
         setError('');
@@ -24,6 +28,19 @@ export function Login({
             await onLogin(email.trim(), password);
         } catch (error) {
             setError(error instanceof Error ? error.message : '로그인에 실패했습니다.');
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    const submitKakao = async () => {
+        setError('');
+        setIsSubmitting(true);
+        try {
+            const result = await promptKakao();
+            await onKakaoLogin(result);
+        } catch (error) {
+            setError(error instanceof Error ? error.message : '카카오 로그인에 실패했습니다.');
         } finally {
             setIsSubmitting(false);
         }
@@ -58,7 +75,11 @@ export function Login({
             </Pressable>
             <PrimaryButton label={isSubmitting ? '처리 중...' : '로그인'} onPress={submit} />
             <Divider label="또는" />
-            <Pressable style={[styles.socialButton, styles.kakaoButton]}>
+            <Pressable
+                style={[styles.socialButton, styles.kakaoButton]}
+                onPress={submitKakao}
+                disabled={!kakaoReady || isSubmitting}
+            >
                 <Text style={styles.socialStrong}>카카오로 시작하기</Text>
             </Pressable>
             <Pressable style={[styles.socialButton, styles.appleButton]}>

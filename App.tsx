@@ -8,8 +8,10 @@ import {
   fetchPods,
   fetchProfile,
   fetchStats,
+  getApiSession,
   inviteMember,
   joinPod,
+  kakaoLogin,
   leavePod,
   login,
   logout,
@@ -67,19 +69,36 @@ export default function App() {
   );
 
   useEffect(() => {
-    restoreApiSession()
-      .then(async (session) => {
-        if (session?.accessToken) {
-          setApiSession(session);
-          await refreshAppData();
-          setScreen("home");
+    let cancelled = false;
+
+    (async () => {
+      try {
+        const session = await restoreApiSession();
+        if (!session?.accessToken) {
+          if (!cancelled) setScreen("onboarding");
+          return;
         }
-      })
-      .catch(async () => {
-        await logout();
-        setScreen("onboarding");
-      })
-      .finally(() => setIsBooting(false));
+
+        setApiSession(session);
+        try {
+          await refreshAppData();
+          if (!cancelled) setScreen("home");
+        } catch {
+          // 데이터 로딩이 실패해도 세션 자체는 함부로 지우지 않는다.
+          // 액세스 토큰 만료 시 request()가 자동 갱신하며, 갱신까지 실패하면 세션이 비워진다.
+          // 따라서 세션이 남아 있으면(일시적 네트워크/서버 오류) 로그인 상태를 유지하고 홈으로 진입한다.
+          if (!cancelled) setScreen(getApiSession()?.accessToken ? "home" : "onboarding");
+        }
+      } catch {
+        if (!cancelled) setScreen("onboarding");
+      } finally {
+        if (!cancelled) setIsBooting(false);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const refreshAppData = async () => {
@@ -112,6 +131,12 @@ export default function App() {
 
   const handleLogin = async (email: string, password: string) => {
     await login(email, password);
+    await refreshAppData();
+    setScreen("home");
+  };
+
+  const handleKakaoLogin = async (result: { accessToken: string; refreshToken?: string; expiresAt?: number }) => {
+    await kakaoLogin(result);
     await refreshAppData();
     setScreen("home");
   };
@@ -192,6 +217,7 @@ export default function App() {
           <Login
             onBack={() => setScreen("onboarding")}
             onLogin={handleLogin}
+            onKakaoLogin={handleKakaoLogin}
             onOpenSignUp={() => setScreen("signup")}
           />
         )}
