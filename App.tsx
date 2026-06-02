@@ -197,11 +197,11 @@ export default function App() {
     await refreshAppData();
     openPod(pod.id);
   };
-  const handleUpload = async (text: string) => {
+  const handleUpload = async (text: string, mediaUrl?: string | null) => {
     if (!selectedPod) {
       throw new Error("인증할 팟이 없습니다.");
     }
-    await createCheckIn(selectedPod.id, text);
+    await createCheckIn(selectedPod.id, text, mediaUrl);
     await refreshAppData();
   };
   const handleLeavePod = async (podId: string) => {
