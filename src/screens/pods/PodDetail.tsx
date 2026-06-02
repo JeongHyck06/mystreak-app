@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
+import { Image, Pressable, ScrollView, Text, TextInput, View } from "react-native";
 import { PrimaryButton, TopBar } from "../../components";
 import {
   addComment,
@@ -260,7 +260,18 @@ export function PodDetail({
               ) : (
                 <Text style={styles.feedText}>{item.text}</Text>
               )}
-              <View style={styles.photoPlaceholder} />
+              {item.mediaUrl ? (
+                isVideoMedia(item.mediaUrl) ? (
+                  <View style={styles.feedVideoPreview}>
+                    <Text style={styles.feedVideoIcon}>▶</Text>
+                    <Text style={styles.feedVideoText}>동영상 인증</Text>
+                  </View>
+                ) : (
+                  <Image source={{ uri: item.mediaUrl }} style={styles.feedMediaImage} />
+                )
+              ) : (
+                <View style={styles.photoPlaceholder} />
+              )}
               <View style={styles.feedActions}>
                 {item.mine ? (
                   <View style={styles.mineBadge}>
@@ -362,4 +373,9 @@ export function PodDetail({
       )}
     </ScrollView>
   );
+}
+
+function isVideoMedia(url: string) {
+  const path = url.split("?")[0].toLowerCase();
+  return path.endsWith(".mp4") || path.endsWith(".mov") || path.endsWith(".qt");
 }
