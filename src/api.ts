@@ -152,8 +152,14 @@ export async function kakaoLogin(tokens: { accessToken: string; refreshToken?: s
 
 export async function logout() {
   try {
-    await request<void>("/api/auth/logout", { method: "POST" });
-  } finally {
+    await request<void>("/api/auth/logout", {
+      method: "POST",
+      retryOnUnauthorized: false
+    });
+  } catch {
+    // 로그아웃은 서버 세션 정리에 실패해도 로컬 세션과 화면 상태를 반드시 비운다.
+  }
+  finally {
     setApiSession(null);
     await clearSession();
   }
