@@ -1,3 +1,4 @@
+import * as FileSystem from "expo-file-system/legacy";
 import { clearSession, loadSession, saveSession, type Session } from "./session";
 
 // Expo 는 process.env.EXPO_PUBLIC_* 를 직접 참조할 때만 빌드시 값을 주입한다(별칭 우회 X).
@@ -235,17 +236,15 @@ export const createMediaUpload = (upload: MediaUploadRequest) =>
     body: JSON.stringify(upload)
   });
 export const uploadMediaToS3 = async (uploadUrl: string, uri: string, contentType: string) => {
-  const media = await fetch(uri);
-  const blob = await media.blob();
-  const response = await fetch(uploadUrl, {
-    method: "PUT",
+  const response = await FileSystem.uploadAsync(uploadUrl, uri, {
+    httpMethod: "PUT",
+    uploadType: FileSystem.FileSystemUploadType.BINARY_CONTENT,
     headers: {
       "Content-Type": contentType
-    },
-    body: blob
+    }
   });
 
-  if (!response.ok) {
+  if (response.status < 200 || response.status >= 300) {
     throw new Error(`미디어 업로드에 실패했습니다. (${response.status})`);
   }
 };
