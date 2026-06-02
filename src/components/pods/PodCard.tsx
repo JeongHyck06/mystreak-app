@@ -29,8 +29,8 @@ export function PodCard({
           <Text style={styles.smallCtaText}>인증하기</Text>
         </PressScale>
       ) : (
-        <View style={styles.doneCircle}>
-          <Text style={styles.doneText}>✓</Text>
+        <View style={styles.donePill}>
+          <Text style={styles.donePillText}>✓ 인증 완료</Text>
         </View>
       )}
     </PressScale>

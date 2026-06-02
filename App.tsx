@@ -8,8 +8,10 @@ import {
   fetchPods,
   fetchProfile,
   fetchStats,
+  getApiSession,
   inviteMember,
   joinPod,
+  kakaoLogin,
   leavePod,
   login,
   logout,
@@ -25,7 +27,7 @@ import {
   type Stats as StatsData
 } from "./src/api";
 import { AnimatedScreen } from "./src/components";
-import { tabScreens, type Screen } from "./src/navigation";
+import { tabScreens, type Screen, type Tab } from "./src/navigation";
 import {
   CreatePod,
   EditProfile,
@@ -52,6 +54,10 @@ export default function App() {
   const [pods, setPods] = useState<Pod[]>([]);
   const [stats, setStats] = useState<StatsData | null>(null);
   const [notifications, setNotifications] = useState<AppNotification[]>([]);
+  const [statsMonth, setStatsMonth] = useState(() => {
+    const now = new Date();
+    return { year: now.getFullYear(), month: now.getMonth() + 1 };
+  });
   const [selectedPodId, setSelectedPodId] = useState<string | null>(null);
   const selectedPod = useMemo(
     () => pods.find((pod) => pod.id === selectedPodId) ?? pods[0] ?? null,
@@ -63,33 +69,64 @@ export default function App() {
   );
 
   useEffect(() => {
-    restoreApiSession()
-      .then(async (session) => {
-        if (session?.accessToken) {
-          setApiSession(session);
-          await refreshAppData();
-          setScreen("home");
+    let cancelled = false;
+
+    (async () => {
+      try {
+        const session = await restoreApiSession();
+        if (!session?.accessToken) {
+          if (!cancelled) setScreen("onboarding");
+          return;
         }
-      })
-      .catch(async () => {
-        await logout();
-        setScreen("onboarding");
-      })
-      .finally(() => setIsBooting(false));
+
+        setApiSession(session);
+        try {
+          await refreshAppData();
+          if (!cancelled) setScreen("home");
+        } catch {
+          // 데이터 로딩이 실패해도 세션 자체는 함부로 지우지 않는다.
+          // 액세스 토큰 만료 시 request()가 자동 갱신하며, 갱신까지 실패하면 세션이 비워진다.
+          // 따라서 세션이 남아 있으면(일시적 네트워크/서버 오류) 로그인 상태를 유지하고 홈으로 진입한다.
+          if (!cancelled) setScreen(getApiSession()?.accessToken ? "home" : "onboarding");
+        }
+      } catch {
+        if (!cancelled) setScreen("onboarding");
+      } finally {
+        if (!cancelled) setIsBooting(false);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const refreshAppData = async () => {
+    const now = new Date();
+    const currentMonth = { year: now.getFullYear(), month: now.getMonth() + 1 };
     const [nextProfile, nextPods, nextStats, nextNotifications] = await Promise.all([
       fetchProfile(),
       fetchPods(),
-      fetchStats(),
+      fetchStats(currentMonth.year, currentMonth.month),
       fetchNotifications()
     ]);
     setProfile(nextProfile);
     setPods(nextPods);
     setStats(nextStats);
+    setStatsMonth(currentMonth);
     setNotifications(nextNotifications);
     setSelectedPodId((current) => current ?? nextPods[0]?.id ?? null);
+  };
+
+  const loadStatsForMonth = async (year: number, month: number) => {
+    const nextStats = await fetchStats(year, month);
+    setStats(nextStats);
+    setStatsMonth({ year, month });
+  };
+
+  const shiftStatsMonth = (direction: -1 | 1) => {
+    const base = new Date(statsMonth.year, statsMonth.month - 1 + direction, 1);
+    return loadStatsForMonth(base.getFullYear(), base.getMonth() + 1);
   };
 
   const handleLogin = async (email: string, password: string) => {
@@ -98,8 +135,14 @@ export default function App() {
     setScreen("home");
   };
 
-  const handleSignUp = async (email: string, password: string) => {
-    await signUp(email, password);
+  const handleKakaoLogin = async (result: { accessToken: string; refreshToken?: string; expiresAt?: number }) => {
+    await kakaoLogin(result);
+    await refreshAppData();
+    setScreen("home");
+  };
+
+  const handleSignUp = async (email: string, password: string, name: string, handle: string) => {
+    await signUp(email, password, name, handle);
     await refreshAppData();
     setScreen("home");
   };
@@ -115,8 +158,16 @@ export default function App() {
   };
 
   const goHome = () => setScreen("home");
+  const handleTab = (tab: Tab) => {
+    if (tab === "pod" && !selectedPod) {
+      setScreen("podActions");
+      return;
+    }
+    setScreen(tabScreens[tab]);
+  };
   const openPod = (podId = pods[0]?.id) => {
     if (!podId) {
+      setScreen("podActions");
       return;
     }
     setSelectedPodId(podId);
@@ -168,12 +219,13 @@ export default function App() {
       <StatusBar style="dark" />
       <AnimatedScreen screenKey={screen}>
         {screen === "onboarding" && (
-          <Onboarding onStart={() => setScreen("signup")} onLogin={() => setScreen("login")} />
+          <Onboarding onStart={() => setScreen("login")} onLogin={() => setScreen("login")} />
         )}
         {screen === "login" && (
           <Login
             onBack={() => setScreen("onboarding")}
             onLogin={handleLogin}
+            onKakaoLogin={handleKakaoLogin}
             onOpenSignUp={() => setScreen("signup")}
           />
         )}
@@ -190,10 +242,11 @@ export default function App() {
             pods={pods}
             stats={stats}
             onOpenNotifications={() => setScreen("notifications")}
+            onOpenProfile={() => setScreen("profile")}
             onOpenPod={openPod}
             onUpload={() => setScreen("upload")}
             onAddPod={() => setScreen("podActions")}
-            onTab={(tab) => setScreen(tabScreens[tab])}
+            onTab={handleTab}
           />
         )}
         {screen === "pod" && selectedPod && (
@@ -206,10 +259,18 @@ export default function App() {
             onPreviousPod={() => selectAdjacentPod(-1)}
             onSelectPod={setSelectedPodId}
             onUpload={() => setScreen("upload")}
+            onChanged={refreshAppData}
           />
         )}
         {screen === "upload" && <Upload pod={selectedPod} onClose={goHome} onSubmit={handleUpload} />}
-        {screen === "stats" && <Stats stats={stats} onTab={(tab) => setScreen(tabScreens[tab])} />}
+        {screen === "stats" && (
+          <Stats
+            stats={stats}
+            onTab={handleTab}
+            onPreviousMonth={() => shiftStatsMonth(-1)}
+            onNextMonth={() => shiftStatsMonth(1)}
+          />
+        )}
         {screen === "profile" && (
           <Profile
             profile={profile}
@@ -217,7 +278,7 @@ export default function App() {
             onEdit={() => setScreen("editProfile")}
             onManage={() => setScreen("managePods")}
             onLogout={handleLogout}
-            onTab={(tab) => setScreen(tabScreens[tab])}
+            onTab={handleTab}
           />
         )}
         {screen === "notifications" && (

@@ -1,4 +1,4 @@
-import { Pressable, ScrollView, Text, View } from "react-native";
+import { Alert, Pressable, ScrollView, Text, View } from "react-native";
 import type { Pod } from "../../api";
 import { styles } from "../../styles";
 import { TopBar } from "../../components";
@@ -14,6 +14,17 @@ export function PodManagement({
   onOpenPod: (podId: string) => void;
   onLeavePod: (podId: string) => void;
 }) {
+  const confirmLeave = (pod: Pod) => {
+    Alert.alert(
+      "팟 나가기",
+      `'${pod.name}' 팟에서 나가시겠습니까?`,
+      [
+        { text: "취소", style: "cancel" },
+        { text: "나가기", style: "destructive", onPress: () => onLeavePod(pod.id) }
+      ]
+    );
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.screen}>
       <TopBar title="참여 팟 관리" left="‹" onLeft={onBack} />
@@ -34,7 +45,7 @@ export function PodManagement({
             <Pressable style={styles.softButton} onPress={() => onOpenPod(pod.id)}>
               <Text style={styles.softButtonText}>상세 보기</Text>
             </Pressable>
-            <Pressable onPress={() => onLeavePod(pod.id)}>
+            <Pressable onPress={() => confirmLeave(pod)}>
               <Text style={styles.manageDangerText}>나가기</Text>
             </Pressable>
           </View>
