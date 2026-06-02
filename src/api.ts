@@ -106,6 +106,11 @@ export type MediaUploadResponse = {
   expiresInSeconds: number;
 };
 
+export type EmailVerificationResponse = {
+  verified: boolean;
+  expires_at: number;
+};
+
 type AuthResponse = {
   access_token: string;
   refresh_token?: string;
@@ -153,6 +158,19 @@ export async function signUp(email: string, password: string, name: string, hand
   await saveSession(session);
   return session;
 }
+
+export const sendEmailVerificationCode = (email: string) =>
+  request<EmailVerificationResponse>("/api/auth/email/send-code", {
+    method: "POST",
+    body: JSON.stringify({ email, purpose: "signup" }),
+    skipAuth: true
+  });
+export const verifyEmailCode = (email: string, code: string) =>
+  request<EmailVerificationResponse>("/api/auth/email/verify", {
+    method: "POST",
+    body: JSON.stringify({ email, code, purpose: "signup" }),
+    skipAuth: true
+  });
 
 export async function kakaoLogin(tokens: { accessToken: string; refreshToken?: string; expiresAt?: number }) {
   const session: Session = {

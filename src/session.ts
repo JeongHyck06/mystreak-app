@@ -37,28 +37,29 @@ export async function clearSession() {
 
 async function getStoredSession() {
   try {
-    return await AsyncStorage.getItem(SESSION_KEY);
+    const asyncStorageSession = await AsyncStorage.getItem(SESSION_KEY);
+    if (asyncStorageSession) {
+      return asyncStorageSession;
+    }
   } catch {
-    return browserStorage.localStorage?.getItem(SESSION_KEY) ?? memorySession;
   }
+  return browserStorage.localStorage?.getItem(SESSION_KEY) ?? memorySession;
 }
 
 async function setStoredSession(value: string) {
   memorySession = value;
   try {
     await AsyncStorage.setItem(SESSION_KEY, value);
-    return;
   } catch {
-    browserStorage.localStorage?.setItem(SESSION_KEY, value);
   }
+  browserStorage.localStorage?.setItem(SESSION_KEY, value);
 }
 
 async function removeStoredSession() {
   memorySession = null;
   try {
     await AsyncStorage.removeItem(SESSION_KEY);
-    return;
   } catch {
-    browserStorage.localStorage?.removeItem(SESSION_KEY);
   }
+  browserStorage.localStorage?.removeItem(SESSION_KEY);
 }

@@ -220,6 +220,50 @@ export const styles = StyleSheet.create({
     fontWeight: "800",
     paddingVertical: 0
   },
+  verificationRow: {
+    flexDirection: "row",
+    gap: 10,
+    alignItems: "center"
+  },
+  verificationInput: {
+    flex: 1,
+    minHeight: 52,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: "rgba(255,255,255,0.48)",
+    paddingHorizontal: 16,
+    color: colors.text,
+    fontSize: 15,
+    fontWeight: "800"
+  },
+  verificationButton: {
+    minHeight: 52,
+    borderRadius: 14,
+    backgroundColor: colors.primaryLight,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 14
+  },
+  verificationButtonText: {
+    color: colors.accent,
+    fontSize: 13,
+    fontWeight: "900"
+  },
+  verificationConfirmButton: {
+    minHeight: 48,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: colors.surface,
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  verificationConfirmText: {
+    color: colors.text,
+    fontSize: 14,
+    fontWeight: "900"
+  },
   divider: {
     flexDirection: "row",
     alignItems: "center",
