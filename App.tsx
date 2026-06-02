@@ -27,7 +27,7 @@ import {
   type Stats as StatsData
 } from "./src/api";
 import { AnimatedScreen } from "./src/components";
-import { tabScreens, type Screen } from "./src/navigation";
+import { tabScreens, type Screen, type Tab } from "./src/navigation";
 import {
   CreatePod,
   EditProfile,
@@ -158,8 +158,16 @@ export default function App() {
   };
 
   const goHome = () => setScreen("home");
+  const handleTab = (tab: Tab) => {
+    if (tab === "pod" && !selectedPod) {
+      setScreen("podActions");
+      return;
+    }
+    setScreen(tabScreens[tab]);
+  };
   const openPod = (podId = pods[0]?.id) => {
     if (!podId) {
+      setScreen("podActions");
       return;
     }
     setSelectedPodId(podId);
@@ -211,7 +219,7 @@ export default function App() {
       <StatusBar style="dark" />
       <AnimatedScreen screenKey={screen}>
         {screen === "onboarding" && (
-          <Onboarding onStart={() => setScreen("signup")} onLogin={() => setScreen("login")} />
+          <Onboarding onStart={() => setScreen("login")} onLogin={() => setScreen("login")} />
         )}
         {screen === "login" && (
           <Login
@@ -238,7 +246,7 @@ export default function App() {
             onOpenPod={openPod}
             onUpload={() => setScreen("upload")}
             onAddPod={() => setScreen("podActions")}
-            onTab={(tab) => setScreen(tabScreens[tab])}
+            onTab={handleTab}
           />
         )}
         {screen === "pod" && selectedPod && (
@@ -258,7 +266,7 @@ export default function App() {
         {screen === "stats" && (
           <Stats
             stats={stats}
-            onTab={(tab) => setScreen(tabScreens[tab])}
+            onTab={handleTab}
             onPreviousMonth={() => shiftStatsMonth(-1)}
             onNextMonth={() => shiftStatsMonth(1)}
           />
@@ -270,7 +278,7 @@ export default function App() {
             onEdit={() => setScreen("editProfile")}
             onManage={() => setScreen("managePods")}
             onLogout={handleLogout}
-            onTab={(tab) => setScreen(tabScreens[tab])}
+            onTab={handleTab}
           />
         )}
         {screen === "notifications" && (

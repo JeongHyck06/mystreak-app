@@ -73,7 +73,7 @@ export function EditProfile({
         </View>
         <View style={styles.settingRow}>
           <Text style={styles.cardTitle}>연결된 계정</Text>
-          <Text style={styles.cardTitle}>Apple</Text>
+          <Text style={styles.cardTitle}>{profile?.email ? "이메일" : "확인 중"}</Text>
         </View>
       </View>
       <PrimaryButton label={isSaving ? "저장 중..." : "프로필 저장하기"} onPress={save} />
