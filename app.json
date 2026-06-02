@@ -13,18 +13,29 @@
       "supportsTablet": false,
       "infoPlist": {
         "NSCameraUsageDescription": "인증 사진을 촬영하기 위해 카메라 권한이 필요합니다.",
-        "NSPhotoLibraryUsageDescription": "인증 사진과 동영상을 선택하기 위해 사진 보관함 권한이 필요합니다."
-      }
+        "NSPhotoLibraryUsageDescription": "인증 사진과 동영상을 선택하기 위해 사진 보관함 권한이 필요합니다.",
+        "ITSAppUsesNonExemptEncryption": false
+      },
+      "bundleIdentifier": "com.wjdgur050700.mystreak"
     },
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#f5faf5"
-      }
+      },
+      "package": "com.wjdgur050700.mystreak",
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "plugins": [
       "expo-status-bar",
       "expo-web-browser",
       "expo-image-picker"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "a7be7bfe-8ed8-4695-9285-ee36c274f2a3"
+      }
+    }
   }
 }
