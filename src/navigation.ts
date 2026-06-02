@@ -17,6 +17,8 @@ export type Screen =
 
 export type Tab = "home" | "pod" | "stats" | "profile";
 
+export const tabOrder: Tab[] = ["home", "pod", "stats", "profile"];
+
 export const tabScreens: Record<Tab, Screen> = {
   home: "home",
   pod: "pod",

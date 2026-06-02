@@ -27,7 +27,7 @@ import {
   type Stats as StatsData
 } from "./src/api";
 import { AnimatedScreen } from "./src/components";
-import { tabScreens, type Screen, type Tab } from "./src/navigation";
+import { tabOrder, tabScreens, type Screen, type Tab } from "./src/navigation";
 import {
   CreatePod,
   EditProfile,
@@ -49,6 +49,7 @@ import { styles } from "./src/styles";
 
 export default function App() {
   const [screen, setScreen] = useState<Screen>("onboarding");
+  const [tabSlideDirection, setTabSlideDirection] = useState<-1 | 0 | 1>(0);
   const [isBooting, setIsBooting] = useState(true);
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [pods, setPods] = useState<Pod[]>([]);
@@ -159,6 +160,11 @@ export default function App() {
 
   const goHome = () => setScreen("home");
   const handleTab = (tab: Tab) => {
+    const currentTab = tabOrder.find((item) => tabScreens[item] === screen);
+    const currentIndex = currentTab ? tabOrder.indexOf(currentTab) : -1;
+    const nextIndex = tabOrder.indexOf(tab);
+    setTabSlideDirection(currentIndex >= 0 && nextIndex !== currentIndex ? (nextIndex > currentIndex ? 1 : -1) : 0);
+
     if (tab === "pod" && !selectedPod) {
       setScreen("podActions");
       return;
@@ -217,7 +223,7 @@ export default function App() {
   return (
     <SafeAreaView style={styles.safe}>
       <StatusBar style="dark" />
-      <AnimatedScreen screenKey={screen}>
+      <AnimatedScreen screenKey={screen} tabSlideDirection={tabSlideDirection}>
         {screen === "onboarding" && (
           <Onboarding onStart={() => setScreen("login")} onLogin={() => setScreen("login")} />
         )}
