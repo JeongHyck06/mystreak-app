@@ -91,6 +91,20 @@ export type AppNotification = {
   read: boolean;
 };
 
+export type MediaUploadRequest = {
+  fileName: string;
+  contentType: string;
+  mediaType: "IMAGE" | "VIDEO";
+  durationSeconds?: number;
+};
+
+export type MediaUploadResponse = {
+  uploadUrl: string;
+  mediaUrl: string;
+  objectKey: string;
+  expiresInSeconds: number;
+};
+
 type AuthResponse = {
   access_token: string;
   refresh_token?: string;
@@ -197,6 +211,26 @@ export const addComment = (checkInId: string, text: string) =>
     method: "POST",
     body: JSON.stringify({ text })
   });
+export const createMediaUpload = (upload: MediaUploadRequest) =>
+  request<MediaUploadResponse>("/api/media/uploads", {
+    method: "POST",
+    body: JSON.stringify(upload)
+  });
+export const uploadMediaToS3 = async (uploadUrl: string, uri: string, contentType: string) => {
+  const media = await fetch(uri);
+  const blob = await media.blob();
+  const response = await fetch(uploadUrl, {
+    method: "PUT",
+    headers: {
+      "Content-Type": contentType
+    },
+    body: blob
+  });
+
+  if (!response.ok) {
+    throw new Error(`미디어 업로드에 실패했습니다. (${response.status})`);
+  }
+};
 export const createCheckIn = (podId: string, text: string, mediaUrl?: string | null) =>
   request<CheckIn>(`/api/pods/${encodeURIComponent(podId)}/check-ins`, {
     method: "POST",
