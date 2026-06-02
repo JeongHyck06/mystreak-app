@@ -763,6 +763,52 @@ export const styles = StyleSheet.create({
     padding: 14,
     justifyContent: "space-between"
   },
+  uploadPreviewImage: {
+    flex: 1,
+    width: "100%",
+    borderRadius: 18
+  },
+  uploadEmpty: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 22,
+    gap: 8
+  },
+  uploadEmptyTitle: {
+    color: colors.text,
+    fontSize: 18,
+    fontWeight: "900",
+    textAlign: "center"
+  },
+  uploadEmptyCaption: {
+    color: colors.secondaryText,
+    fontSize: 13,
+    fontWeight: "700",
+    lineHeight: 19,
+    textAlign: "center"
+  },
+  uploadVideoPreview: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8
+  },
+  uploadVideoIcon: {
+    color: colors.accent,
+    fontSize: 42,
+    fontWeight: "900"
+  },
+  uploadVideoTitle: {
+    color: colors.text,
+    fontSize: 18,
+    fontWeight: "900"
+  },
+  uploadVideoCaption: {
+    color: colors.secondaryText,
+    fontSize: 13,
+    fontWeight: "800"
+  },
   uploadChip: {
     alignSelf: "flex-start",
     borderRadius: 16,
@@ -792,6 +838,9 @@ export const styles = StyleSheet.create({
     backgroundColor: "#f1f7f1",
     borderRadius: 14,
     padding: 4
+  },
+  uploadTabButton: {
+    flex: 1
   },
   uploadTabActive: {
     flex: 1,

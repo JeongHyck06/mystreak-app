@@ -91,6 +91,20 @@ export type AppNotification = {
   read: boolean;
 };
 
+export type MediaUploadRequest = {
+  fileName: string;
+  contentType: string;
+  mediaType: "IMAGE" | "VIDEO";
+  durationSeconds?: number;
+};
+
+export type MediaUploadResponse = {
+  uploadUrl: string;
+  mediaUrl: string;
+  objectKey: string;
+  expiresInSeconds: number;
+};
+
 type AuthResponse = {
   access_token: string;
   refresh_token?: string;
@@ -152,8 +166,14 @@ export async function kakaoLogin(tokens: { accessToken: string; refreshToken?: s
 
 export async function logout() {
   try {
-    await request<void>("/api/auth/logout", { method: "POST" });
-  } finally {
+    await request<void>("/api/auth/logout", {
+      method: "POST",
+      retryOnUnauthorized: false
+    });
+  } catch {
+    // 로그아웃은 서버 세션 정리에 실패해도 로컬 세션과 화면 상태를 반드시 비운다.
+  }
+  finally {
     setApiSession(null);
     await clearSession();
   }
@@ -191,6 +211,26 @@ export const addComment = (checkInId: string, text: string) =>
     method: "POST",
     body: JSON.stringify({ text })
   });
+export const createMediaUpload = (upload: MediaUploadRequest) =>
+  request<MediaUploadResponse>("/api/media/uploads", {
+    method: "POST",
+    body: JSON.stringify(upload)
+  });
+export const uploadMediaToS3 = async (uploadUrl: string, uri: string, contentType: string) => {
+  const media = await fetch(uri);
+  const blob = await media.blob();
+  const response = await fetch(uploadUrl, {
+    method: "PUT",
+    headers: {
+      "Content-Type": contentType
+    },
+    body: blob
+  });
+
+  if (!response.ok) {
+    throw new Error(`미디어 업로드에 실패했습니다. (${response.status})`);
+  }
+};
 export const createCheckIn = (podId: string, text: string, mediaUrl?: string | null) =>
   request<CheckIn>(`/api/pods/${encodeURIComponent(podId)}/check-ins`, {
     method: "POST",

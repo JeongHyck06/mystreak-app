@@ -10,7 +10,11 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": false
+      "supportsTablet": false,
+      "infoPlist": {
+        "NSCameraUsageDescription": "인증 사진을 촬영하기 위해 카메라 권한이 필요합니다.",
+        "NSPhotoLibraryUsageDescription": "인증 사진과 동영상을 선택하기 위해 사진 보관함 권한이 필요합니다."
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -19,7 +23,8 @@
     },
     "plugins": [
       "expo-status-bar",
-      "expo-web-browser"
+      "expo-web-browser",
+      "expo-image-picker"
     ]
   }
 }
