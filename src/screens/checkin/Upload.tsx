@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import * as ImagePicker from "expo-image-picker";
-import { Image, Pressable, ScrollView, Text, TextInput, View } from "react-native";
+import { Image, KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, TextInput, View } from "react-native";
 import { createMediaUpload, uploadMediaToS3, type Pod } from "../../api";
 import { PrimaryButton, TopBar } from "../../components";
 import { styles } from "../../styles";
@@ -28,6 +28,7 @@ export function Upload({
   const [error, setError] = useState("");
   const [selectedMedia, setSelectedMedia] = useState<SelectedMedia | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const scrollRef = useRef<ScrollView | null>(null);
 
   const submit = async () => {
     if (isSubmitting) {
@@ -147,58 +148,71 @@ export function Upload({
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.screen}>
-      <TopBar title="오늘의 인증" left="×" right="올리기" onLeft={onClose} onRight={submit} />
-      <View style={styles.uploadBox}>
-        <View style={styles.uploadChip}>
-          <Text style={styles.uploadChipText}>{pod?.name ?? "팟 선택 필요"}</Text>
-        </View>
-        {selectedMedia ? (
-          selectedMedia.mediaType === "IMAGE" ? (
-            <Image source={{ uri: selectedMedia.uri }} style={styles.uploadPreviewImage} />
-          ) : (
-            <View style={styles.uploadVideoPreview}>
-              <Text style={styles.uploadVideoIcon}>▶</Text>
-              <Text style={styles.uploadVideoTitle}>동영상 선택 완료</Text>
-              <Text style={styles.uploadVideoCaption}>{selectedMedia.durationSeconds}초 / 최대 10초</Text>
-            </View>
-          )
-        ) : (
-          <View style={styles.uploadEmpty}>
-            <Text style={styles.uploadEmptyTitle}>오늘의 인증 미디어를 추가해 주세요</Text>
-            <Text style={styles.uploadEmptyCaption}>사진 업로드, 카메라 촬영, 10초 이내 동영상을 지원해요.</Text>
+    <KeyboardAvoidingView
+      style={styles.flex}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+      keyboardVerticalOffset={12}
+    >
+      <ScrollView
+        ref={scrollRef}
+        contentContainerStyle={styles.uploadScreen}
+        keyboardDismissMode="interactive"
+        keyboardShouldPersistTaps="handled"
+        automaticallyAdjustKeyboardInsets
+      >
+        <TopBar title="오늘의 인증" left="×" right="올리기" onLeft={onClose} onRight={submit} />
+        <View style={styles.uploadBox}>
+          <View style={styles.uploadChip}>
+            <Text style={styles.uploadChipText}>{pod?.name ?? "팟 선택 필요"}</Text>
           </View>
-        )}
-        <Pressable style={styles.cropButton} onPress={selectedMedia?.mediaType === "VIDEO" ? pickVideo : pickImage}>
-          <Text style={styles.cropButtonText}>{selectedMedia ? "다시 선택하기" : "사진 선택하기"}</Text>
-        </Pressable>
-      </View>
-      <View style={styles.uploadTabs}>
-        <Pressable style={styles.uploadTabButton} onPress={pickImage}>
-          <Text style={selectedMedia?.mediaType === "IMAGE" ? styles.uploadTabActive : styles.uploadTab}>사진</Text>
-        </Pressable>
-        <Pressable style={styles.uploadTabButton} onPress={takePhoto}>
-          <Text style={styles.uploadTab}>카메라</Text>
-        </Pressable>
-        <Pressable style={styles.uploadTabButton} onPress={pickVideo}>
-          <Text style={selectedMedia?.mediaType === "VIDEO" ? styles.uploadTabActive : styles.uploadTab}>동영상</Text>
-        </Pressable>
-      </View>
-      <View style={styles.rowBetween}>
-        <Text style={styles.cardTitle}>한 줄 메모</Text>
-        <Text style={styles.caption}>{text.length} / 60</Text>
-      </View>
-      <TextInput
-        multiline
-        value={text}
-        onChangeText={setText}
-        placeholder="오늘의 인증 메모를 입력하세요"
-        style={styles.memoInput}
-      />
-      {error ? <Text style={styles.caption}>{error}</Text> : null}
-      <PrimaryButton label={isSubmitting ? "업로드 중..." : "인증 및 스트릭 이어가기"} onPress={submit} />
-      <Text style={styles.centerCaption}>업로드 시 팟 멤버가 확인해요!</Text>
-    </ScrollView>
+          {selectedMedia ? (
+            selectedMedia.mediaType === "IMAGE" ? (
+              <Image source={{ uri: selectedMedia.uri }} style={styles.uploadPreviewImage} />
+            ) : (
+              <View style={styles.uploadVideoPreview}>
+                <Text style={styles.uploadVideoIcon}>▶</Text>
+                <Text style={styles.uploadVideoTitle}>동영상 선택 완료</Text>
+                <Text style={styles.uploadVideoCaption}>{selectedMedia.durationSeconds}초 / 최대 10초</Text>
+              </View>
+            )
+          ) : (
+            <View style={styles.uploadEmpty}>
+              <Text style={styles.uploadEmptyTitle}>오늘의 인증 미디어를 추가해 주세요</Text>
+              <Text style={styles.uploadEmptyCaption}>사진 업로드, 카메라 촬영, 10초 이내 동영상을 지원해요.</Text>
+            </View>
+          )}
+          <Pressable style={styles.cropButton} onPress={selectedMedia?.mediaType === "VIDEO" ? pickVideo : pickImage}>
+            <Text style={styles.cropButtonText}>{selectedMedia ? "다시 선택하기" : "사진 선택하기"}</Text>
+          </Pressable>
+        </View>
+        <View style={styles.uploadTabs}>
+          <Pressable style={styles.uploadTabButton} onPress={pickImage}>
+            <Text style={selectedMedia?.mediaType === "IMAGE" ? styles.uploadTabActive : styles.uploadTab}>사진</Text>
+          </Pressable>
+          <Pressable style={styles.uploadTabButton} onPress={takePhoto}>
+            <Text style={styles.uploadTab}>카메라</Text>
+          </Pressable>
+          <Pressable style={styles.uploadTabButton} onPress={pickVideo}>
+            <Text style={selectedMedia?.mediaType === "VIDEO" ? styles.uploadTabActive : styles.uploadTab}>동영상</Text>
+          </Pressable>
+        </View>
+        <View style={styles.rowBetween}>
+          <Text style={styles.cardTitle}>한 줄 메모</Text>
+          <Text style={styles.caption}>{text.length} / 60</Text>
+        </View>
+        <TextInput
+          multiline
+          value={text}
+          onChangeText={setText}
+          onFocus={() => setTimeout(() => scrollRef.current?.scrollToEnd({ animated: true }), 120)}
+          placeholder="오늘의 인증 메모를 입력하세요"
+          style={styles.memoInput}
+        />
+        {error ? <Text style={styles.caption}>{error}</Text> : null}
+        <PrimaryButton label={isSubmitting ? "업로드 중..." : "인증 및 스트릭 이어가기"} onPress={submit} />
+        <Text style={styles.centerCaption}>업로드 시 팟 멤버가 확인해요!</Text>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
