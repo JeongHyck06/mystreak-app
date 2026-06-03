@@ -1,28 +1,38 @@
 {
-  "cli": {
-    "version": ">= 16.28.0",
-    "appVersionSource": "remote"
-  },
-  "build": {
-    "development": {
-      "developmentClient": true,
-      "distribution": "internal"
+    "cli": {
+        "version": ">= 16.28.0",
+        "appVersionSource": "remote"
     },
-    "preview": {
-      "distribution": "internal",
-      "android": {
-        "buildType": "apk"
-      },
-      "env": {
-        "EXPO_PUBLIC_API_URL": "https://mystreak.duckdns.org",
-        "EXPO_PUBLIC_KAKAO_REST_API_KEY": "bec33e8bebad414b9753cf671aa6ddb0"
-      }
+    "build": {
+        "development": {
+            "developmentClient": true,
+            "distribution": "internal"
+        },
+        "preview": {
+            "distribution": "internal",
+            "android": {
+                "buildType": "apk"
+            },
+            "ios": {
+                "image": "macos-sequoia-15.6-xcode-16.4"
+            },
+            "env": {
+                "EXPO_PUBLIC_API_URL": "https://mystreak.duckdns.org",
+                "EXPO_PUBLIC_KAKAO_REST_API_KEY": "bec33e8bebad414b9753cf671aa6ddb0"
+            }
+        },
+        "production": {
+            "autoIncrement": true,
+            "ios": {
+                "image": "macos-sequoia-15.6-xcode-16.4"
+            },
+            "env": {
+                "EXPO_PUBLIC_API_URL": "https://mystreak.duckdns.org",
+                "EXPO_PUBLIC_KAKAO_REST_API_KEY": "bec33e8bebad414b9753cf671aa6ddb0"
+            }
+        }
     },
-    "production": {
-      "autoIncrement": true
+    "submit": {
+        "production": {}
     }
-  },
-  "submit": {
-    "production": {}
-  }
 }

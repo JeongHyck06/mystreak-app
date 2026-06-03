@@ -31,6 +31,7 @@ export function Home({
   const remainingBest = Math.max(bestStreak - currentStreak, 0);
   const weeklyGoal = stats?.weeklyGoal || 7;
   const weeklyChecks = stats?.weeklyChecks ?? 0;
+  const activePods = pods.length;
   const progress = weeklyGoal > 0 ? Math.min(weeklyChecks / weeklyGoal, 1) : 0;
 
   return (
@@ -66,7 +67,7 @@ export function Home({
         <View style={styles.statsRow}>
           <StatCard label="이번 주 인증" value={`${weeklyChecks}`} unit={`/ ${weeklyGoal}일`} />
           <StatCard label="누적 인증" value={`${stats?.totalChecks ?? profile?.totalChecks ?? 0}`} unit="회" />
-          <StatCard label="참여 팟" value={`${stats?.activePods ?? pods.length}`} unit="개 활동 중" />
+          <StatCard label="참여 팟" value={`${activePods}`} unit="개 활동 중" />
         </View>
         <SectionHeader title="현재 참여중인 팟" action="전체 보기" onAction={() => onTab("pod")} />
         {pods.length > 0 ? (
