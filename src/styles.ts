@@ -525,6 +525,7 @@ export const styles = StyleSheet.create({
     backgroundColor: colors.accent,
     alignItems: "center",
     justifyContent: "center",
+    zIndex: 20,
     ...shadow
   },
   fabText: {
@@ -544,12 +545,17 @@ export const styles = StyleSheet.create({
     backgroundColor: colors.surface,
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-around"
+    justifyContent: "space-around",
+    zIndex: 30,
+    elevation: 10
   },
   tabItem: {
     flex: 1,
+    height: "100%",
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
+    paddingTop: 8,
+    paddingBottom: 14
   },
   tabText: {
     color: colors.secondaryText,

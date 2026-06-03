@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Image, Pressable, ScrollView, Text, TextInput, View } from "react-native";
+import { Image, KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, TextInput, View } from "react-native";
 import { PrimaryButton, TopBar } from "../../components";
 import {
   addComment,
@@ -152,8 +152,13 @@ export function PodDetail({
     });
 
   return (
-    <ScrollView contentContainerStyle={styles.screen}>
-      <TopBar title={pod.name} left="‹" right="…" onLeft={onBack} onRight={onInvite} />
+    <KeyboardAvoidingView
+      style={styles.flex}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+      keyboardVerticalOffset={12}
+    >
+      <ScrollView contentContainerStyle={styles.screen} keyboardShouldPersistTaps="handled">
+        <TopBar title={pod.name} left="‹" right="…" onLeft={onBack} onRight={onInvite} />
       <View style={styles.podHero}>
         <View style={styles.podSwitcher}>
           <Pressable style={styles.podSwitchArrow} onPress={onPreviousPod}>
@@ -371,7 +376,8 @@ export function PodDetail({
           <Text style={styles.doneButtonText}>✓ 오늘 인증 완료</Text>
         </View>
       )}
-    </ScrollView>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
