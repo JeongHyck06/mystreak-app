@@ -20,6 +20,13 @@ export const styles = StyleSheet.create({
     backgroundColor: colors.background,
     gap: 14
   },
+  uploadScreen: {
+    paddingHorizontal: 20,
+    paddingTop: 22,
+    paddingBottom: 160,
+    backgroundColor: colors.background,
+    gap: 14
+  },
   editScreen: {
     paddingBottom: 28,
     backgroundColor: colors.background,
@@ -685,6 +692,15 @@ export const styles = StyleSheet.create({
     width: "100%",
     height: 240,
     borderRadius: 18
+  },
+  feedMediaFallback: {
+    height: 240,
+    borderRadius: 18,
+    backgroundColor: colors.primaryLight,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 18,
+    gap: 8
   },
   feedVideoPreview: {
     height: 240,
