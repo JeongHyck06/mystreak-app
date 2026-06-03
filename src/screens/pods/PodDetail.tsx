@@ -50,6 +50,7 @@ export function PodDetail({
   const [openCommentsId, setOpenCommentsId] = useState<string | null>(null);
   const [comments, setComments] = useState<Record<string, CheckInComment[]>>({});
   const [commentDraft, setCommentDraft] = useState("");
+  const [failedMediaIds, setFailedMediaIds] = useState<Record<string, boolean>>({});
 
   const loadPodData = async () => {
     const [nextFeed, nextMembers] = await Promise.all([fetchPodFeed(pod.id), fetchPodMembers(pod.id)]);
@@ -271,8 +272,18 @@ export function PodDetail({
                     <Text style={styles.feedVideoIcon}>▶</Text>
                     <Text style={styles.feedVideoText}>동영상 인증</Text>
                   </View>
+                ) : failedMediaIds[item.id] ? (
+                  <View style={styles.feedMediaFallback}>
+                    <Text style={styles.feedVideoText}>이미지를 불러오지 못했어요</Text>
+                    <Text style={styles.caption}>S3 공개 읽기 권한이나 네트워크 상태를 확인해 주세요.</Text>
+                  </View>
                 ) : (
-                  <Image source={{ uri: item.mediaUrl }} style={styles.feedMediaImage} />
+                  <Image
+                    source={{ uri: item.mediaUrl }}
+                    style={styles.feedMediaImage}
+                    resizeMode="cover"
+                    onError={() => setFailedMediaIds((current) => ({ ...current, [item.id]: true }))}
+                  />
                 )
               ) : (
                 <View style={styles.photoPlaceholder} />
