@@ -1,6 +1,6 @@
 import { StatusBar } from "expo-status-bar";
-import { useEffect, useMemo, useState } from "react";
-import { SafeAreaView, Text } from "react-native";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { AppState, SafeAreaView, Text } from "react-native";
 import {
   createCheckIn,
   createPod,
@@ -55,6 +55,7 @@ export default function App() {
   const [pods, setPods] = useState<Pod[]>([]);
   const [stats, setStats] = useState<StatsData | null>(null);
   const [notifications, setNotifications] = useState<AppNotification[]>([]);
+  const lastForegroundRefreshAt = useRef(0);
   const [statsMonth, setStatsMonth] = useState(() => {
     const now = new Date();
     return { year: now.getFullYear(), month: now.getMonth() + 1 };
@@ -100,6 +101,25 @@ export default function App() {
     return () => {
       cancelled = true;
     };
+  }, []);
+
+  useEffect(() => {
+    const subscription = AppState.addEventListener("change", (state) => {
+      if (state !== "active" || !getApiSession()?.accessToken) {
+        return;
+      }
+
+      const now = Date.now();
+      if (now - lastForegroundRefreshAt.current < 5000) {
+        return;
+      }
+      lastForegroundRefreshAt.current = now;
+      void refreshAppData().catch(() => {
+        // 포그라운드 복귀 갱신 실패는 기존 화면 상태를 유지한다.
+      });
+    });
+
+    return () => subscription.remove();
   }, []);
 
   const refreshAppData = async () => {

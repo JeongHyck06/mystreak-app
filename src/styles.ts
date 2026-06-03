@@ -681,6 +681,29 @@ export const styles = StyleSheet.create({
     borderRadius: 18,
     backgroundColor: colors.secondary
   },
+  feedMediaImage: {
+    width: "100%",
+    height: 240,
+    borderRadius: 18
+  },
+  feedVideoPreview: {
+    height: 240,
+    borderRadius: 18,
+    backgroundColor: colors.primaryLight,
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8
+  },
+  feedVideoIcon: {
+    color: colors.accent,
+    fontSize: 38,
+    fontWeight: "900"
+  },
+  feedVideoText: {
+    color: colors.text,
+    fontSize: 15,
+    fontWeight: "900"
+  },
   feedActions: {
     flexDirection: "row",
     alignItems: "center",
