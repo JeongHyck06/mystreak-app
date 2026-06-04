@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Image, KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, TextInput, View } from "react-native";
+import { Fragment, useEffect, useMemo, useState } from "react";
+import { Image, KeyboardAvoidingView, PanResponder, Platform, Pressable, ScrollView, Text, TextInput, View } from "react-native";
 import { PrimaryButton, TopBar } from "../../components";
 import {
   addComment,
@@ -79,6 +79,22 @@ export function PodDetail({
   }, [pod.id]);
 
   const memberCount = members.length > 0 ? members.length : pod.memberCount;
+  const swipeResponder = useMemo(
+    () =>
+      PanResponder.create({
+        onMoveShouldSetPanResponder: (_, gesture) =>
+          Math.abs(gesture.dx) > 64 && Math.abs(gesture.dx) > Math.abs(gesture.dy) * 1.4,
+        onPanResponderRelease: (_, gesture) => {
+          if (gesture.dx < -64) {
+            onNextPod();
+          }
+          if (gesture.dx > 64) {
+            onPreviousPod();
+          }
+        }
+      }),
+    [onNextPod, onPreviousPod]
+  );
 
   const replaceItem = (next: CheckIn) =>
     setFeed((items) => items.map((item) => (item.id === next.id ? next : item)));
@@ -170,6 +186,7 @@ export function PodDetail({
       style={styles.flex}
       behavior={Platform.OS === "ios" ? "padding" : undefined}
       keyboardVerticalOffset={12}
+      {...swipeResponder.panHandlers}
     >
       <ScrollView contentContainerStyle={styles.screen} keyboardShouldPersistTaps="handled">
         <TopBar title={pod.name} left="‹" right="…" onLeft={onBack} onRight={onInvite} />
@@ -233,13 +250,26 @@ export function PodDetail({
       {error ? <Text style={[styles.caption, styles.helperDanger]}>{error}</Text> : null}
       {activeTab === "feed" ? (
         <>
-          {feed.length > 0 ? feed.map((item) => (
-            <View style={styles.feedCard} key={item.id}>
+          {feed.length > 0 ? feed.map((item, index) => {
+            const dateLabel = formatFeedDate(item.createdAt);
+            const previousDateLabel = index > 0 ? formatFeedDate(feed[index - 1]?.createdAt) : "";
+            const showDateDivider = dateLabel !== previousDateLabel;
+
+            return (
+            <Fragment key={item.id}>
+              {showDateDivider ? (
+                <View style={styles.feedDateDivider}>
+                  <View style={styles.feedDateLine} />
+                  <Text style={styles.feedDateText}>{dateLabel}</Text>
+                  <View style={styles.feedDateLine} />
+                </View>
+              ) : null}
+              <View style={styles.feedCard}>
               <View style={styles.feedHeader}>
                 <View style={styles.smallAvatar} />
                 <View style={styles.flex}>
                   <Text style={styles.cardTitle}>{item.author}</Text>
-                  <Text style={styles.caption}>{item.meta}</Text>
+                  <Text style={styles.caption}>{formatFeedMeta(item)}</Text>
                 </View>
                 {item.mine ? (
                   <View style={styles.ownerActions}>
@@ -348,8 +378,10 @@ export function PodDetail({
                   </View>
                 </View>
               ) : null}
-            </View>
-          )) : <Text style={styles.bodyCopy}>아직 올라온 인증이 없습니다.</Text>}
+              </View>
+            </Fragment>
+          );
+          }) : <Text style={styles.bodyCopy}>아직 올라온 인증이 없습니다.</Text>}
         </>
       ) : null}
       {activeTab === "members" ? <View style={styles.card}>
@@ -404,4 +436,52 @@ export function PodDetail({
 function isVideoMedia(url: string) {
   const path = url.split("?")[0].toLowerCase();
   return path.endsWith(".mp4") || path.endsWith(".mov") || path.endsWith(".qt");
+}
+
+function formatFeedMeta(item: CheckIn) {
+  const dateTime = formatFeedDateTime(item.createdAt);
+  if (!dateTime) {
+    return item.meta;
+  }
+  return item.meta ? `${item.meta} · ${dateTime}` : dateTime;
+}
+
+function formatFeedDate(value?: string | null) {
+  const date = parseFeedDate(value);
+  if (!date) {
+    return "날짜 없음";
+  }
+
+  const today = new Date();
+  if (date.toDateString() === today.toDateString()) {
+    return "오늘";
+  }
+
+  const yesterday = new Date(today);
+  yesterday.setDate(today.getDate() - 1);
+  if (date.toDateString() === yesterday.toDateString()) {
+    return "어제";
+  }
+
+  return `${date.getMonth() + 1}월 ${date.getDate()}일`;
+}
+
+function formatFeedDateTime(value?: string | null) {
+  const date = parseFeedDate(value);
+  if (!date) {
+    return "";
+  }
+
+  const hour = String(date.getHours()).padStart(2, "0");
+  const minute = String(date.getMinutes()).padStart(2, "0");
+  return `${date.getMonth() + 1}월 ${date.getDate()}일 ${hour}:${minute}`;
+}
+
+function parseFeedDate(value?: string | null) {
+  if (!value) {
+    return null;
+  }
+
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? null : date;
 }

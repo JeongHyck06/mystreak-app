@@ -665,6 +665,23 @@ export const styles = StyleSheet.create({
     padding: 16,
     gap: 14
   },
+  feedDateDivider: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    marginTop: 4,
+    marginBottom: -2
+  },
+  feedDateLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: colors.border
+  },
+  feedDateText: {
+    color: colors.secondaryText,
+    fontSize: 12,
+    fontWeight: "900"
+  },
   feedHeader: {
     flexDirection: "row",
     alignItems: "center",
