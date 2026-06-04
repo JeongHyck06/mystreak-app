@@ -139,6 +139,36 @@ export default function App() {
     setSelectedPodId((current) => current ?? nextPods[0]?.id ?? null);
   };
 
+  const refreshAppDataSilently = () => {
+    if (!getApiSession()?.accessToken) {
+      return;
+    }
+    void refreshAppData().catch(() => {
+      // 백그라운드 갱신 실패는 현재 화면을 그대로 유지한다.
+    });
+  };
+
+  useEffect(() => {
+    if (isBooting || !["home", "profile", "stats"].includes(screen)) {
+      return;
+    }
+    refreshAppDataSilently();
+  }, [isBooting, screen]);
+
+  useEffect(() => {
+    if (isBooting || !getApiSession()?.accessToken) {
+      return;
+    }
+
+    const interval = setInterval(() => {
+      if (["home", "profile", "stats", "pod"].includes(screen)) {
+        refreshAppDataSilently();
+      }
+    }, 15000);
+
+    return () => clearInterval(interval);
+  }, [isBooting, screen]);
+
   const loadStatsForMonth = async (year: number, month: number) => {
     const nextStats = await fetchStats(year, month);
     setStats(nextStats);
