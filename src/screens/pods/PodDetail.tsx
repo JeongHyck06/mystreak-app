@@ -98,9 +98,23 @@ export function PodDetail({
   };
   const handleCheck = (checkInId: string) =>
     runAction(async () => {
-      replaceItem(await reactToCheckIn(checkInId));
-      // 인증 체크는 글 작성자의 스트릭/팟 진행률을 바꾸므로 멤버 목록과 앱 전역 데이터를 다시 불러온다.
-      await Promise.all([loadPodData(), onChanged()]);
+      setFeed((items) =>
+        items.map((item) =>
+          item.id === checkInId
+            ? {
+                ...item,
+                checkedByMe: !item.checkedByMe,
+                checks: Math.max(0, item.checks + (item.checkedByMe ? -1 : 1))
+              }
+            : item
+        )
+      );
+      const next = await reactToCheckIn(checkInId);
+      replaceItem(next);
+      // 인증 체크는 글 작성자의 스트릭/팟 진행률을 바꾸므로 최신 데이터는 백그라운드로 동기화한다.
+      void Promise.all([loadPodData(), onChanged()]).catch((error) => {
+        setError(error instanceof Error ? error.message : "최신 인증 정보를 불러오지 못했습니다.");
+      });
     });
   const handleLike = (checkInId: string) =>
     runAction(async () => replaceItem(await likeCheckIn(checkInId)));
@@ -277,6 +291,12 @@ export function PodDetail({
               ) : (
                 <View style={styles.photoPlaceholder} />
               )}
+              {item.checks > 0 ? (
+                <View style={styles.verifiedCheckBadge}>
+                  <Text style={styles.verifiedCheckText}>✓ 인증 받았습니다</Text>
+                  <Text style={styles.verifiedCheckCaption}>{item.checks}명이 확인했어요</Text>
+                </View>
+              ) : null}
               <View style={styles.feedActions}>
                 {item.mine ? (
                   <View style={styles.mineBadge}>
