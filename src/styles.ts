@@ -20,6 +20,13 @@ export const styles = StyleSheet.create({
     backgroundColor: colors.background,
     gap: 14
   },
+  uploadScreen: {
+    paddingHorizontal: 20,
+    paddingTop: 22,
+    paddingBottom: 44,
+    backgroundColor: colors.background,
+    gap: 14
+  },
   editScreen: {
     paddingBottom: 28,
     backgroundColor: colors.background,
@@ -709,6 +716,26 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     gap: 18
   },
+  verifiedCheckBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    alignSelf: "flex-start",
+    gap: 8,
+    borderRadius: 16,
+    backgroundColor: colors.primaryLight,
+    paddingHorizontal: 12,
+    paddingVertical: 9
+  },
+  verifiedCheckText: {
+    color: colors.accent,
+    fontSize: 13,
+    fontWeight: "900"
+  },
+  verifiedCheckCaption: {
+    color: colors.secondaryText,
+    fontSize: 12,
+    fontWeight: "700"
+  },
   checkButton: {
     backgroundColor: colors.accent,
     borderRadius: 18,
@@ -830,16 +857,24 @@ export const styles = StyleSheet.create({
     gap: 6
   },
   uploadBox: {
-    height: 380,
+    minHeight: 360,
     backgroundColor: colors.primaryLight,
     borderRadius: 22,
     padding: 14,
-    justifyContent: "space-between"
+    gap: 12
+  },
+  uploadPreviewFrame: {
+    flex: 1,
+    minHeight: 238,
+    maxHeight: 278,
+    borderRadius: 18,
+    overflow: "hidden",
+    backgroundColor: colors.secondary
   },
   uploadPreviewImage: {
     flex: 1,
     width: "100%",
-    borderRadius: 18
+    height: "100%"
   },
   uploadEmpty: {
     flex: 1,
@@ -897,7 +932,7 @@ export const styles = StyleSheet.create({
   cropButton: {
     backgroundColor: colors.overlay,
     borderRadius: 18,
-    minHeight: 42,
+    minHeight: 48,
     alignItems: "center",
     justifyContent: "center"
   },
