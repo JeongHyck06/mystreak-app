@@ -184,6 +184,30 @@ export async function kakaoLogin(tokens: { accessToken: string; refreshToken?: s
   return session;
 }
 
+export async function googleLogin(idToken: string) {
+  const auth = await request<AuthResponse>("/api/auth/google", {
+    method: "POST",
+    body: JSON.stringify({ id_token: idToken }),
+    skipAuth: true
+  });
+  const session = toSession(auth);
+  setApiSession(session);
+  await saveSession(session);
+  return session;
+}
+
+export async function appleLogin(idToken: string, fullName?: string) {
+  const auth = await request<AuthResponse>("/api/auth/apple", {
+    method: "POST",
+    body: JSON.stringify({ id_token: idToken, full_name: fullName }),
+    skipAuth: true
+  });
+  const session = toSession(auth);
+  setApiSession(session);
+  await saveSession(session);
+  return session;
+}
+
 export async function logout() {
   try {
     await request<void>("/api/auth/logout", {
