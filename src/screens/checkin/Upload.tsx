@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import * as ImagePicker from "expo-image-picker";
 import { Image, KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, TextInput, View } from "react-native";
 import { createMediaUpload, uploadMediaToS3, type Pod } from "../../api";
@@ -28,7 +28,6 @@ export function Upload({
   const [error, setError] = useState("");
   const [selectedMedia, setSelectedMedia] = useState<SelectedMedia | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const scrollRef = useRef<ScrollView | null>(null);
 
   const submit = async () => {
     if (isSubmitting) {
@@ -154,7 +153,6 @@ export function Upload({
       keyboardVerticalOffset={12}
     >
       <ScrollView
-        ref={scrollRef}
         contentContainerStyle={styles.uploadScreen}
         keyboardDismissMode="interactive"
         keyboardShouldPersistTaps="handled"
@@ -167,7 +165,9 @@ export function Upload({
           </View>
           {selectedMedia ? (
             selectedMedia.mediaType === "IMAGE" ? (
-              <Image source={{ uri: selectedMedia.uri }} style={styles.uploadPreviewImage} />
+              <View style={styles.uploadPreviewFrame}>
+                <Image source={{ uri: selectedMedia.uri }} style={styles.uploadPreviewImage} />
+              </View>
             ) : (
               <View style={styles.uploadVideoPreview}>
                 <Text style={styles.uploadVideoIcon}>▶</Text>
@@ -204,7 +204,6 @@ export function Upload({
           multiline
           value={text}
           onChangeText={setText}
-          onFocus={() => setTimeout(() => scrollRef.current?.scrollToEnd({ animated: true }), 120)}
           placeholder="오늘의 인증 메모를 입력하세요"
           style={styles.memoInput}
         />

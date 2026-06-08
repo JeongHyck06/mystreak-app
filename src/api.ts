@@ -38,6 +38,7 @@ export type CheckIn = {
   authorId: string;
   author: string;
   meta: string;
+  createdAt?: string | null;
   text: string;
   mediaUrl?: string | null;
   likes: number;

@@ -1,10 +1,10 @@
-import { Pressable, ScrollView, Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 import { AnimatedWeekBar, PrimaryButton } from "../../components";
 import { styles } from "../../styles";
 
 export function Onboarding({ onStart, onLogin }: { onStart: () => void; onLogin: () => void }) {
   return (
-    <ScrollView contentContainerStyle={styles.onboarding}>
+    <View style={styles.onboarding}>
       <Text style={styles.brand}>My Streak</Text>
       <View style={styles.mockPhone}>
         <View style={styles.mockStatus}>
@@ -37,6 +37,6 @@ export function Onboarding({ onStart, onLogin }: { onStart: () => void; onLogin:
       <Pressable onPress={onLogin} style={styles.textButton}>
         <Text style={styles.secondaryText}>이미 계정이 있어요 · 로그인</Text>
       </Pressable>
-    </ScrollView>
+    </View>
   );
 }
