@@ -1,6 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { AppState, SafeAreaView, Text } from "react-native";
+import { AppState, Text, View } from "react-native";
 import {
   createCheckIn,
   createPod,
@@ -139,6 +139,36 @@ export default function App() {
     setSelectedPodId((current) => current ?? nextPods[0]?.id ?? null);
   };
 
+  const refreshAppDataSilently = () => {
+    if (!getApiSession()?.accessToken) {
+      return;
+    }
+    void refreshAppData().catch(() => {
+      // 백그라운드 갱신 실패는 현재 화면을 그대로 유지한다.
+    });
+  };
+
+  useEffect(() => {
+    if (isBooting || !["home", "profile", "stats"].includes(screen)) {
+      return;
+    }
+    refreshAppDataSilently();
+  }, [isBooting, screen]);
+
+  useEffect(() => {
+    if (isBooting || !getApiSession()?.accessToken) {
+      return;
+    }
+
+    const interval = setInterval(() => {
+      if (["home", "profile", "stats", "pod"].includes(screen)) {
+        refreshAppDataSilently();
+      }
+    }, 15000);
+
+    return () => clearInterval(interval);
+  }, [isBooting, screen]);
+
   const loadStatsForMonth = async (year: number, month: number) => {
     const nextStats = await fetchStats(year, month);
     setStats(nextStats);
@@ -234,14 +264,14 @@ export default function App() {
 
   if (isBooting) {
     return (
-      <SafeAreaView style={styles.safe}>
+      <View style={styles.safe}>
         <Text style={styles.bodyCopy}>로그인 상태를 확인하는 중입니다...</Text>
-      </SafeAreaView>
+      </View>
     );
   }
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <View style={styles.safe}>
       <StatusBar style="dark" />
       <AnimatedScreen screenKey={screen} tabSlideDirection={tabSlideDirection}>
         {screen === "onboarding" && (
@@ -361,6 +391,6 @@ export default function App() {
           />
         )}
       </AnimatedScreen>
-    </SafeAreaView>
+    </View>
   );
 }
