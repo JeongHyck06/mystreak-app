@@ -1,1437 +1,1439 @@
-import { StyleSheet } from "react-native";
-import { colors, radii, shadow } from "./theme";
+import { StyleSheet } from 'react-native';
+import { colors, radii, shadow } from './theme';
 
 export const styles = StyleSheet.create({
-  safe: {
-    flex: 1,
-    backgroundColor: colors.background
-  },
-  motionScreen: {
-    flex: 1,
-    backgroundColor: colors.background
-  },
-  flex: {
-    flex: 1
-  },
-  screen: {
-    paddingHorizontal: 20,
-    paddingTop: 22,
-    paddingBottom: 28,
-    backgroundColor: colors.background,
-    gap: 14
-  },
-  uploadScreen: {
-    paddingHorizontal: 20,
-    paddingTop: 22,
-    paddingBottom: 44,
-    backgroundColor: colors.background,
-    gap: 14
-  },
-  editScreen: {
-    paddingBottom: 28,
-    backgroundColor: colors.background,
-    gap: 14
-  },
-  screenWithTab: {
-    paddingHorizontal: 20,
-    paddingTop: 24,
-    paddingBottom: 108,
-    backgroundColor: colors.background,
-    gap: 14
-  },
-  onboarding: {
-    paddingHorizontal: 24,
-    paddingTop: 72,
-    paddingBottom: 30,
-    backgroundColor: colors.background,
-    gap: 24
-  },
-  brand: {
-    fontSize: 46,
-    lineHeight: 52,
-    fontWeight: "900",
-    color: colors.text,
-    letterSpacing: -2
-  },
-  pageTitle: {
-    fontSize: 28,
-    lineHeight: 34,
-    fontWeight: "800",
-    color: colors.text,
-    letterSpacing: -0.8
-  },
-  heroCopy: {
-    fontSize: 28,
-    lineHeight: 36,
-    fontWeight: "800",
-    color: colors.text,
-    letterSpacing: -0.6
-  },
-  title: {
-    fontSize: 18,
-    lineHeight: 22,
-    fontWeight: "800",
-    color: colors.text
-  },
-  cardTitle: {
-    fontSize: 14,
-    lineHeight: 19,
-    fontWeight: "800",
-    color: colors.text
-  },
-  bodyText: {
-    fontSize: 15,
-    color: colors.text
-  },
-  bodyCopy: {
-    fontSize: 15,
-    lineHeight: 21,
-    color: colors.secondaryText
-  },
-  caption: {
-    fontSize: 12,
-    lineHeight: 17,
-    color: colors.secondaryText,
-    fontWeight: "500"
-  },
-  sectionCaption: {
-    fontSize: 13,
-    color: colors.secondaryText,
-    fontWeight: "800",
-    marginTop: 6
-  },
-  secondaryText: {
-    color: colors.secondaryText,
-    fontSize: 14,
-    fontWeight: "600"
-  },
-  accentText: {
-    color: colors.accent,
-    fontSize: 13,
-    fontWeight: "800"
-  },
-  mockPhone: {
-    backgroundColor: colors.primaryLight,
-    borderRadius: 24,
-    padding: 36,
-    gap: 24
-  },
-  mockStatus: {
-    backgroundColor: colors.surface,
-    borderRadius: 18,
-    padding: 14,
-    alignItems: "center"
-  },
-  mockStatusValue: {
-    color: colors.text,
-    fontSize: 16,
-    fontWeight: "900"
-  },
-  mockDelta: {
-    position: "absolute",
-    right: 38,
-    top: 18,
-    color: colors.accent,
-    fontWeight: "900"
-  },
-  weekCard: {
-    backgroundColor: colors.surface,
-    borderRadius: 16,
-    padding: 14,
-    gap: 24
-  },
-  weekBars: {
-    flexDirection: "row",
-    gap: 4,
-    justifyContent: "center"
-  },
-  weekBar: {
-    width: 27,
-    height: 86,
-    borderRadius: 14,
-    backgroundColor: colors.primary
-  },
-  weekBarEmpty: {
-    backgroundColor: colors.mutedBorder
-  },
-  pagination: {
-    flexDirection: "row",
-    alignSelf: "center",
-    gap: 5
-  },
-  paginationActive: {
-    width: 24,
-    height: 5,
-    borderRadius: 5,
-    backgroundColor: colors.accent
-  },
-  paginationDot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: colors.border
-  },
-  textButton: {
-    alignItems: "center",
-    paddingVertical: 8
-  },
-  primaryButton: {
-    minHeight: 56,
-    borderRadius: 16,
-    backgroundColor: colors.accent,
-    alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 18
-  },
-  primaryButtonText: {
-    color: colors.surface,
-    fontSize: 16,
-    fontWeight: "900"
-  },
-  input: {
-    minHeight: 56,
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: "rgba(255,255,255,0.48)",
-    paddingHorizontal: 16,
-    color: colors.secondaryText,
-    fontSize: 15
-  },
-  inputActive: {
-    borderColor: colors.accent,
-    backgroundColor: colors.surface,
-    color: colors.text
-  },
-  textArea: {
-    minHeight: 82,
-    paddingTop: 14,
-    textAlignVertical: "top"
-  },
-  passwordRow: {
-    minHeight: 56,
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: "rgba(255,255,255,0.48)",
-    paddingHorizontal: 16,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between"
-  },
-  passwordDots: {
-    flex: 1,
-    minHeight: 56,
-    color: colors.text,
-    fontSize: 16,
-    fontWeight: "800",
-    paddingVertical: 0
-  },
-  verificationRow: {
-    flexDirection: "row",
-    gap: 10,
-    alignItems: "center"
-  },
-  verificationInput: {
-    flex: 1,
-    minHeight: 52,
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: "rgba(255,255,255,0.48)",
-    paddingHorizontal: 16,
-    color: colors.text,
-    fontSize: 15,
-    fontWeight: "800"
-  },
-  verificationButton: {
-    minHeight: 52,
-    borderRadius: 14,
-    backgroundColor: colors.primaryLight,
-    alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 14
-  },
-  verificationButtonText: {
-    color: colors.accent,
-    fontSize: 13,
-    fontWeight: "900"
-  },
-  verificationConfirmButton: {
-    minHeight: 48,
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  verificationConfirmText: {
-    color: colors.text,
-    fontSize: 14,
-    fontWeight: "900"
-  },
-  divider: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 16,
-    marginVertical: 4
-  },
-  dividerLine: {
-    flex: 1,
-    height: 1,
-    backgroundColor: colors.border
-  },
-  socialButton: {
-    minHeight: 54,
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  kakaoButton: {
-    backgroundColor: "#ffde12",
-    borderColor: "#ffde12"
-  },
-  appleButton: {
-    backgroundColor: colors.dark,
-    borderColor: colors.dark
-  },
-  socialStrong: {
-    color: colors.text,
-    fontSize: 15,
-    fontWeight: "900"
-  },
-  socialLight: {
-    color: colors.surface,
-    fontSize: 15,
-    fontWeight: "900"
-  },
-  topBar: {
-    height: 44,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between"
-  },
-  topSide: {
-    width: 76,
-    minHeight: 44,
-    justifyContent: "center"
-  },
-  topIcon: {
-    fontSize: 32,
-    color: colors.text,
-    fontWeight: "300"
-  },
-  topTitle: {
-    flex: 1,
-    textAlign: "center",
-    fontSize: 17,
-    fontWeight: "900",
-    color: colors.text
-  },
-  topRight: {
-    textAlign: "right",
-    color: colors.accent,
-    fontSize: 14,
-    fontWeight: "900"
-  },
-  homeHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12
-  },
-  avatar: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: colors.primaryLight
-  },
-  headerName: {
-    fontSize: 17,
-    fontWeight: "900",
-    color: colors.text
-  },
-  bellButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 14,
-    backgroundColor: colors.surface,
-    alignItems: "flex-end",
-    justifyContent: "flex-end",
-    padding: 8
-  },
-  bellText: {
-    color: colors.danger,
-    fontSize: 26,
-    lineHeight: 18
-  },
-  streakHero: {
-    backgroundColor: colors.accent,
-    borderRadius: 28,
-    padding: 24,
-    gap: 10
-  },
-  heroLabel: {
-    color: colors.primaryLight,
-    fontSize: 13,
-    fontWeight: "700"
-  },
-  heroDays: {
-    color: colors.surface,
-    fontSize: 44,
-    lineHeight: 52,
-    fontWeight: "900",
-    letterSpacing: -1.2
-  },
-  badgeDark: {
-    backgroundColor: "#3b8d51",
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-    borderRadius: 16
-  },
-  badgeDarkText: {
-    color: colors.primaryLight,
-    fontSize: 11,
-    fontWeight: "800"
-  },
-  progressTrack: {
-    height: 8,
-    borderRadius: 8,
-    backgroundColor: "#3b8d51",
-    overflow: "hidden"
-  },
-  progressFill: {
-    width: "90%",
-    height: "100%",
-    backgroundColor: colors.surface,
-    borderRadius: 8
-  },
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12
-  },
-  rowBetween: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between"
-  },
-  rowEnd: {
-    flexDirection: "row",
-    alignItems: "flex-end",
-    gap: 6
-  },
-  statsRow: {
-    flexDirection: "row",
-    gap: 10
-  },
-  statCard: {
-    flex: 1,
-    minHeight: 80,
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.mutedBorder,
-    borderRadius: 22,
-    padding: 14,
-    justifyContent: "space-between"
-  },
-  statValueRow: {
-    flexDirection: "row",
-    alignItems: "flex-end",
-    gap: 4
-  },
-  statValue: {
-    fontSize: 24,
-    lineHeight: 28,
-    fontWeight: "900",
-    color: colors.text
-  },
-  sectionHeader: {
-    marginTop: 6,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between"
-  },
-  podCard: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.mutedBorder,
-    borderRadius: 24,
-    padding: 16,
-    minHeight: 96
-  },
-  podCardActive: {
-    backgroundColor: colors.primaryLight
-  },
-  podAvatar: {
-    width: 56,
-    height: 64,
-    borderRadius: 16,
-    backgroundColor: colors.primaryLight
-  },
-  podAvatarWhite: {
-    backgroundColor: colors.surface
-  },
-  podAvatarLarge: {
-    width: 52,
-    height: 52,
-    borderRadius: 14,
-    backgroundColor: colors.primaryLight
-  },
-  doneCircle: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: colors.primary,
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  doneText: {
-    color: colors.surface,
-    fontSize: 22,
-    fontWeight: "900"
-  },
-  donePill: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    backgroundColor: colors.primary,
-    borderRadius: 14,
-    paddingHorizontal: 12,
-    paddingVertical: 10
-  },
-  donePillText: {
-    color: colors.surface,
-    fontSize: 13,
-    fontWeight: "900"
-  },
-  smallCta: {
-    backgroundColor: colors.accent,
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 11
-  },
-  smallCtaText: {
-    color: colors.surface,
-    fontSize: 13,
-    fontWeight: "900"
-  },
-  fab: {
-    position: "absolute",
-    right: 20,
-    bottom: 92,
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: colors.accent,
-    alignItems: "center",
-    justifyContent: "center",
-    zIndex: 20,
-    ...shadow
-  },
-  fabText: {
-    color: colors.surface,
-    fontSize: 34,
-    lineHeight: 38,
-    fontWeight: "500"
-  },
-  tabBar: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    bottom: 0,
-    height: 76,
-    borderTopWidth: 1,
-    borderColor: colors.mutedBorder,
-    backgroundColor: colors.surface,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-around",
-    zIndex: 30,
-    elevation: 10
-  },
-  tabItem: {
-    flex: 1,
-    height: "100%",
-    alignItems: "center",
-    justifyContent: "center",
-    paddingTop: 8,
-    paddingBottom: 14
-  },
-  tabText: {
-    color: colors.secondaryText,
-    fontSize: 11,
-    fontWeight: "700"
-  },
-  tabTextActive: {
-    color: colors.accent,
-    fontWeight: "900"
-  },
-  podHero: {
-    backgroundColor: colors.primaryLight,
-    borderRadius: 24,
-    padding: 20,
-    gap: 10
-  },
-  podSwitcher: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10
-  },
-  podSwitchArrow: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
-    backgroundColor: colors.surface,
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  podSwitchArrowText: {
-    color: colors.accent,
-    fontSize: 28,
-    lineHeight: 30,
-    fontWeight: "700"
-  },
-  podSwitchTitle: {
-    flex: 1,
-    alignItems: "center",
-    gap: 2
-  },
-  podSwitchHint: {
-    color: colors.secondaryText,
-    fontSize: 11,
-    fontWeight: "700"
-  },
-  podPicker: {
-    backgroundColor: colors.surface,
-    borderRadius: radii.lg,
-    borderWidth: 1,
-    borderColor: colors.border,
-    padding: 8,
-    gap: 6
-  },
-  podPickerItem: {
-    borderRadius: radii.md,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between"
-  },
-  podPickerItemActive: {
-    backgroundColor: colors.primaryLight
-  },
-  podDescription: {
-    color: colors.text,
-    fontSize: 13,
-    lineHeight: 19
-  },
-  tagLine: {
-    color: colors.accent,
-    fontSize: 12,
-    fontWeight: "800"
-  },
-  segmentRow: {
-    flexDirection: "row",
-    gap: 44,
-    borderBottomWidth: 1,
-    borderColor: colors.border
-  },
-  segmentActive: {
-    color: colors.text,
-    fontSize: 15,
-    fontWeight: "900",
-    paddingBottom: 10,
-    borderBottomWidth: 2,
-    borderColor: colors.accent
-  },
-  segment: {
-    color: colors.secondaryText,
-    fontSize: 15,
-    fontWeight: "700",
-    paddingBottom: 10
-  },
-  feedCard: {
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: 24,
-    padding: 16,
-    gap: 14
-  },
-  feedDateDivider: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-    marginTop: 4,
-    marginBottom: -2
-  },
-  feedDateLine: {
-    flex: 1,
-    height: 1,
-    backgroundColor: colors.border
-  },
-  feedDateText: {
-    color: colors.secondaryText,
-    fontSize: 12,
-    fontWeight: "900"
-  },
-  feedHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10
-  },
-  smallAvatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: colors.primaryLight,
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  feedText: {
-    color: colors.text,
-    fontSize: 14,
-    lineHeight: 20
-  },
-  photoPlaceholder: {
-    height: 240,
-    borderRadius: 18,
-    backgroundColor: colors.secondary
-  },
-  feedMediaImage: {
-    width: "100%",
-    height: 240,
-    borderRadius: 18
-  },
-  feedVideoPreview: {
-    height: 240,
-    borderRadius: 18,
-    backgroundColor: colors.primaryLight,
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 8
-  },
-  feedVideoIcon: {
-    color: colors.accent,
-    fontSize: 38,
-    fontWeight: "900"
-  },
-  feedVideoText: {
-    color: colors.text,
-    fontSize: 15,
-    fontWeight: "900"
-  },
-  feedActions: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 18
-  },
-  verifiedCheckBadge: {
-    flexDirection: "row",
-    alignItems: "center",
-    alignSelf: "flex-start",
-    gap: 8,
-    borderRadius: 16,
-    backgroundColor: colors.primaryLight,
-    paddingHorizontal: 12,
-    paddingVertical: 9
-  },
-  verifiedCheckText: {
-    color: colors.accent,
-    fontSize: 13,
-    fontWeight: "900"
-  },
-  verifiedCheckCaption: {
-    color: colors.secondaryText,
-    fontSize: 12,
-    fontWeight: "700"
-  },
-  checkButton: {
-    backgroundColor: colors.accent,
-    borderRadius: 18,
-    paddingHorizontal: 20,
-    paddingVertical: 10
-  },
-  checkButtonText: {
-    color: colors.surface,
-    fontWeight: "900"
-  },
-  feedMeta: {
-    color: colors.text,
-    fontSize: 13,
-    fontWeight: "800"
-  },
-  feedMetaActive: {
-    color: colors.accent
-  },
-  checkButtonDone: {
-    backgroundColor: colors.primaryLight
-  },
-  checkButtonDoneText: {
-    color: colors.accent
-  },
-  mineBadge: {
-    borderRadius: 18,
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    backgroundColor: colors.primaryLight
-  },
-  mineBadgeText: {
-    color: colors.accent,
-    fontSize: 13,
-    fontWeight: "900"
-  },
-  ownerActions: {
-    flexDirection: "row",
-    gap: 14,
-    alignItems: "center"
-  },
-  ownerActionText: {
-    color: colors.secondaryText,
-    fontSize: 13,
-    fontWeight: "800"
-  },
-  editActions: {
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    alignItems: "center",
-    gap: 14
-  },
-  editCancel: {
-    paddingHorizontal: 12,
-    paddingVertical: 10
-  },
-  commentBox: {
-    borderTopWidth: 1,
-    borderColor: colors.border,
-    paddingTop: 12,
-    gap: 10
-  },
-  commentRow: {
-    gap: 2
-  },
-  commentAuthor: {
-    color: colors.text,
-    fontSize: 13,
-    fontWeight: "800"
-  },
-  commentText: {
-    color: colors.text,
-    fontSize: 14,
-    lineHeight: 19
-  },
-  commentInputRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-    marginTop: 2
-  },
-  commentInput: {
-    flex: 1,
-    minHeight: 44,
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: colors.border,
-    paddingHorizontal: 14,
-    color: colors.text,
-    backgroundColor: "rgba(255,255,255,0.52)"
-  },
-  commentSend: {
-    backgroundColor: colors.accent,
-    borderRadius: 14,
-    paddingHorizontal: 16,
-    paddingVertical: 12
-  },
-  doneButton: {
-    minHeight: 56,
-    borderRadius: 16,
-    backgroundColor: colors.primaryLight,
-    alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 18
-  },
-  doneButtonText: {
-    color: colors.accent,
-    fontSize: 16,
-    fontWeight: "900"
-  },
-  podInfoGrid: {
-    flexDirection: "row",
-    gap: 10
-  },
-  podInfoItem: {
-    flex: 1,
-    borderRadius: radii.md,
-    backgroundColor: colors.primaryLight,
-    padding: 14,
-    gap: 6
-  },
-  uploadBox: {
-    minHeight: 360,
-    backgroundColor: colors.primaryLight,
-    borderRadius: 22,
-    padding: 14,
-    gap: 12
-  },
-  uploadPreviewFrame: {
-    flex: 1,
-    minHeight: 238,
-    maxHeight: 278,
-    borderRadius: 18,
-    overflow: "hidden",
-    backgroundColor: colors.secondary
-  },
-  uploadPreviewImage: {
-    flex: 1,
-    width: "100%",
-    height: "100%"
-  },
-  uploadEmpty: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 22,
-    gap: 8
-  },
-  uploadEmptyTitle: {
-    color: colors.text,
-    fontSize: 18,
-    fontWeight: "900",
-    textAlign: "center"
-  },
-  uploadEmptyCaption: {
-    color: colors.secondaryText,
-    fontSize: 13,
-    fontWeight: "700",
-    lineHeight: 19,
-    textAlign: "center"
-  },
-  uploadVideoPreview: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 8
-  },
-  uploadVideoIcon: {
-    color: colors.accent,
-    fontSize: 42,
-    fontWeight: "900"
-  },
-  uploadVideoTitle: {
-    color: colors.text,
-    fontSize: 18,
-    fontWeight: "900"
-  },
-  uploadVideoCaption: {
-    color: colors.secondaryText,
-    fontSize: 13,
-    fontWeight: "800"
-  },
-  uploadChip: {
-    alignSelf: "flex-start",
-    borderRadius: 16,
-    backgroundColor: colors.surface,
-    paddingHorizontal: 12,
-    paddingVertical: 8
-  },
-  uploadChipText: {
-    color: colors.accent,
-    fontSize: 12,
-    fontWeight: "900"
-  },
-  cropButton: {
-    backgroundColor: colors.overlay,
-    borderRadius: 18,
-    minHeight: 48,
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  cropButtonText: {
-    color: colors.surface,
-    fontSize: 13,
-    fontWeight: "900"
-  },
-  uploadTabs: {
-    flexDirection: "row",
-    backgroundColor: "#f1f7f1",
-    borderRadius: 14,
-    padding: 4
-  },
-  uploadTabButton: {
-    flex: 1
-  },
-  uploadTabActive: {
-    flex: 1,
-    textAlign: "center",
-    paddingVertical: 12,
-    borderRadius: 12,
-    backgroundColor: colors.surface,
-    color: colors.text,
-    fontWeight: "900"
-  },
-  uploadTab: {
-    flex: 1,
-    textAlign: "center",
-    paddingVertical: 12,
-    color: colors.secondaryText,
-    fontWeight: "800"
-  },
-  memoInput: {
-    minHeight: 94,
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: 14,
-    padding: 16,
-    backgroundColor: "rgba(255,255,255,0.52)",
-    color: colors.text,
-    textAlignVertical: "top"
-  },
-  centerCaption: {
-    color: colors.secondaryText,
-    fontSize: 12,
-    textAlign: "center",
-    fontWeight: "700"
-  },
-  monthPill: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 14,
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: 18,
-    paddingHorizontal: 16,
-    paddingVertical: 8
-  },
-  monthArrow: {
-    color: colors.accent,
-    fontSize: 22,
-    lineHeight: 24,
-    fontWeight: "900"
-  },
-  statLarge: {
-    flex: 1,
-    minHeight: 110,
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: 24,
-    padding: 18,
-    justifyContent: "space-between"
-  },
-  statLargeGreen: {
-    backgroundColor: colors.accent,
-    borderColor: colors.accent
-  },
-  largeNumber: {
-    color: colors.surface,
-    fontSize: 44,
-    lineHeight: 48,
-    fontWeight: "900"
-  },
-  largeNumberDark: {
-    color: colors.text,
-    fontSize: 44,
-    lineHeight: 48,
-    fontWeight: "900"
-  },
-  card: {
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: 24,
-    padding: 18,
-    gap: 10
-  },
-  percent: {
-    color: colors.text,
-    fontSize: 40,
-    fontWeight: "900"
-  },
-  ring: {
-    width: 88,
-    height: 88,
-    borderRadius: 44,
-    borderWidth: 14,
-    borderColor: colors.primaryLight,
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  ringText: {
-    color: colors.accent,
-    fontSize: 16,
-    fontWeight: "900"
-  },
-  heatmap: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 5
-  },
-  heatCell: {
-    width: 16,
-    height: 16,
-    borderRadius: 4
-  },
-  heatCellSmall: {
-    width: 15,
-    height: 15
-  },
-  legend: {
-    flexDirection: "row",
-    gap: 5
-  },
-  profileCard: {
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: 24,
-    padding: 20,
-    flexDirection: "row",
-    flexWrap: "wrap",
-    alignItems: "center",
-    gap: 16
-  },
-  profileAvatar: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
-    backgroundColor: colors.primaryLight
-  },
-  profileInfo: {
-    gap: 6
-  },
-  profileName: {
-    color: colors.text,
-    fontSize: 24,
-    fontWeight: "900"
-  },
-  profileHandle: {
-    color: colors.accent,
-    fontSize: 14,
-    fontWeight: "700"
-  },
-  profileStreakLine: {
-    color: colors.secondaryText,
-    fontSize: 13,
-    fontWeight: "600",
-    marginTop: 2
-  },
-  profileBio: {
-    width: "100%",
-    color: colors.text,
-    fontSize: 14
-  },
-  softButton: {
-    backgroundColor: colors.primaryLight,
-    borderRadius: 16,
-    paddingHorizontal: 14,
-    paddingVertical: 10
-  },
-  softButtonText: {
-    color: colors.accent,
-    fontSize: 12,
-    fontWeight: "900"
-  },
-  managePodCard: {
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: 24,
-    padding: 16,
-    gap: 16
-  },
-  manageDangerText: {
-    color: colors.danger,
-    fontSize: 13,
-    fontWeight: "900"
-  },
-  profilePods: {
-    flexDirection: "row",
-    gap: 10
-  },
-  profilePodTile: {
-    flex: 1,
-    minHeight: 118,
-    borderRadius: 18,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-    padding: 14,
-    justifyContent: "flex-end",
-    gap: 8
-  },
-  settingsCard: {
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: 20,
-    padding: 16,
-    gap: 16
-  },
-  settingRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between"
-  },
-  logoutText: {
-    color: colors.danger,
-    fontSize: 15,
-    fontWeight: "700"
-  },
-  filterRow: {
-    flexDirection: "row",
-    gap: 10
-  },
-  filterChip: {
-    paddingHorizontal: 16,
-    paddingVertical: 9,
-    borderRadius: 18,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surface
-  },
-  filterChipActive: {
-    backgroundColor: colors.text,
-    borderColor: colors.text
-  },
-  filterText: {
-    color: colors.text,
-    fontSize: 13,
-    fontWeight: "800"
-  },
-  filterTextActive: {
-    color: colors.surface
-  },
-  notificationCard: {
-    minHeight: 76,
-    borderRadius: 22,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-    padding: 16,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12
-  },
-  notificationUrgent: {
-    backgroundColor: colors.primaryLight,
-    borderColor: colors.primary
-  },
-  doneMini: {
-    color: colors.accent,
-    fontSize: 16,
-    fontWeight: "900"
-  },
-  redDot: {
-    width: 14,
-    height: 14,
-    borderRadius: 7,
-    backgroundColor: colors.danger
-  },
-  actionCard: {
-    minHeight: 118,
-    borderRadius: 24,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-    padding: 18,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 16
-  },
-  actionIcon: {
-    width: 56,
-    height: 56,
-    borderRadius: 18,
-    backgroundColor: colors.accent,
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  actionIconLight: {
-    backgroundColor: colors.primaryLight
-  },
-  actionIconText: {
-    color: colors.surface,
-    fontSize: 30,
-    lineHeight: 34,
-    fontWeight: "600"
-  },
-  actionIconAccent: {
-    color: colors.accent,
-    fontSize: 22,
-    fontWeight: "900"
-  },
-  actionTitle: {
-    color: colors.text,
-    fontSize: 18,
-    fontWeight: "900"
-  },
-  actionDescription: {
-    color: colors.secondaryText,
-    fontSize: 13,
-    lineHeight: 19,
-    marginTop: 4
-  },
-  actionArrow: {
-    color: colors.accent,
-    fontSize: 30,
-    fontWeight: "300"
-  },
-  fieldGroup: {
-    paddingHorizontal: 4,
-    gap: 8
-  },
-  copyField: {
-    minHeight: 56,
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: "rgba(255,255,255,0.48)",
-    paddingHorizontal: 16,
-    justifyContent: "center"
-  },
-  copyFieldText: {
-    color: colors.secondaryText,
-    fontSize: 15
-  },
-  helperDanger: {
-    color: colors.danger
-  },
-  counterRow: {
-    minHeight: 48,
-    borderRadius: 18,
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.border,
-    padding: 8,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center"
-  },
-  roundLight: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
-    backgroundColor: colors.primaryLight,
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  roundGreen: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
-    backgroundColor: colors.accent,
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  previewCard: {
-    backgroundColor: colors.primaryLight,
-    borderWidth: 1,
-    borderColor: colors.primary,
-    borderRadius: 20,
-    padding: 16,
-    gap: 12
-  },
-  previewDot: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
-    backgroundColor: colors.accent
-  },
-  spacer: {
-    height: 160
-  },
-  inviteSummary: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 14,
-    borderRadius: 20,
-    backgroundColor: colors.primaryLight,
-    padding: 16
-  },
-  memberRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: 18,
-    padding: 14
-  },
-  memberAction: {
-    backgroundColor: colors.accent,
-    borderRadius: 16,
-    paddingHorizontal: 18,
-    paddingVertical: 10
-  },
-  memberActionMuted: {
-    backgroundColor: colors.surface
-  },
-  memberActionText: {
-    color: colors.surface,
-    fontSize: 13,
-    fontWeight: "900"
-  },
-  joinDivider: {
-    height: 1,
-    backgroundColor: colors.accent,
-    marginHorizontal: -20,
-    marginVertical: 18
-  },
-  joinCard: {
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: 24,
-    padding: 20,
-    gap: 18
-  },
-  editHero: {
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: 24,
-    paddingVertical: 22,
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 12
-  },
-  editHeroHint: {
-    color: colors.accent,
-    fontSize: 13,
-    fontWeight: "800"
-  },
-  profileAvatarLarge: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: colors.primaryLight
-  },
-  addBadge: {
-    position: "absolute",
-    right: -4,
-    bottom: 0,
-    width: 26,
-    height: 26,
-    borderRadius: 13,
-    backgroundColor: colors.accent,
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  accountCard: {
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: 20,
-    padding: 16,
-    gap: 18
-  }
+    safe: {
+        flex: 1,
+        backgroundColor: colors.background,
+    },
+    motionScreen: {
+        flex: 1,
+        backgroundColor: colors.background,
+    },
+    flex: {
+        flex: 1,
+    },
+    screen: {
+        paddingHorizontal: 20,
+        paddingTop: 22,
+        paddingBottom: 28,
+        backgroundColor: colors.background,
+        gap: 14,
+    },
+    uploadScreen: {
+        paddingHorizontal: 20,
+        paddingTop: 22,
+        paddingBottom: 44,
+        backgroundColor: colors.background,
+        gap: 14,
+    },
+    editScreen: {
+        paddingBottom: 28,
+        backgroundColor: colors.background,
+        gap: 14,
+    },
+    screenWithTab: {
+        paddingHorizontal: 20,
+        paddingTop: 24,
+        paddingBottom: 108,
+        backgroundColor: colors.background,
+        gap: 14,
+    },
+    onboarding: {
+        flex: 1,
+        paddingHorizontal: 24,
+        paddingTop: 56,
+        paddingBottom: 30,
+        backgroundColor: colors.background,
+        justifyContent: 'center',
+        gap: 20,
+    },
+    brand: {
+        fontSize: 46,
+        lineHeight: 52,
+        fontWeight: '900',
+        color: colors.text,
+        letterSpacing: -2,
+    },
+    pageTitle: {
+        fontSize: 28,
+        lineHeight: 34,
+        fontWeight: '800',
+        color: colors.text,
+        letterSpacing: -0.8,
+    },
+    heroCopy: {
+        fontSize: 28,
+        lineHeight: 36,
+        fontWeight: '800',
+        color: colors.text,
+        letterSpacing: -0.6,
+    },
+    title: {
+        fontSize: 18,
+        lineHeight: 22,
+        fontWeight: '800',
+        color: colors.text,
+    },
+    cardTitle: {
+        fontSize: 14,
+        lineHeight: 19,
+        fontWeight: '800',
+        color: colors.text,
+    },
+    bodyText: {
+        fontSize: 15,
+        color: colors.text,
+    },
+    bodyCopy: {
+        fontSize: 15,
+        lineHeight: 21,
+        color: colors.secondaryText,
+    },
+    caption: {
+        fontSize: 12,
+        lineHeight: 17,
+        color: colors.secondaryText,
+        fontWeight: '500',
+    },
+    sectionCaption: {
+        fontSize: 13,
+        color: colors.secondaryText,
+        fontWeight: '800',
+        marginTop: 6,
+    },
+    secondaryText: {
+        color: colors.secondaryText,
+        fontSize: 14,
+        fontWeight: '600',
+    },
+    accentText: {
+        color: colors.accent,
+        fontSize: 13,
+        fontWeight: '800',
+    },
+    mockPhone: {
+        backgroundColor: colors.primaryLight,
+        borderRadius: 24,
+        padding: 36,
+        gap: 24,
+    },
+    mockStatus: {
+        backgroundColor: colors.surface,
+        borderRadius: 18,
+        padding: 14,
+        alignItems: 'center',
+    },
+    mockStatusValue: {
+        color: colors.text,
+        fontSize: 16,
+        fontWeight: '900',
+    },
+    mockDelta: {
+        position: 'absolute',
+        right: 38,
+        top: 18,
+        color: colors.accent,
+        fontWeight: '900',
+    },
+    weekCard: {
+        backgroundColor: colors.surface,
+        borderRadius: 16,
+        padding: 14,
+        gap: 24,
+    },
+    weekBars: {
+        flexDirection: 'row',
+        gap: 4,
+        justifyContent: 'center',
+    },
+    weekBar: {
+        width: 27,
+        height: 86,
+        borderRadius: 14,
+        backgroundColor: colors.primary,
+    },
+    weekBarEmpty: {
+        backgroundColor: colors.mutedBorder,
+    },
+    pagination: {
+        flexDirection: 'row',
+        alignSelf: 'center',
+        gap: 5,
+    },
+    paginationActive: {
+        width: 24,
+        height: 5,
+        borderRadius: 5,
+        backgroundColor: colors.accent,
+    },
+    paginationDot: {
+        width: 6,
+        height: 6,
+        borderRadius: 3,
+        backgroundColor: colors.border,
+    },
+    textButton: {
+        alignItems: 'center',
+        paddingVertical: 8,
+    },
+    primaryButton: {
+        minHeight: 56,
+        borderRadius: 16,
+        backgroundColor: colors.accent,
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingHorizontal: 18,
+    },
+    primaryButtonText: {
+        color: colors.surface,
+        fontSize: 16,
+        fontWeight: '900',
+    },
+    input: {
+        minHeight: 56,
+        borderRadius: 14,
+        borderWidth: 1,
+        borderColor: colors.border,
+        backgroundColor: 'rgba(255,255,255,0.48)',
+        paddingHorizontal: 16,
+        color: colors.secondaryText,
+        fontSize: 15,
+    },
+    inputActive: {
+        borderColor: colors.accent,
+        backgroundColor: colors.surface,
+        color: colors.text,
+    },
+    textArea: {
+        minHeight: 82,
+        paddingTop: 14,
+        textAlignVertical: 'top',
+    },
+    passwordRow: {
+        minHeight: 56,
+        borderRadius: 14,
+        borderWidth: 1,
+        borderColor: colors.border,
+        backgroundColor: 'rgba(255,255,255,0.48)',
+        paddingHorizontal: 16,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+    },
+    passwordDots: {
+        flex: 1,
+        minHeight: 56,
+        color: colors.text,
+        fontSize: 16,
+        fontWeight: '800',
+        paddingVertical: 0,
+    },
+    verificationRow: {
+        flexDirection: 'row',
+        gap: 10,
+        alignItems: 'center',
+    },
+    verificationInput: {
+        flex: 1,
+        minHeight: 52,
+        borderRadius: 14,
+        borderWidth: 1,
+        borderColor: colors.border,
+        backgroundColor: 'rgba(255,255,255,0.48)',
+        paddingHorizontal: 16,
+        color: colors.text,
+        fontSize: 15,
+        fontWeight: '800',
+    },
+    verificationButton: {
+        minHeight: 52,
+        borderRadius: 14,
+        backgroundColor: colors.primaryLight,
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingHorizontal: 14,
+    },
+    verificationButtonText: {
+        color: colors.accent,
+        fontSize: 13,
+        fontWeight: '900',
+    },
+    verificationConfirmButton: {
+        minHeight: 48,
+        borderRadius: 14,
+        borderWidth: 1,
+        borderColor: colors.border,
+        backgroundColor: colors.surface,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    verificationConfirmText: {
+        color: colors.text,
+        fontSize: 14,
+        fontWeight: '900',
+    },
+    divider: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 16,
+        marginVertical: 4,
+    },
+    dividerLine: {
+        flex: 1,
+        height: 1,
+        backgroundColor: colors.border,
+    },
+    socialButton: {
+        minHeight: 54,
+        borderRadius: 14,
+        borderWidth: 1,
+        borderColor: colors.border,
+        backgroundColor: colors.surface,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    kakaoButton: {
+        backgroundColor: '#ffde12',
+        borderColor: '#ffde12',
+    },
+    appleButton: {
+        backgroundColor: colors.dark,
+        borderColor: colors.dark,
+    },
+    socialStrong: {
+        color: colors.text,
+        fontSize: 15,
+        fontWeight: '900',
+    },
+    socialLight: {
+        color: colors.surface,
+        fontSize: 15,
+        fontWeight: '900',
+    },
+    topBar: {
+        height: 44,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+    },
+    topSide: {
+        width: 76,
+        minHeight: 44,
+        justifyContent: 'center',
+    },
+    topIcon: {
+        fontSize: 32,
+        color: colors.text,
+        fontWeight: '300',
+    },
+    topTitle: {
+        flex: 1,
+        textAlign: 'center',
+        fontSize: 17,
+        fontWeight: '900',
+        color: colors.text,
+    },
+    topRight: {
+        textAlign: 'right',
+        color: colors.accent,
+        fontSize: 14,
+        fontWeight: '900',
+    },
+    homeHeader: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 12,
+    },
+    avatar: {
+        width: 44,
+        height: 44,
+        borderRadius: 22,
+        backgroundColor: colors.primaryLight,
+    },
+    headerName: {
+        fontSize: 17,
+        fontWeight: '900',
+        color: colors.text,
+    },
+    bellButton: {
+        width: 44,
+        height: 44,
+        borderRadius: 14,
+        backgroundColor: colors.surface,
+        alignItems: 'flex-end',
+        justifyContent: 'flex-end',
+        padding: 8,
+    },
+    bellText: {
+        color: colors.danger,
+        fontSize: 26,
+        lineHeight: 18,
+    },
+    streakHero: {
+        backgroundColor: colors.accent,
+        borderRadius: 28,
+        padding: 24,
+        gap: 10,
+    },
+    heroLabel: {
+        color: colors.primaryLight,
+        fontSize: 13,
+        fontWeight: '700',
+    },
+    heroDays: {
+        color: colors.surface,
+        fontSize: 44,
+        lineHeight: 52,
+        fontWeight: '900',
+        letterSpacing: -1.2,
+    },
+    badgeDark: {
+        backgroundColor: '#3b8d51',
+        paddingHorizontal: 14,
+        paddingVertical: 8,
+        borderRadius: 16,
+    },
+    badgeDarkText: {
+        color: colors.primaryLight,
+        fontSize: 11,
+        fontWeight: '800',
+    },
+    progressTrack: {
+        height: 8,
+        borderRadius: 8,
+        backgroundColor: '#3b8d51',
+        overflow: 'hidden',
+    },
+    progressFill: {
+        width: '90%',
+        height: '100%',
+        backgroundColor: colors.surface,
+        borderRadius: 8,
+    },
+    row: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 12,
+    },
+    rowBetween: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+    },
+    rowEnd: {
+        flexDirection: 'row',
+        alignItems: 'flex-end',
+        gap: 6,
+    },
+    statsRow: {
+        flexDirection: 'row',
+        gap: 10,
+    },
+    statCard: {
+        flex: 1,
+        minHeight: 80,
+        backgroundColor: colors.surface,
+        borderWidth: 1,
+        borderColor: colors.mutedBorder,
+        borderRadius: 22,
+        padding: 14,
+        justifyContent: 'space-between',
+    },
+    statValueRow: {
+        flexDirection: 'row',
+        alignItems: 'flex-end',
+        gap: 4,
+    },
+    statValue: {
+        fontSize: 24,
+        lineHeight: 28,
+        fontWeight: '900',
+        color: colors.text,
+    },
+    sectionHeader: {
+        marginTop: 6,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+    },
+    podCard: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 12,
+        backgroundColor: colors.surface,
+        borderWidth: 1,
+        borderColor: colors.mutedBorder,
+        borderRadius: 24,
+        padding: 16,
+        minHeight: 96,
+    },
+    podCardActive: {
+        backgroundColor: colors.primaryLight,
+    },
+    podAvatar: {
+        width: 56,
+        height: 64,
+        borderRadius: 16,
+        backgroundColor: colors.primaryLight,
+    },
+    podAvatarWhite: {
+        backgroundColor: colors.surface,
+    },
+    podAvatarLarge: {
+        width: 52,
+        height: 52,
+        borderRadius: 14,
+        backgroundColor: colors.primaryLight,
+    },
+    doneCircle: {
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        backgroundColor: colors.primary,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    doneText: {
+        color: colors.surface,
+        fontSize: 22,
+        fontWeight: '900',
+    },
+    donePill: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 6,
+        backgroundColor: colors.primary,
+        borderRadius: 14,
+        paddingHorizontal: 12,
+        paddingVertical: 10,
+    },
+    donePillText: {
+        color: colors.surface,
+        fontSize: 13,
+        fontWeight: '900',
+    },
+    smallCta: {
+        backgroundColor: colors.accent,
+        borderRadius: 12,
+        paddingHorizontal: 16,
+        paddingVertical: 11,
+    },
+    smallCtaText: {
+        color: colors.surface,
+        fontSize: 13,
+        fontWeight: '900',
+    },
+    fab: {
+        position: 'absolute',
+        right: 20,
+        bottom: 92,
+        width: 60,
+        height: 60,
+        borderRadius: 30,
+        backgroundColor: colors.accent,
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 20,
+        ...shadow,
+    },
+    fabText: {
+        color: colors.surface,
+        fontSize: 34,
+        lineHeight: 38,
+        fontWeight: '500',
+    },
+    tabBar: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        bottom: 0,
+        height: 86,
+        borderTopWidth: 1,
+        borderColor: colors.mutedBorder,
+        backgroundColor: colors.surface,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-around',
+        zIndex: 30,
+        elevation: 10,
+    },
+    tabItem: {
+        flex: 1,
+        height: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingTop: 8,
+        paddingBottom: 18,
+    },
+    tabText: {
+        color: colors.secondaryText,
+        fontSize: 11,
+        fontWeight: '700',
+    },
+    tabTextActive: {
+        color: colors.accent,
+        fontWeight: '900',
+    },
+    podHero: {
+        backgroundColor: colors.primaryLight,
+        borderRadius: 24,
+        padding: 20,
+        gap: 10,
+    },
+    podSwitcher: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 10,
+    },
+    podSwitchArrow: {
+        width: 38,
+        height: 38,
+        borderRadius: 19,
+        backgroundColor: colors.surface,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    podSwitchArrowText: {
+        color: colors.accent,
+        fontSize: 28,
+        lineHeight: 30,
+        fontWeight: '700',
+    },
+    podSwitchTitle: {
+        flex: 1,
+        alignItems: 'center',
+        gap: 2,
+    },
+    podSwitchHint: {
+        color: colors.secondaryText,
+        fontSize: 11,
+        fontWeight: '700',
+    },
+    podPicker: {
+        backgroundColor: colors.surface,
+        borderRadius: radii.lg,
+        borderWidth: 1,
+        borderColor: colors.border,
+        padding: 8,
+        gap: 6,
+    },
+    podPickerItem: {
+        borderRadius: radii.md,
+        paddingHorizontal: 12,
+        paddingVertical: 10,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+    },
+    podPickerItemActive: {
+        backgroundColor: colors.primaryLight,
+    },
+    podDescription: {
+        color: colors.text,
+        fontSize: 13,
+        lineHeight: 19,
+    },
+    tagLine: {
+        color: colors.accent,
+        fontSize: 12,
+        fontWeight: '800',
+    },
+    segmentRow: {
+        flexDirection: 'row',
+        gap: 44,
+        borderBottomWidth: 1,
+        borderColor: colors.border,
+    },
+    segmentActive: {
+        color: colors.text,
+        fontSize: 15,
+        fontWeight: '900',
+        paddingBottom: 10,
+        borderBottomWidth: 2,
+        borderColor: colors.accent,
+    },
+    segment: {
+        color: colors.secondaryText,
+        fontSize: 15,
+        fontWeight: '700',
+        paddingBottom: 10,
+    },
+    feedCard: {
+        backgroundColor: colors.surface,
+        borderWidth: 1,
+        borderColor: colors.border,
+        borderRadius: 24,
+        padding: 16,
+        gap: 14,
+    },
+    feedDateDivider: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 10,
+        marginTop: 4,
+        marginBottom: -2,
+    },
+    feedDateLine: {
+        flex: 1,
+        height: 1,
+        backgroundColor: colors.border,
+    },
+    feedDateText: {
+        color: colors.secondaryText,
+        fontSize: 12,
+        fontWeight: '900',
+    },
+    feedHeader: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 10,
+    },
+    smallAvatar: {
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        backgroundColor: colors.primaryLight,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    feedText: {
+        color: colors.text,
+        fontSize: 14,
+        lineHeight: 20,
+    },
+    photoPlaceholder: {
+        height: 240,
+        borderRadius: 18,
+        backgroundColor: colors.secondary,
+    },
+    feedMediaImage: {
+        width: '100%',
+        height: 240,
+        borderRadius: 18,
+    },
+    feedVideoPreview: {
+        height: 240,
+        borderRadius: 18,
+        backgroundColor: colors.primaryLight,
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 8,
+    },
+    feedVideoIcon: {
+        color: colors.accent,
+        fontSize: 38,
+        fontWeight: '900',
+    },
+    feedVideoText: {
+        color: colors.text,
+        fontSize: 15,
+        fontWeight: '900',
+    },
+    feedActions: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 18,
+    },
+    verifiedCheckBadge: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        alignSelf: 'flex-start',
+        gap: 8,
+        borderRadius: 16,
+        backgroundColor: colors.primaryLight,
+        paddingHorizontal: 12,
+        paddingVertical: 9,
+    },
+    verifiedCheckText: {
+        color: colors.accent,
+        fontSize: 13,
+        fontWeight: '900',
+    },
+    verifiedCheckCaption: {
+        color: colors.secondaryText,
+        fontSize: 12,
+        fontWeight: '700',
+    },
+    checkButton: {
+        backgroundColor: colors.accent,
+        borderRadius: 18,
+        paddingHorizontal: 20,
+        paddingVertical: 10,
+    },
+    checkButtonText: {
+        color: colors.surface,
+        fontWeight: '900',
+    },
+    feedMeta: {
+        color: colors.text,
+        fontSize: 13,
+        fontWeight: '800',
+    },
+    feedMetaActive: {
+        color: colors.accent,
+    },
+    checkButtonDone: {
+        backgroundColor: colors.primaryLight,
+    },
+    checkButtonDoneText: {
+        color: colors.accent,
+    },
+    mineBadge: {
+        borderRadius: 18,
+        paddingHorizontal: 16,
+        paddingVertical: 10,
+        backgroundColor: colors.primaryLight,
+    },
+    mineBadgeText: {
+        color: colors.accent,
+        fontSize: 13,
+        fontWeight: '900',
+    },
+    ownerActions: {
+        flexDirection: 'row',
+        gap: 14,
+        alignItems: 'center',
+    },
+    ownerActionText: {
+        color: colors.secondaryText,
+        fontSize: 13,
+        fontWeight: '800',
+    },
+    editActions: {
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        gap: 14,
+    },
+    editCancel: {
+        paddingHorizontal: 12,
+        paddingVertical: 10,
+    },
+    commentBox: {
+        borderTopWidth: 1,
+        borderColor: colors.border,
+        paddingTop: 12,
+        gap: 10,
+    },
+    commentRow: {
+        gap: 2,
+    },
+    commentAuthor: {
+        color: colors.text,
+        fontSize: 13,
+        fontWeight: '800',
+    },
+    commentText: {
+        color: colors.text,
+        fontSize: 14,
+        lineHeight: 19,
+    },
+    commentInputRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 10,
+        marginTop: 2,
+    },
+    commentInput: {
+        flex: 1,
+        minHeight: 44,
+        borderRadius: 14,
+        borderWidth: 1,
+        borderColor: colors.border,
+        paddingHorizontal: 14,
+        color: colors.text,
+        backgroundColor: 'rgba(255,255,255,0.52)',
+    },
+    commentSend: {
+        backgroundColor: colors.accent,
+        borderRadius: 14,
+        paddingHorizontal: 16,
+        paddingVertical: 12,
+    },
+    doneButton: {
+        minHeight: 56,
+        borderRadius: 16,
+        backgroundColor: colors.primaryLight,
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingHorizontal: 18,
+    },
+    doneButtonText: {
+        color: colors.accent,
+        fontSize: 16,
+        fontWeight: '900',
+    },
+    podInfoGrid: {
+        flexDirection: 'row',
+        gap: 10,
+    },
+    podInfoItem: {
+        flex: 1,
+        borderRadius: radii.md,
+        backgroundColor: colors.primaryLight,
+        padding: 14,
+        gap: 6,
+    },
+    uploadBox: {
+        minHeight: 360,
+        backgroundColor: colors.primaryLight,
+        borderRadius: 22,
+        padding: 14,
+        gap: 12,
+    },
+    uploadPreviewFrame: {
+        flex: 1,
+        minHeight: 238,
+        maxHeight: 278,
+        borderRadius: 18,
+        overflow: 'hidden',
+        backgroundColor: colors.secondary,
+    },
+    uploadPreviewImage: {
+        flex: 1,
+        width: '100%',
+        height: '100%',
+    },
+    uploadEmpty: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingHorizontal: 22,
+        gap: 8,
+    },
+    uploadEmptyTitle: {
+        color: colors.text,
+        fontSize: 18,
+        fontWeight: '900',
+        textAlign: 'center',
+    },
+    uploadEmptyCaption: {
+        color: colors.secondaryText,
+        fontSize: 13,
+        fontWeight: '700',
+        lineHeight: 19,
+        textAlign: 'center',
+    },
+    uploadVideoPreview: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 8,
+    },
+    uploadVideoIcon: {
+        color: colors.accent,
+        fontSize: 42,
+        fontWeight: '900',
+    },
+    uploadVideoTitle: {
+        color: colors.text,
+        fontSize: 18,
+        fontWeight: '900',
+    },
+    uploadVideoCaption: {
+        color: colors.secondaryText,
+        fontSize: 13,
+        fontWeight: '800',
+    },
+    uploadChip: {
+        alignSelf: 'flex-start',
+        borderRadius: 16,
+        backgroundColor: colors.surface,
+        paddingHorizontal: 12,
+        paddingVertical: 8,
+    },
+    uploadChipText: {
+        color: colors.accent,
+        fontSize: 12,
+        fontWeight: '900',
+    },
+    cropButton: {
+        backgroundColor: colors.overlay,
+        borderRadius: 18,
+        minHeight: 48,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    cropButtonText: {
+        color: colors.surface,
+        fontSize: 13,
+        fontWeight: '900',
+    },
+    uploadTabs: {
+        flexDirection: 'row',
+        backgroundColor: '#f1f7f1',
+        borderRadius: 14,
+        padding: 4,
+    },
+    uploadTabButton: {
+        flex: 1,
+    },
+    uploadTabActive: {
+        flex: 1,
+        textAlign: 'center',
+        paddingVertical: 12,
+        borderRadius: 12,
+        backgroundColor: colors.surface,
+        color: colors.text,
+        fontWeight: '900',
+    },
+    uploadTab: {
+        flex: 1,
+        textAlign: 'center',
+        paddingVertical: 12,
+        color: colors.secondaryText,
+        fontWeight: '800',
+    },
+    memoInput: {
+        minHeight: 94,
+        borderWidth: 1,
+        borderColor: colors.border,
+        borderRadius: 14,
+        padding: 16,
+        backgroundColor: 'rgba(255,255,255,0.52)',
+        color: colors.text,
+        textAlignVertical: 'top',
+    },
+    centerCaption: {
+        color: colors.secondaryText,
+        fontSize: 12,
+        textAlign: 'center',
+        fontWeight: '700',
+    },
+    monthPill: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 14,
+        backgroundColor: colors.surface,
+        borderWidth: 1,
+        borderColor: colors.border,
+        borderRadius: 18,
+        paddingHorizontal: 16,
+        paddingVertical: 8,
+    },
+    monthArrow: {
+        color: colors.accent,
+        fontSize: 22,
+        lineHeight: 24,
+        fontWeight: '900',
+    },
+    statLarge: {
+        flex: 1,
+        minHeight: 110,
+        backgroundColor: colors.surface,
+        borderWidth: 1,
+        borderColor: colors.border,
+        borderRadius: 24,
+        padding: 18,
+        justifyContent: 'space-between',
+    },
+    statLargeGreen: {
+        backgroundColor: colors.accent,
+        borderColor: colors.accent,
+    },
+    largeNumber: {
+        color: colors.surface,
+        fontSize: 44,
+        lineHeight: 48,
+        fontWeight: '900',
+    },
+    largeNumberDark: {
+        color: colors.text,
+        fontSize: 44,
+        lineHeight: 48,
+        fontWeight: '900',
+    },
+    card: {
+        backgroundColor: colors.surface,
+        borderWidth: 1,
+        borderColor: colors.border,
+        borderRadius: 24,
+        padding: 18,
+        gap: 10,
+    },
+    percent: {
+        color: colors.text,
+        fontSize: 40,
+        fontWeight: '900',
+    },
+    ring: {
+        width: 88,
+        height: 88,
+        borderRadius: 44,
+        borderWidth: 14,
+        borderColor: colors.primaryLight,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    ringText: {
+        color: colors.accent,
+        fontSize: 16,
+        fontWeight: '900',
+    },
+    heatmap: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        gap: 5,
+    },
+    heatCell: {
+        width: 16,
+        height: 16,
+        borderRadius: 4,
+    },
+    heatCellSmall: {
+        width: 15,
+        height: 15,
+    },
+    legend: {
+        flexDirection: 'row',
+        gap: 5,
+    },
+    profileCard: {
+        backgroundColor: colors.surface,
+        borderWidth: 1,
+        borderColor: colors.border,
+        borderRadius: 24,
+        padding: 20,
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        alignItems: 'center',
+        gap: 16,
+    },
+    profileAvatar: {
+        width: 72,
+        height: 72,
+        borderRadius: 36,
+        backgroundColor: colors.primaryLight,
+    },
+    profileInfo: {
+        gap: 6,
+    },
+    profileName: {
+        color: colors.text,
+        fontSize: 24,
+        fontWeight: '900',
+    },
+    profileHandle: {
+        color: colors.accent,
+        fontSize: 14,
+        fontWeight: '700',
+    },
+    profileStreakLine: {
+        color: colors.secondaryText,
+        fontSize: 13,
+        fontWeight: '600',
+        marginTop: 2,
+    },
+    profileBio: {
+        width: '100%',
+        color: colors.text,
+        fontSize: 14,
+    },
+    softButton: {
+        backgroundColor: colors.primaryLight,
+        borderRadius: 16,
+        paddingHorizontal: 14,
+        paddingVertical: 10,
+    },
+    softButtonText: {
+        color: colors.accent,
+        fontSize: 12,
+        fontWeight: '900',
+    },
+    managePodCard: {
+        backgroundColor: colors.surface,
+        borderWidth: 1,
+        borderColor: colors.border,
+        borderRadius: 24,
+        padding: 16,
+        gap: 16,
+    },
+    manageDangerText: {
+        color: colors.danger,
+        fontSize: 13,
+        fontWeight: '900',
+    },
+    profilePods: {
+        flexDirection: 'row',
+        gap: 10,
+    },
+    profilePodTile: {
+        flex: 1,
+        minHeight: 118,
+        borderRadius: 18,
+        borderWidth: 1,
+        borderColor: colors.border,
+        backgroundColor: colors.surface,
+        padding: 14,
+        justifyContent: 'flex-end',
+        gap: 8,
+    },
+    settingsCard: {
+        backgroundColor: colors.surface,
+        borderWidth: 1,
+        borderColor: colors.border,
+        borderRadius: 20,
+        padding: 16,
+        gap: 16,
+    },
+    settingRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+    },
+    logoutText: {
+        color: colors.danger,
+        fontSize: 15,
+        fontWeight: '700',
+    },
+    filterRow: {
+        flexDirection: 'row',
+        gap: 10,
+    },
+    filterChip: {
+        paddingHorizontal: 16,
+        paddingVertical: 9,
+        borderRadius: 18,
+        borderWidth: 1,
+        borderColor: colors.border,
+        backgroundColor: colors.surface,
+    },
+    filterChipActive: {
+        backgroundColor: colors.text,
+        borderColor: colors.text,
+    },
+    filterText: {
+        color: colors.text,
+        fontSize: 13,
+        fontWeight: '800',
+    },
+    filterTextActive: {
+        color: colors.surface,
+    },
+    notificationCard: {
+        minHeight: 76,
+        borderRadius: 22,
+        borderWidth: 1,
+        borderColor: colors.border,
+        backgroundColor: colors.surface,
+        padding: 16,
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 12,
+    },
+    notificationUrgent: {
+        backgroundColor: colors.primaryLight,
+        borderColor: colors.primary,
+    },
+    doneMini: {
+        color: colors.accent,
+        fontSize: 16,
+        fontWeight: '900',
+    },
+    redDot: {
+        width: 14,
+        height: 14,
+        borderRadius: 7,
+        backgroundColor: colors.danger,
+    },
+    actionCard: {
+        minHeight: 118,
+        borderRadius: 24,
+        borderWidth: 1,
+        borderColor: colors.border,
+        backgroundColor: colors.surface,
+        padding: 18,
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 16,
+    },
+    actionIcon: {
+        width: 56,
+        height: 56,
+        borderRadius: 18,
+        backgroundColor: colors.accent,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    actionIconLight: {
+        backgroundColor: colors.primaryLight,
+    },
+    actionIconText: {
+        color: colors.surface,
+        fontSize: 30,
+        lineHeight: 34,
+        fontWeight: '600',
+    },
+    actionIconAccent: {
+        color: colors.accent,
+        fontSize: 22,
+        fontWeight: '900',
+    },
+    actionTitle: {
+        color: colors.text,
+        fontSize: 18,
+        fontWeight: '900',
+    },
+    actionDescription: {
+        color: colors.secondaryText,
+        fontSize: 13,
+        lineHeight: 19,
+        marginTop: 4,
+    },
+    actionArrow: {
+        color: colors.accent,
+        fontSize: 30,
+        fontWeight: '300',
+    },
+    fieldGroup: {
+        paddingHorizontal: 4,
+        gap: 8,
+    },
+    copyField: {
+        minHeight: 56,
+        borderRadius: 14,
+        borderWidth: 1,
+        borderColor: colors.border,
+        backgroundColor: 'rgba(255,255,255,0.48)',
+        paddingHorizontal: 16,
+        justifyContent: 'center',
+    },
+    copyFieldText: {
+        color: colors.secondaryText,
+        fontSize: 15,
+    },
+    helperDanger: {
+        color: colors.danger,
+    },
+    counterRow: {
+        minHeight: 48,
+        borderRadius: 18,
+        backgroundColor: colors.surface,
+        borderWidth: 1,
+        borderColor: colors.border,
+        padding: 8,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    roundLight: {
+        width: 38,
+        height: 38,
+        borderRadius: 19,
+        backgroundColor: colors.primaryLight,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    roundGreen: {
+        width: 38,
+        height: 38,
+        borderRadius: 19,
+        backgroundColor: colors.accent,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    previewCard: {
+        backgroundColor: colors.primaryLight,
+        borderWidth: 1,
+        borderColor: colors.primary,
+        borderRadius: 20,
+        padding: 16,
+        gap: 12,
+    },
+    previewDot: {
+        width: 34,
+        height: 34,
+        borderRadius: 17,
+        backgroundColor: colors.accent,
+    },
+    spacer: {
+        height: 160,
+    },
+    inviteSummary: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 14,
+        borderRadius: 20,
+        backgroundColor: colors.primaryLight,
+        padding: 16,
+    },
+    memberRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 12,
+        backgroundColor: colors.surface,
+        borderWidth: 1,
+        borderColor: colors.border,
+        borderRadius: 18,
+        padding: 14,
+    },
+    memberAction: {
+        backgroundColor: colors.accent,
+        borderRadius: 16,
+        paddingHorizontal: 18,
+        paddingVertical: 10,
+    },
+    memberActionMuted: {
+        backgroundColor: colors.surface,
+    },
+    memberActionText: {
+        color: colors.surface,
+        fontSize: 13,
+        fontWeight: '900',
+    },
+    joinDivider: {
+        height: 1,
+        backgroundColor: colors.accent,
+        marginHorizontal: -20,
+        marginVertical: 18,
+    },
+    joinCard: {
+        backgroundColor: colors.surface,
+        borderWidth: 1,
+        borderColor: colors.border,
+        borderRadius: 24,
+        padding: 20,
+        gap: 18,
+    },
+    editHero: {
+        backgroundColor: colors.surface,
+        borderWidth: 1,
+        borderColor: colors.border,
+        borderRadius: 24,
+        paddingVertical: 22,
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 12,
+    },
+    editHeroHint: {
+        color: colors.accent,
+        fontSize: 13,
+        fontWeight: '800',
+    },
+    profileAvatarLarge: {
+        width: 80,
+        height: 80,
+        borderRadius: 40,
+        backgroundColor: colors.primaryLight,
+    },
+    addBadge: {
+        position: 'absolute',
+        right: -4,
+        bottom: 0,
+        width: 26,
+        height: 26,
+        borderRadius: 13,
+        backgroundColor: colors.accent,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    accountCard: {
+        backgroundColor: colors.surface,
+        borderWidth: 1,
+        borderColor: colors.border,
+        borderRadius: 20,
+        padding: 16,
+        gap: 18,
+    },
 });

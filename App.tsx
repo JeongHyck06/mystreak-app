@@ -1,6 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { AppState, SafeAreaView, Text } from "react-native";
+import { AppState, Text, View } from "react-native";
 import {
   createCheckIn,
   createPod,
@@ -264,14 +264,14 @@ export default function App() {
 
   if (isBooting) {
     return (
-      <SafeAreaView style={styles.safe}>
+      <View style={styles.safe}>
         <Text style={styles.bodyCopy}>로그인 상태를 확인하는 중입니다...</Text>
-      </SafeAreaView>
+      </View>
     );
   }
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <View style={styles.safe}>
       <StatusBar style="dark" />
       <AnimatedScreen screenKey={screen} tabSlideDirection={tabSlideDirection}>
         {screen === "onboarding" && (
@@ -391,6 +391,6 @@ export default function App() {
           />
         )}
       </AnimatedScreen>
-    </SafeAreaView>
+    </View>
   );
 }
