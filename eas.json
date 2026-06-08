@@ -18,7 +18,9 @@
             },
             "env": {
                 "EXPO_PUBLIC_API_URL": "https://mystreak.duckdns.org",
-                "EXPO_PUBLIC_KAKAO_REST_API_KEY": "bec33e8bebad414b9753cf671aa6ddb0"
+                "EXPO_PUBLIC_KAKAO_REST_API_KEY": "bec33e8bebad414b9753cf671aa6ddb0",
+                "EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID": "822882547973-j0nnsap9qdgkg39811t801k8eda8b668.apps.googleusercontent.com",
+                "EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID": "822882547973-vsfjkdgi0agompppamr0jpn21cg8c78f.apps.googleusercontent.com"
             }
         },
         "production": {
@@ -28,7 +30,9 @@
             },
             "env": {
                 "EXPO_PUBLIC_API_URL": "https://mystreak.duckdns.org",
-                "EXPO_PUBLIC_KAKAO_REST_API_KEY": "bec33e8bebad414b9753cf671aa6ddb0"
+                "EXPO_PUBLIC_KAKAO_REST_API_KEY": "bec33e8bebad414b9753cf671aa6ddb0",
+                "EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID": "822882547973-j0nnsap9qdgkg39811t801k8eda8b668.apps.googleusercontent.com",
+                "EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID": "822882547973-vsfjkdgi0agompppamr0jpn21cg8c78f.apps.googleusercontent.com"
             }
         }
     },

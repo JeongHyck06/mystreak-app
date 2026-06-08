@@ -16,7 +16,8 @@
         "NSPhotoLibraryUsageDescription": "인증 사진과 동영상을 선택하기 위해 사진 보관함 권한이 필요합니다.",
         "ITSAppUsesNonExemptEncryption": false
       },
-      "bundleIdentifier": "com.wjdgur050700.mystreak"
+      "bundleIdentifier": "com.wjdgur050700.mystreak",
+      "usesAppleSignIn": true
     },
     "android": {
       "adaptiveIcon": {
@@ -29,7 +30,8 @@
     },
     "plugins": [
       "expo-web-browser",
-      "expo-image-picker"
+      "expo-image-picker",
+      "expo-apple-authentication"
     ],
     "extra": {
       "eas": {
