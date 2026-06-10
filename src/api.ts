@@ -93,6 +93,17 @@ export type AppNotification = {
   read: boolean;
 };
 
+export type AppVersionInfo = {
+  ios: PlatformVersionInfo;
+  android: PlatformVersionInfo;
+};
+
+export type PlatformVersionInfo = {
+  minBuild: number;
+  latestBuild: number;
+  updateUrl?: string | null;
+};
+
 export type MediaUploadRequest = {
   fileName: string;
   contentType: string;
@@ -240,6 +251,7 @@ export const fetchNotifications = (type?: string) =>
   request<AppNotification[]>(`/api/notifications${type ? `?type=${encodeURIComponent(type)}` : ""}`);
 export const markNotificationsRead = () =>
   request<AppNotification[]>("/api/notifications/read-all", { method: "PATCH" });
+export const fetchAppVersion = () => request<AppVersionInfo>("/api/app-version", { skipAuth: true });
 export const fetchPodFeed = (podId: string) =>
   request<CheckIn[]>(`/api/pods/${encodeURIComponent(podId)}/feed`);
 export const fetchPodMembers = (podId: string) =>

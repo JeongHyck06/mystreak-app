@@ -25,7 +25,7 @@ export function Login({
     const [error, setError] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const { promptKakao, ready: kakaoReady } = useKakaoAuth();
-    const { promptGoogle, ready: googleReady } = useGoogleAuth();
+    const { promptGoogle } = useGoogleAuth();
 
     const submit = async () => {
         setError('');
@@ -117,7 +117,7 @@ export function Login({
             <Pressable style={[styles.socialButton, styles.appleButton]} onPress={submitApple} disabled={isSubmitting}>
                 <Text style={styles.socialLight}>Apple로 시작하기</Text>
             </Pressable>
-            <Pressable style={styles.socialButton} onPress={submitGoogle} disabled={!googleReady || isSubmitting}>
+            <Pressable style={styles.socialButton} onPress={submitGoogle} disabled={isSubmitting}>
                 <Text style={styles.socialStrong}>G Google로 시작하기</Text>
             </Pressable>
             <Pressable style={styles.textButton} onPress={onOpenSignUp}>

@@ -1,11 +1,13 @@
 import { StatusBar } from "expo-status-bar";
+import * as Application from "expo-application";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { AppState, Text, View } from "react-native";
+import { Alert, AppState, Linking, Platform, Text, View } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import {
   createCheckIn,
   createPod,
   appleLogin,
+  fetchAppVersion,
   fetchNotifications,
   fetchPods,
   fetchProfile,
@@ -60,6 +62,7 @@ export default function App() {
   const [stats, setStats] = useState<StatsData | null>(null);
   const [notifications, setNotifications] = useState<AppNotification[]>([]);
   const lastForegroundRefreshAt = useRef(0);
+  const lastUpdatePromptedBuild = useRef<number | null>(null);
   const [statsMonth, setStatsMonth] = useState(() => {
     const now = new Date();
     return { year: now.getFullYear(), month: now.getMonth() + 1 };
@@ -108,8 +111,18 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    void checkForAppUpdate();
+  }, []);
+
+  useEffect(() => {
     const subscription = AppState.addEventListener("change", (state) => {
-      if (state !== "active" || !getApiSession()?.accessToken) {
+      if (state !== "active") {
+        return;
+      }
+
+      void checkForAppUpdate();
+
+      if (!getApiSession()?.accessToken) {
         return;
       }
 
@@ -125,6 +138,52 @@ export default function App() {
 
     return () => subscription.remove();
   }, []);
+
+  const checkForAppUpdate = async () => {
+    if (Platform.OS !== "ios" && Platform.OS !== "android") {
+      return;
+    }
+
+    const currentBuild = Number(Application.nativeBuildVersion ?? "0");
+    if (!Number.isFinite(currentBuild) || currentBuild <= 0) {
+      return;
+    }
+
+    try {
+      const appVersion = await fetchAppVersion();
+      const platformVersion = Platform.OS === "ios" ? appVersion.ios : appVersion.android;
+      const requiredBuild = Math.max(platformVersion.minBuild, platformVersion.latestBuild);
+      const needsUpdate = currentBuild < platformVersion.latestBuild;
+      const requiresUpdate = currentBuild < platformVersion.minBuild;
+
+      if ((!needsUpdate && !requiresUpdate) || lastUpdatePromptedBuild.current === requiredBuild) {
+        return;
+      }
+
+      lastUpdatePromptedBuild.current = requiredBuild;
+      const openUpdateUrl = () => {
+        if (platformVersion.updateUrl) {
+          void Linking.openURL(platformVersion.updateUrl);
+        }
+      };
+
+      Alert.alert(
+        "업데이트가 있어요!",
+        requiresUpdate
+          ? "현재 버전에서는 서비스를 계속 이용할 수 없어요. 최신 버전으로 업데이트해 주세요."
+          : "새 버전에서 더 안정적으로 사용할 수 있어요.",
+        platformVersion.updateUrl
+          ? [
+              ...(requiresUpdate ? [] : [{ text: "나중에", style: "cancel" as const }]),
+              { text: "업데이트", onPress: openUpdateUrl }
+            ]
+          : [{ text: "확인" }],
+        { cancelable: !requiresUpdate }
+      );
+    } catch {
+      // 업데이트 확인 실패는 앱 사용을 막지 않는다.
+    }
+  };
 
   const refreshAppData = async () => {
     const now = new Date();

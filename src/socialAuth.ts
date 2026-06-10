@@ -1,4 +1,4 @@
-import { makeRedirectUri } from "expo-auth-session";
+import { AuthRequest, exchangeCodeAsync, makeRedirectUri, ResponseType } from "expo-auth-session";
 import * as AppleAuthentication from "expo-apple-authentication";
 import * as WebBrowser from "expo-web-browser";
 import { Platform } from "react-native";
@@ -7,7 +7,10 @@ WebBrowser.maybeCompleteAuthSession();
 
 const GOOGLE_IOS_CLIENT_ID = process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID ?? "";
 const GOOGLE_ANDROID_CLIENT_ID = process.env.EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID ?? "";
-const GOOGLE_AUTHORIZE_URL = "https://accounts.google.com/o/oauth2/v2/auth";
+const GOOGLE_DISCOVERY = {
+  authorizationEndpoint: "https://accounts.google.com/o/oauth2/v2/auth",
+  tokenEndpoint: "https://oauth2.googleapis.com/token"
+};
 
 export type GoogleAuthResult = {
   idToken: string;
@@ -22,32 +25,50 @@ export function useGoogleAuth() {
   const returnUrl = makeRedirectUri({ scheme: "mystreak", path: "oauth" });
   const clientId = Platform.OS === "android" ? GOOGLE_ANDROID_CLIENT_ID : GOOGLE_IOS_CLIENT_ID;
 
+  if (__DEV__) {
+    console.log("[Google] OAuth redirect URI =", returnUrl);
+  }
+
   const promptGoogle = async (): Promise<GoogleAuthResult> => {
     if (!clientId) {
       throw new Error("구글 클라이언트 ID가 설정되지 않았어요.");
     }
 
-    const params = new URLSearchParams({
-      client_id: clientId,
-      redirect_uri: returnUrl,
-      response_type: "id_token",
-      scope: "openid email profile",
-      nonce: String(Date.now())
+    const request = new AuthRequest({
+      clientId,
+      redirectUri: returnUrl,
+      responseType: ResponseType.Code,
+      scopes: ["openid", "email", "profile"],
+      usePKCE: true
     });
-    const result = await WebBrowser.openAuthSessionAsync(`${GOOGLE_AUTHORIZE_URL}?${params.toString()}`, returnUrl);
-    if (result.type !== "success" || !result.url) {
+    const result = await request.promptAsync(GOOGLE_DISCOVERY);
+    if (result.type === "cancel" || result.type === "dismiss") {
       throw new Error("구글 로그인이 취소되었어요.");
     }
-
-    const parsed = parseAuthParams(result.url);
-    if (parsed.error) {
-      throw new Error(`구글 로그인에 실패했습니다. (${parsed.error})`);
+    if (result.type !== "success") {
+      const message = result.type === "error" ? result.error?.message ?? result.params.error : undefined;
+      throw new Error(`구글 로그인에 실패했습니다.${message ? ` (${message})` : ""}`);
     }
-    if (!parsed.id_token) {
+    if (!result.params.code) {
+      throw new Error("구글 인증 코드를 받지 못했어요.");
+    }
+
+    const token = await exchangeCodeAsync(
+      {
+        clientId,
+        redirectUri: returnUrl,
+        code: result.params.code,
+        extraParams: {
+          code_verifier: request.codeVerifier ?? ""
+        }
+      },
+      GOOGLE_DISCOVERY
+    );
+    if (!token.idToken) {
       throw new Error("구글 로그인 토큰을 받지 못했어요.");
     }
 
-    return { idToken: parsed.id_token };
+    return { idToken: token.idToken };
   };
 
   return { promptGoogle, ready: Boolean(clientId) };
@@ -75,22 +96,3 @@ export async function promptApple(): Promise<AppleAuthResult> {
   };
 }
 
-function parseAuthParams(url: string) {
-  const queryStart = url.indexOf("?");
-  const hashStart = url.indexOf("#");
-  const start = hashStart >= 0 ? hashStart + 1 : queryStart >= 0 ? queryStart + 1 : -1;
-  if (start < 0) {
-    return {} as Record<string, string>;
-  }
-
-  const raw = url.slice(start);
-  const out: Record<string, string> = {};
-  for (const pair of raw.split("&")) {
-    if (!pair) {
-      continue;
-    }
-    const [key, value = ""] = pair.split("=");
-    out[decodeURIComponent(key)] = decodeURIComponent(value.replace(/\+/g, " "));
-  }
-  return out;
-}

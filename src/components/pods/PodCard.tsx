@@ -24,15 +24,9 @@ export function PodCard({
           {pod.needsCheckIn ? "자정까지 6시간 남음" : `${pod.streak}일째 이어지는 중`}
         </Text>
       </View>
-      {pod.needsCheckIn ? (
-        <PressScale style={styles.smallCta} onPress={onUpload}>
-          <Text style={styles.smallCtaText}>인증하기</Text>
-        </PressScale>
-      ) : (
-        <View style={styles.donePill}>
-          <Text style={styles.donePillText}>✓ 인증 완료</Text>
-        </View>
-      )}
+      <PressScale style={styles.smallCta} onPress={onUpload}>
+        <Text style={styles.smallCtaText}>{pod.needsCheckIn ? "인증하기" : "추가 인증"}</Text>
+      </PressScale>
     </PressScale>
   );
 }
