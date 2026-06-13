@@ -1,7 +1,7 @@
 import { StatusBar } from "expo-status-bar";
 import { NativeModulesProxy } from "expo-modules-core";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { AppState, Platform, Text, View } from "react-native";
+import { AppState, Platform, Text } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import {
   createCheckIn,
@@ -10,6 +10,7 @@ import {
   fetchNotifications,
   fetchPods,
   fetchProfile,
+  fetchProfileById,
   fetchStats,
   googleLogin,
   getApiSession,
@@ -46,6 +47,7 @@ import {
   PodDetail,
   PodManagement,
   Profile,
+  PublicProfile,
   SignUp,
   Stats,
   Upload
@@ -93,6 +95,7 @@ export default function App() {
   const [tabSlideDirection, setTabSlideDirection] = useState<-1 | 0 | 1>(0);
   const [isBooting, setIsBooting] = useState(true);
   const [profile, setProfile] = useState<ProfileData | null>(null);
+  const [publicProfile, setPublicProfile] = useState<ProfileData | null>(null);
   const [pods, setPods] = useState<Pod[]>([]);
   const [stats, setStats] = useState<StatsData | null>(null);
   const [notifications, setNotifications] = useState<AppNotification[]>([]);
@@ -346,6 +349,7 @@ export default function App() {
   const handleLogout = async () => {
     await logout();
     setProfile(null);
+    setPublicProfile(null);
     setPods([]);
     setStats(null);
     setNotifications([]);
@@ -403,6 +407,11 @@ export default function App() {
     await leavePod(podId);
     await refreshAppData();
   };
+  const handleOpenPublicProfile = async (profileId: string) => {
+    setPublicProfile(null);
+    setScreen("publicProfile");
+    setPublicProfile(await fetchProfileById(profileId));
+  };
   const handleMarkAllRead = async () => {
     setNotifications(await markNotificationsRead());
   };
@@ -454,6 +463,7 @@ export default function App() {
             onUpload={() => setScreen("upload")}
             onAddPod={() => setScreen("podActions")}
             onTab={handleTab}
+            onRefresh={refreshAppData}
           />
         )}
         {screen === "pod" && selectedPod && (
@@ -466,6 +476,8 @@ export default function App() {
             onPreviousPod={() => selectAdjacentPod(-1)}
             onSelectPod={setSelectedPodId}
             onUpload={() => setScreen("upload")}
+            onOpenProfile={handleOpenPublicProfile}
+            onTab={handleTab}
             onChanged={refreshAppData}
           />
         )}
@@ -540,6 +552,9 @@ export default function App() {
               setProfile(await updateProfile(request));
             }}
           />
+        )}
+        {screen === "publicProfile" && (
+          <PublicProfile profile={publicProfile} onBack={() => setScreen(selectedPod ? "pod" : "home")} />
         )}
         </AnimatedScreen>
       </SafeAreaView>

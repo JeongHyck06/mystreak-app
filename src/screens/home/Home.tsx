@@ -1,4 +1,5 @@
-import { Image, Pressable, ScrollView, Text, View } from "react-native";
+import { useState } from "react";
+import { Image, Pressable, RefreshControl, ScrollView, Text, View } from "react-native";
 import { AnimatedProgress, BottomTabs, FloatingButton, PodCard, SectionHeader, StatCard } from "../../components";
 import type { Pod, Profile, Stats } from "../../api";
 import type { Tab } from "../../navigation";
@@ -14,7 +15,8 @@ export function Home({
   onOpenPod,
   onUpload,
   onAddPod,
-  onTab
+  onTab,
+  onRefresh
 }: {
   profile: Profile | null;
   pods: Pod[];
@@ -26,7 +28,9 @@ export function Home({
   onUpload: () => void;
   onAddPod: () => void;
   onTab: (tab: Tab) => void;
+  onRefresh: () => Promise<void>;
 }) {
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const firstName = profile?.name ? `${profile.name}님` : "오늘";
   const currentStreak = stats?.currentStreak ?? profile?.currentStreak ?? 0;
   const bestStreak = stats?.bestStreak ?? profile?.bestStreak ?? 0;
@@ -35,10 +39,25 @@ export function Home({
   const weeklyChecks = stats?.weeklyChecks ?? 0;
   const activePods = pods.length;
   const progress = weeklyGoal > 0 ? Math.min(weeklyChecks / weeklyGoal, 1) : 0;
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    try {
+      await onRefresh();
+    } catch (error) {
+      if (process.env.NODE_ENV !== "production") {
+        console.warn("홈 새로고침에 실패했습니다.", error);
+      }
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
 
   return (
     <View style={styles.flex}>
-      <ScrollView contentContainerStyle={styles.screenWithTab}>
+      <ScrollView
+        contentContainerStyle={styles.screenWithTab}
+        refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} />}
+      >
         <View style={styles.homeHeader}>
           <Pressable onPress={onOpenProfile} accessibilityRole="button" accessibilityLabel="프로필 열기">
             <View style={styles.avatar}>
@@ -80,10 +99,6 @@ export function Home({
           <View style={styles.progressTrack}>
             <AnimatedProgress progress={progress} />
           </View>
-        </Pressable>
-        <Pressable style={styles.checkInTopButton} onPress={onUpload} accessibilityRole="button">
-          <Text style={styles.checkInTopButtonText}>오늘 인증하기</Text>
-          <Text style={styles.checkInTopButtonCaption}>사진 또는 15초 동영상으로 스트릭 이어가기</Text>
         </Pressable>
         <View style={styles.statsRow}>
           <StatCard label="이번 주 인증" value={`${weeklyChecks}`} unit={`/ ${weeklyGoal}일`} />

@@ -513,6 +513,7 @@ export const styles = StyleSheet.create({
         height: 64,
         borderRadius: 16,
         backgroundColor: colors.primaryLight,
+        overflow: 'hidden',
     },
     podAvatarWhite: {
         backgroundColor: colors.surface,
@@ -522,6 +523,7 @@ export const styles = StyleSheet.create({
         height: 52,
         borderRadius: 14,
         backgroundColor: colors.primaryLight,
+        overflow: 'hidden',
     },
     doneCircle: {
         width: 40,
@@ -679,6 +681,11 @@ export const styles = StyleSheet.create({
     segmentRow: {
         flexDirection: 'row',
         gap: 44,
+    },
+    segmentBar: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
         borderBottomWidth: 1,
         borderColor: colors.border,
     },
@@ -695,6 +702,18 @@ export const styles = StyleSheet.create({
         fontSize: 15,
         fontWeight: '700',
         paddingBottom: 10,
+    },
+    segmentCta: {
+        marginBottom: 8,
+        borderRadius: 14,
+        backgroundColor: colors.accent,
+        paddingHorizontal: 14,
+        paddingVertical: 9,
+    },
+    segmentCtaText: {
+        color: colors.surface,
+        fontSize: 12,
+        fontWeight: '900',
     },
     feedCard: {
         backgroundColor: colors.surface,
@@ -733,6 +752,12 @@ export const styles = StyleSheet.create({
         backgroundColor: colors.primaryLight,
         alignItems: 'center',
         justifyContent: 'center',
+        overflow: 'hidden',
+    },
+    avatarFill: {
+        width: '100%',
+        height: '100%',
+        borderRadius: 999,
     },
     feedText: {
         color: colors.text,
@@ -740,13 +765,13 @@ export const styles = StyleSheet.create({
         lineHeight: 20,
     },
     photoPlaceholder: {
-        height: 240,
+        aspectRatio: 4 / 5,
         borderRadius: 18,
         backgroundColor: colors.secondary,
     },
     feedMediaImage: {
         width: '100%',
-        height: 240,
+        aspectRatio: 4 / 5,
         borderRadius: 18,
     },
     feedVideoPreview: {
@@ -887,6 +912,23 @@ export const styles = StyleSheet.create({
         borderRadius: 14,
         paddingHorizontal: 16,
         paddingVertical: 12,
+    },
+    imagePreviewBackdrop: {
+        flex: 1,
+        backgroundColor: 'rgba(0,0,0,0.88)',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 18,
+    },
+    imagePreview: {
+        width: '100%',
+        height: '82%',
+    },
+    imagePreviewHint: {
+        color: colors.surface,
+        fontSize: 13,
+        fontWeight: '800',
+        marginTop: 16,
     },
     doneButton: {
         minHeight: 56,
@@ -1389,6 +1431,7 @@ export const styles = StyleSheet.create({
         height: 34,
         borderRadius: 17,
         backgroundColor: colors.accent,
+        overflow: 'hidden',
     },
     spacer: {
         height: 160,

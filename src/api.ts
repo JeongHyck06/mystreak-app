@@ -23,6 +23,7 @@ export type Pod = {
   id: string;
   name: string;
   description: string;
+  avatarUrl?: string | null;
   memberCount: number;
   certifiedToday: number;
   maxMembers: number;
@@ -38,6 +39,7 @@ export type CheckIn = {
   podId: string;
   authorId: string;
   author: string;
+  authorAvatarUrl?: string | null;
   meta: string;
   createdAt?: string | null;
   text: string;
@@ -64,6 +66,7 @@ export type PodMember = {
   id: string;
   name: string;
   handle: string;
+  avatarUrl?: string | null;
   streak: number;
   checkedInToday: boolean;
   role: string;
@@ -227,6 +230,8 @@ export async function logout() {
 }
 
 export const fetchProfile = () => request<Profile>("/api/profile/me");
+export const fetchProfileById = (profileId: string) =>
+  request<Profile>(`/api/profile/${encodeURIComponent(profileId)}`);
 export const fetchPods = () => request<Pod[]>("/api/pods");
 export const fetchStats = (year?: number, month?: number) => {
   const params = new URLSearchParams();
@@ -299,6 +304,7 @@ export const createPod = (pod: {
   maxMembers: number;
   tagLine: string;
   tags: string[];
+  avatarUrl?: string | null;
 }) =>
   request<Pod>("/api/pods", {
     method: "POST",
