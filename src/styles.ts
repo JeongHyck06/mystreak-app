@@ -513,6 +513,7 @@ export const styles = StyleSheet.create({
         height: 64,
         borderRadius: 16,
         backgroundColor: colors.primaryLight,
+        overflow: 'hidden',
     },
     podAvatarWhite: {
         backgroundColor: colors.surface,
@@ -522,6 +523,7 @@ export const styles = StyleSheet.create({
         height: 52,
         borderRadius: 14,
         backgroundColor: colors.primaryLight,
+        overflow: 'hidden',
     },
     doneCircle: {
         width: 40,
@@ -1429,6 +1431,7 @@ export const styles = StyleSheet.create({
         height: 34,
         borderRadius: 17,
         backgroundColor: colors.accent,
+        overflow: 'hidden',
     },
     spacer: {
         height: 160,

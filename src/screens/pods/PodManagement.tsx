@@ -1,4 +1,4 @@
-import { Alert, Pressable, ScrollView, Text, View } from "react-native";
+import { Alert, Image, Pressable, ScrollView, Text, View } from "react-native";
 import type { Pod } from "../../api";
 import { styles } from "../../styles";
 import { TopBar } from "../../components";
@@ -33,7 +33,9 @@ export function PodManagement({
       {pods.map((pod) => (
         <View style={styles.managePodCard} key={pod.id}>
           <View style={styles.row}>
-            <View style={styles.podAvatarLarge} />
+            <View style={styles.podAvatarLarge}>
+              {pod.avatarUrl ? <Image source={{ uri: pod.avatarUrl }} style={styles.avatarFill} /> : null}
+            </View>
             <View style={styles.flex}>
               <Text style={styles.cardTitle}>{pod.name}</Text>
               <Text style={styles.caption}>

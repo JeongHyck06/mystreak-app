@@ -1,4 +1,4 @@
-import { Text, View } from "react-native";
+import { Image, Text, View } from "react-native";
 import type { Pod } from "../../api";
 import { styles } from "../../styles";
 import { PressScale } from "../ui/PressScale";
@@ -14,7 +14,9 @@ export function PodCard({
 }) {
   return (
     <PressScale style={[styles.podCard, pod.needsCheckIn && styles.podCardActive]} onPress={onPress}>
-      <View style={[styles.podAvatar, pod.needsCheckIn && styles.podAvatarWhite]} />
+      <View style={[styles.podAvatar, pod.needsCheckIn && styles.podAvatarWhite]}>
+        {pod.avatarUrl ? <Image source={{ uri: pod.avatarUrl }} style={styles.avatarFill} /> : null}
+      </View>
       <View style={styles.flex}>
         <Text style={styles.cardTitle}>{pod.name}</Text>
         <Text style={[styles.caption, pod.needsCheckIn && styles.accentText]}>
