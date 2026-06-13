@@ -23,6 +23,7 @@ export type Pod = {
   id: string;
   name: string;
   description: string;
+  avatarUrl?: string | null;
   memberCount: number;
   certifiedToday: number;
   maxMembers: number;
@@ -303,6 +304,7 @@ export const createPod = (pod: {
   maxMembers: number;
   tagLine: string;
   tags: string[];
+  avatarUrl?: string | null;
 }) =>
   request<Pod>("/api/pods", {
     method: "POST",

@@ -1,14 +1,12 @@
 import {
     Fragment,
     useEffect,
-    useMemo,
     useState,
 } from 'react';
 import {
     Image,
     KeyboardAvoidingView,
     Modal,
-    PanResponder,
     Platform,
     Pressable,
     ScrollView,
@@ -16,7 +14,7 @@ import {
     TextInput,
     View,
 } from 'react-native';
-import { TopBar } from '../../components';
+import { BottomTabs, TopBar } from '../../components';
 import {
     addComment,
     deleteCheckIn,
@@ -31,6 +29,7 @@ import {
     type Pod,
     type PodMember,
 } from '../../api';
+import type { Tab } from '../../navigation';
 import { styles } from '../../styles';
 
 type PodDetailTab = 'feed' | 'members' | 'info';
@@ -45,6 +44,7 @@ export function PodDetail({
     onSelectPod,
     onUpload,
     onOpenProfile,
+    onTab,
     onChanged,
 }: {
     pod: Pod;
@@ -56,6 +56,7 @@ export function PodDetail({
     onSelectPod: (podId: string) => void;
     onUpload: () => void;
     onOpenProfile: (profileId: string) => void;
+    onTab: (tab: Tab) => void;
     onChanged: () => Promise<void> | void;
 }) {
     const [isPickerOpen, setIsPickerOpen] = useState(false);
@@ -118,24 +119,6 @@ export function PodDetail({
         members.length > 0
             ? members.length
             : pod.memberCount;
-    const swipeResponder = useMemo(
-        () =>
-            PanResponder.create({
-                onMoveShouldSetPanResponder: (_, gesture) =>
-                    Math.abs(gesture.dx) > 64 &&
-                    Math.abs(gesture.dx) >
-                        Math.abs(gesture.dy) * 1.4,
-                onPanResponderRelease: (_, gesture) => {
-                    if (gesture.dx < -64) {
-                        onNextPod();
-                    }
-                    if (gesture.dx > 64) {
-                        onPreviousPod();
-                    }
-                },
-            }),
-        [onNextPod, onPreviousPod],
-    );
 
     const replaceItem = (next: CheckIn) =>
         setFeed((items) =>
@@ -282,10 +265,9 @@ export function PodDetail({
                     : undefined
             }
             keyboardVerticalOffset={12}
-            {...swipeResponder.panHandlers}
         >
             <ScrollView
-                contentContainerStyle={styles.screen}
+                contentContainerStyle={styles.screenWithTab}
                 keyboardShouldPersistTaps="handled"
             >
                 <TopBar
@@ -401,6 +383,24 @@ export function PodDetail({
                         {memberCount}명 · 현재 스트릭{' '}
                         {pod.streak}일
                     </Text>
+                    <View style={styles.row}>
+                        <View style={styles.podAvatarLarge}>
+                            {pod.avatarUrl ? (
+                                <Image
+                                    source={{ uri: pod.avatarUrl }}
+                                    style={styles.avatarFill}
+                                />
+                            ) : null}
+                        </View>
+                        <View style={styles.flex}>
+                            <Text style={styles.cardTitle}>
+                                {pod.name}
+                            </Text>
+                            <Text style={styles.caption}>
+                                {pod.tagLine}
+                            </Text>
+                        </View>
+                    </View>
                     <Text style={styles.podDescription}>
                         {pod.description}
                     </Text>
@@ -1109,6 +1109,7 @@ export function PodDetail({
                     <Text style={{ color: '#ffffff', fontSize: 13, fontWeight: '800', marginTop: 16 }}>탭해서 닫기</Text>
                 </Pressable>
             </Modal>
+            <BottomTabs active="pod" onTab={onTab} />
         </KeyboardAvoidingView>
     );
 }

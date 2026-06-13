@@ -1,7 +1,7 @@
 import { StatusBar } from "expo-status-bar";
 import { NativeModulesProxy } from "expo-modules-core";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { AppState, Platform, Text, View } from "react-native";
+import { AppState, Platform, Text } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import {
   createCheckIn,
@@ -463,6 +463,7 @@ export default function App() {
             onUpload={() => setScreen("upload")}
             onAddPod={() => setScreen("podActions")}
             onTab={handleTab}
+            onRefresh={refreshAppData}
           />
         )}
         {screen === "pod" && selectedPod && (
@@ -476,6 +477,7 @@ export default function App() {
             onSelectPod={setSelectedPodId}
             onUpload={() => setScreen("upload")}
             onOpenProfile={handleOpenPublicProfile}
+            onTab={handleTab}
             onChanged={refreshAppData}
           />
         )}
