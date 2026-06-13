@@ -1,4 +1,4 @@
-import { Pressable, ScrollView, Text, View } from "react-native";
+import { Image, Pressable, ScrollView, Text, View } from "react-native";
 import { AnimatedProgress, BottomTabs, FloatingButton, PodCard, SectionHeader, StatCard } from "../../components";
 import type { Pod, Profile, Stats } from "../../api";
 import type { Tab } from "../../navigation";
@@ -9,6 +9,7 @@ export function Home({
   pods,
   stats,
   onOpenNotifications,
+  unreadNotificationCount,
   onOpenProfile,
   onOpenPod,
   onUpload,
@@ -19,6 +20,7 @@ export function Home({
   pods: Pod[];
   stats: Stats | null;
   onOpenNotifications: () => void;
+  unreadNotificationCount: number;
   onOpenProfile: () => void;
   onOpenPod: (podId: string) => void;
   onUpload: () => void;
@@ -39,14 +41,29 @@ export function Home({
       <ScrollView contentContainerStyle={styles.screenWithTab}>
         <View style={styles.homeHeader}>
           <Pressable onPress={onOpenProfile} accessibilityRole="button" accessibilityLabel="프로필 열기">
-            <View style={styles.avatar} />
+            <View style={styles.avatar}>
+              {profile?.avatarUrl ? (
+                <Image source={{ uri: profile.avatarUrl }} style={{ width: "100%", height: "100%", borderRadius: 999 }} />
+              ) : null}
+            </View>
           </Pressable>
           <View style={styles.flex}>
             <Text style={styles.caption}>안녕하세요</Text>
             <Text style={styles.headerName}>{firstName}, 오늘도 화이팅!</Text>
           </View>
-          <Pressable style={styles.bellButton} onPress={onOpenNotifications}>
-            <Text style={styles.bellText}>•</Text>
+          <Pressable
+            style={styles.bellButton}
+            onPress={onOpenNotifications}
+            accessibilityRole="button"
+            accessibilityLabel={`알림 열기${unreadNotificationCount > 0 ? `, 읽지 않은 알림 ${unreadNotificationCount}개` : ""}`}
+          >
+            {unreadNotificationCount > 0 ? (
+              <View style={styles.bellUnreadBadge}>
+                <Text style={styles.bellUnreadText}>{unreadNotificationCount > 9 ? "9+" : unreadNotificationCount}</Text>
+              </View>
+            ) : (
+              <View style={styles.bellDot} />
+            )}
           </Pressable>
         </View>
         <Pressable style={styles.streakHero} onPress={() => onTab("stats")}>
@@ -63,6 +80,10 @@ export function Home({
           <View style={styles.progressTrack}>
             <AnimatedProgress progress={progress} />
           </View>
+        </Pressable>
+        <Pressable style={styles.checkInTopButton} onPress={onUpload} accessibilityRole="button">
+          <Text style={styles.checkInTopButtonText}>오늘 인증하기</Text>
+          <Text style={styles.checkInTopButtonCaption}>사진 또는 15초 동영상으로 스트릭 이어가기</Text>
         </Pressable>
         <View style={styles.statsRow}>
           <StatCard label="이번 주 인증" value={`${weeklyChecks}`} unit={`/ ${weeklyGoal}일`} />

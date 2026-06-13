@@ -1,6 +1,7 @@
 import { StatusBar } from "expo-status-bar";
+import { NativeModulesProxy } from "expo-modules-core";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { AppState, Text, View } from "react-native";
+import { AppState, Platform, Text, View } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import {
   createCheckIn,
@@ -20,6 +21,7 @@ import {
   logout,
   markNotificationsRead,
   previewJoin,
+  registerPushToken,
   restoreApiSession,
   setApiSession,
   signUp,
@@ -50,6 +52,41 @@ import {
 } from "./src/screens";
 import { styles } from "./src/styles";
 import type { AppleAuthResult, GoogleAuthResult } from "./src/socialAuth";
+
+const EXPO_PROJECT_ID = "a7be7bfe-8ed8-4695-9285-ee36c274f2a3";
+
+type ExpoNotificationsModule = typeof import("expo-notifications");
+
+let notificationsModulePromise: Promise<ExpoNotificationsModule | null> | null = null;
+
+function loadNotificationsModule() {
+  if (!NativeModulesProxy.ExpoPushTokenManager) {
+    if (process.env.NODE_ENV !== "production") {
+      console.warn("알림 네이티브 모듈이 없어 푸시 등록을 건너뜁니다.");
+    }
+    return Promise.resolve(null);
+  }
+
+  notificationsModulePromise ??= import("expo-notifications")
+    .then((module) => {
+      module.setNotificationHandler({
+        handleNotification: async () => ({
+          shouldShowBanner: true,
+          shouldShowList: true,
+          shouldPlaySound: true,
+          shouldSetBadge: false
+        })
+      });
+      return module;
+    })
+    .catch((error) => {
+      if (process.env.NODE_ENV !== "production") {
+        console.warn("알림 네이티브 모듈을 불러오지 못했습니다.", error);
+      }
+      return null;
+    });
+  return notificationsModulePromise;
+}
 
 export default function App() {
   const [screen, setScreen] = useState<Screen>("onboarding");
@@ -86,6 +123,7 @@ export default function App() {
         }
 
         setApiSession(session);
+        void registerForPushNotifications();
         try {
           await refreshAppData();
           if (!cancelled) setScreen("home");
@@ -118,6 +156,7 @@ export default function App() {
         return;
       }
       lastForegroundRefreshAt.current = now;
+      void registerForPushNotifications();
       void refreshAppData().catch(() => {
         // 포그라운드 복귀 갱신 실패는 기존 화면 상태를 유지한다.
       });
@@ -143,6 +182,45 @@ export default function App() {
     setSelectedPodId((current) => current ?? nextPods[0]?.id ?? null);
   };
 
+  const registerForPushNotifications = async () => {
+    if (Platform.OS !== "ios" && Platform.OS !== "android") {
+      return;
+    }
+
+    try {
+      const ExpoNotifications = await loadNotificationsModule();
+      if (!ExpoNotifications) {
+        return;
+      }
+
+      if (Platform.OS === "android") {
+        await ExpoNotifications.setNotificationChannelAsync("default", {
+          name: "기본 알림",
+          importance: ExpoNotifications.AndroidImportance.DEFAULT
+        });
+      }
+
+      const currentPermission = await ExpoNotifications.getPermissionsAsync();
+      const finalPermission = currentPermission.granted
+        ? currentPermission
+        : await ExpoNotifications.requestPermissionsAsync({
+            ios: { allowAlert: true, allowBadge: true, allowSound: true }
+          });
+
+      if (!finalPermission.granted) {
+        return;
+      }
+
+      const pushToken = await ExpoNotifications.getExpoPushTokenAsync({ projectId: EXPO_PROJECT_ID });
+      await registerPushToken(pushToken.data, Platform.OS);
+    } catch (error) {
+      if (process.env.NODE_ENV !== "production") {
+        console.warn("푸시 토큰 등록에 실패했습니다.", error);
+      }
+      // 푸시 토큰 등록 실패는 앱 사용을 막지 않는다.
+    }
+  };
+
   const refreshAppDataSilently = () => {
     if (!getApiSession()?.accessToken) {
       return;
@@ -151,6 +229,52 @@ export default function App() {
       // 백그라운드 갱신 실패는 현재 화면을 그대로 유지한다.
     });
   };
+
+  const openNotificationsFromPush = () => {
+    if (!getApiSession()?.accessToken) {
+      return;
+    }
+
+    setScreen("notifications");
+    void refreshAppData().catch(() => {
+      // 푸시 응답 처리 중 갱신이 실패해도 알림 화면 진입은 유지한다.
+    });
+  };
+
+  useEffect(() => {
+    let receivedSubscription: { remove: () => void } | null = null;
+    let responseSubscription: { remove: () => void } | null = null;
+    let cancelled = false;
+
+    void loadNotificationsModule().then((ExpoNotifications) => {
+      if (!ExpoNotifications || cancelled) {
+        return;
+      }
+
+      receivedSubscription = ExpoNotifications.addNotificationReceivedListener(() => {
+        refreshAppDataSilently();
+      });
+      responseSubscription = ExpoNotifications.addNotificationResponseReceivedListener(() => {
+        openNotificationsFromPush();
+      });
+
+      void ExpoNotifications.getLastNotificationResponseAsync()
+        .then((response) => {
+          if (response) {
+            openNotificationsFromPush();
+          }
+        })
+        .catch(() => {
+          // 마지막 푸시 응답 확인 실패는 앱 시작을 막지 않는다.
+        });
+    });
+
+    return () => {
+      cancelled = true;
+      receivedSubscription?.remove();
+      responseSubscription?.remove();
+    };
+  }, []);
 
   useEffect(() => {
     if (isBooting || !["home", "profile", "stats"].includes(screen)) {
@@ -186,30 +310,35 @@ export default function App() {
 
   const handleLogin = async (email: string, password: string) => {
     await login(email, password);
+    void registerForPushNotifications();
     await refreshAppData();
     setScreen("home");
   };
 
   const handleKakaoLogin = async (result: { accessToken: string; refreshToken?: string; expiresAt?: number }) => {
     await kakaoLogin(result);
+    void registerForPushNotifications();
     await refreshAppData();
     setScreen("home");
   };
 
   const handleGoogleLogin = async (result: GoogleAuthResult) => {
     await googleLogin(result.idToken);
+    void registerForPushNotifications();
     await refreshAppData();
     setScreen("home");
   };
 
   const handleAppleLogin = async (result: AppleAuthResult) => {
     await appleLogin(result.idToken, result.fullName);
+    void registerForPushNotifications();
     await refreshAppData();
     setScreen("home");
   };
 
   const handleSignUp = async (email: string, password: string, name: string, handle: string) => {
     await signUp(email, password, name, handle);
+    void registerForPushNotifications();
     await refreshAppData();
     setScreen("home");
   };
@@ -319,6 +448,7 @@ export default function App() {
             pods={pods}
             stats={stats}
             onOpenNotifications={() => setScreen("notifications")}
+            unreadNotificationCount={notifications.filter((item) => !item.read).length}
             onOpenProfile={() => setScreen("profile")}
             onOpenPod={openPod}
             onUpload={() => setScreen("upload")}

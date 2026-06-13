@@ -12,6 +12,7 @@ export type Profile = {
   handle: string;
   email: string;
   bio: string;
+  avatarUrl?: string | null;
   currentStreak: number;
   bestStreak: number;
   totalChecks: number;
@@ -111,6 +112,8 @@ export type EmailVerificationResponse = {
   verified: boolean;
   expires_at: number;
 };
+
+export type PushPlatform = "ios" | "android";
 
 type AuthResponse = {
   access_token: string;
@@ -240,6 +243,11 @@ export const fetchNotifications = (type?: string) =>
   request<AppNotification[]>(`/api/notifications${type ? `?type=${encodeURIComponent(type)}` : ""}`);
 export const markNotificationsRead = () =>
   request<AppNotification[]>("/api/notifications/read-all", { method: "PATCH" });
+export const registerPushToken = (token: string, platform: PushPlatform) =>
+  request<void>("/api/notifications/push-token", {
+    method: "POST",
+    body: JSON.stringify({ token, platform })
+  });
 export const fetchPodFeed = (podId: string) =>
   request<CheckIn[]>(`/api/pods/${encodeURIComponent(podId)}/feed`);
 export const fetchPodMembers = (podId: string) =>
@@ -303,7 +311,7 @@ export const joinPod = (inviteCode: string) =>
     method: "POST",
     body: JSON.stringify({ inviteCode })
   });
-export const updateProfile = (profile: Pick<Profile, "name" | "handle" | "bio">) =>
+export const updateProfile = (profile: Pick<Profile, "name" | "handle" | "bio" | "avatarUrl">) =>
   request<Profile>("/api/profile/me", {
     method: "PATCH",
     body: JSON.stringify(profile)
