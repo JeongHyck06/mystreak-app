@@ -13,7 +13,7 @@ type SelectedMedia = {
   durationSeconds?: number;
 };
 
-const MAX_VIDEO_SECONDS = 10;
+const MAX_VIDEO_SECONDS = 15;
 
 export function Upload({
   pod,
@@ -38,7 +38,7 @@ export function Upload({
       return;
     }
     if (!selectedMedia) {
-      setError("사진, 카메라 촬영, 동영상 중 하나를 추가해 주세요.");
+      setError("사진, 카메라 촬영, 동영상 촬영/선택 중 하나를 추가해 주세요.");
       return;
     }
     setError("");
@@ -97,30 +97,22 @@ export function Upload({
       allowsEditing: true,
       videoMaxDuration: MAX_VIDEO_SECONDS
     });
+    setVideoFromResult(result, "proof-video.mp4");
+  };
 
-    if (result.canceled || !result.assets[0]) {
+  const takeVideo = async () => {
+    const permission = await ImagePicker.requestCameraPermissionsAsync();
+    if (!permission.granted) {
+      setError("카메라 권한을 허용해 주세요.");
       return;
     }
-
-    const asset = result.assets[0];
-    const durationSeconds = asset.duration == null ? null : Math.ceil(asset.duration / 1000);
-    if (durationSeconds == null) {
-      setError("동영상 길이를 확인할 수 없어 업로드할 수 없습니다.");
-      return;
-    }
-    if (durationSeconds > MAX_VIDEO_SECONDS) {
-      setError("동영상은 10초 이내만 업로드할 수 있습니다.");
-      return;
-    }
-
-    setSelectedMedia({
-      uri: asset.uri,
-      fileName: asset.fileName ?? "proof-video.mp4",
-      contentType: asset.mimeType ?? inferContentType(asset.uri, "VIDEO"),
-      mediaType: "VIDEO",
-      durationSeconds
+    const result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Videos,
+      allowsEditing: true,
+      videoMaxDuration: MAX_VIDEO_SECONDS,
+      quality: 0.85
     });
-    setError("");
+    setVideoFromResult(result, "camera-proof-video.mp4");
   };
 
   const ensureLibraryPermission = async () => {
@@ -142,6 +134,32 @@ export function Upload({
       fileName: asset.fileName ?? fallbackFileName,
       contentType: asset.mimeType ?? inferContentType(asset.uri, "IMAGE"),
       mediaType: "IMAGE"
+    });
+    setError("");
+  };
+
+  const setVideoFromResult = (result: ImagePicker.ImagePickerResult, fallbackFileName: string) => {
+    if (result.canceled || !result.assets[0]) {
+      return;
+    }
+
+    const asset = result.assets[0];
+    const durationSeconds = asset.duration == null ? null : Math.ceil(asset.duration / 1000);
+    if (durationSeconds == null) {
+      setError("동영상 길이를 확인할 수 없어 업로드할 수 없습니다.");
+      return;
+    }
+    if (durationSeconds > MAX_VIDEO_SECONDS) {
+      setError("동영상은 15초 이내만 업로드할 수 있습니다.");
+      return;
+    }
+
+    setSelectedMedia({
+      uri: asset.uri,
+      fileName: asset.fileName ?? fallbackFileName,
+      contentType: asset.mimeType ?? inferContentType(asset.uri, "VIDEO"),
+      mediaType: "VIDEO",
+      durationSeconds
     });
     setError("");
   };
@@ -172,13 +190,13 @@ export function Upload({
               <View style={styles.uploadVideoPreview}>
                 <Text style={styles.uploadVideoIcon}>▶</Text>
                 <Text style={styles.uploadVideoTitle}>동영상 선택 완료</Text>
-                <Text style={styles.uploadVideoCaption}>{selectedMedia.durationSeconds}초 / 최대 10초</Text>
+                <Text style={styles.uploadVideoCaption}>{selectedMedia.durationSeconds}초 / 최대 15초</Text>
               </View>
             )
           ) : (
             <View style={styles.uploadEmpty}>
               <Text style={styles.uploadEmptyTitle}>오늘의 인증 미디어를 추가해 주세요</Text>
-              <Text style={styles.uploadEmptyCaption}>사진 업로드, 카메라 촬영, 10초 이내 동영상을 지원해요.</Text>
+              <Text style={styles.uploadEmptyCaption}>사진 업로드, 카메라 촬영, 15초 이내 동영상을 지원해요.</Text>
             </View>
           )}
           <Pressable style={styles.cropButton} onPress={selectedMedia?.mediaType === "VIDEO" ? pickVideo : pickImage}>
@@ -191,6 +209,9 @@ export function Upload({
           </Pressable>
           <Pressable style={styles.uploadTabButton} onPress={takePhoto}>
             <Text style={styles.uploadTab}>카메라</Text>
+          </Pressable>
+          <Pressable style={styles.uploadTabButton} onPress={takeVideo}>
+            <Text style={styles.uploadTab}>동영상 촬영</Text>
           </Pressable>
           <Pressable style={styles.uploadTabButton} onPress={pickVideo}>
             <Text style={selectedMedia?.mediaType === "VIDEO" ? styles.uploadTabActive : styles.uploadTab}>동영상</Text>
