@@ -81,10 +81,6 @@ export function Home({
             <AnimatedProgress progress={progress} />
           </View>
         </Pressable>
-        <Pressable style={styles.checkInTopButton} onPress={onUpload} accessibilityRole="button">
-          <Text style={styles.checkInTopButtonText}>오늘 인증하기</Text>
-          <Text style={styles.checkInTopButtonCaption}>사진 또는 15초 동영상으로 스트릭 이어가기</Text>
-        </Pressable>
         <View style={styles.statsRow}>
           <StatCard label="이번 주 인증" value={`${weeklyChecks}`} unit={`/ ${weeklyGoal}일`} />
           <StatCard label="누적 인증" value={`${stats?.totalChecks ?? profile?.totalChecks ?? 0}`} unit="회" />

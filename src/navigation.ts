@@ -13,7 +13,8 @@ export type Screen =
   | "createPod"
   | "invitePod"
   | "joinPod"
-  | "editProfile";
+  | "editProfile"
+  | "publicProfile";
 
 export type Tab = "home" | "pod" | "stats" | "profile";
 

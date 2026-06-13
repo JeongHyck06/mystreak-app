@@ -12,4 +12,5 @@ export { PodActions } from "./pods/PodActions";
 export { PodDetail } from "./pods/PodDetail";
 export { EditProfile } from "./profile/EditProfile";
 export { Profile } from "./profile/Profile";
+export { PublicProfile } from "./profile/PublicProfile";
 export { Stats } from "./stats/Stats";

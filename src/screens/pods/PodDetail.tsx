@@ -7,6 +7,7 @@ import {
 import {
     Image,
     KeyboardAvoidingView,
+    Modal,
     PanResponder,
     Platform,
     Pressable,
@@ -15,7 +16,7 @@ import {
     TextInput,
     View,
 } from 'react-native';
-import { PrimaryButton, TopBar } from '../../components';
+import { TopBar } from '../../components';
 import {
     addComment,
     deleteCheckIn,
@@ -43,6 +44,7 @@ export function PodDetail({
     onPreviousPod,
     onSelectPod,
     onUpload,
+    onOpenProfile,
     onChanged,
 }: {
     pod: Pod;
@@ -53,6 +55,7 @@ export function PodDetail({
     onPreviousPod: () => void;
     onSelectPod: (podId: string) => void;
     onUpload: () => void;
+    onOpenProfile: (profileId: string) => void;
     onChanged: () => Promise<void> | void;
 }) {
     const [isPickerOpen, setIsPickerOpen] = useState(false);
@@ -72,6 +75,7 @@ export function PodDetail({
         Record<string, CheckInComment[]>
     >({});
     const [commentDraft, setCommentDraft] = useState('');
+    const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null);
 
     const loadPodData = async () => {
         const [nextFeed, nextMembers] = await Promise.all([
@@ -404,46 +408,53 @@ export function PodDetail({
                         {pod.tags.join('  ')}
                     </Text>
                 </View>
-                <View style={styles.segmentRow}>
-                    <Pressable
-                        onPress={() => setActiveTab('feed')}
-                    >
-                        <Text
-                            style={
-                                activeTab === 'feed'
-                                    ? styles.segmentActive
-                                    : styles.segment
+                <View style={[styles.rowBetween, { borderBottomWidth: 1, borderColor: '#e3efe4' }]}>
+                    <View style={styles.segmentRow}>
+                        <Pressable
+                            onPress={() => setActiveTab('feed')}
+                        >
+                            <Text
+                                style={
+                                    activeTab === 'feed'
+                                        ? styles.segmentActive
+                                        : styles.segment
+                                }
+                            >
+                                피드
+                            </Text>
+                        </Pressable>
+                        <Pressable
+                            onPress={() =>
+                                setActiveTab('members')
                             }
                         >
-                            피드
-                        </Text>
-                    </Pressable>
-                    <Pressable
-                        onPress={() =>
-                            setActiveTab('members')
-                        }
-                    >
-                        <Text
-                            style={
-                                activeTab === 'members'
-                                    ? styles.segmentActive
-                                    : styles.segment
-                            }
+                            <Text
+                                style={
+                                    activeTab === 'members'
+                                        ? styles.segmentActive
+                                        : styles.segment
+                                }
+                            >
+                                멤버
+                            </Text>
+                        </Pressable>
+                        <Pressable
+                            onPress={() => setActiveTab('info')}
                         >
-                            멤버
-                        </Text>
-                    </Pressable>
-                    <Pressable
-                        onPress={() => setActiveTab('info')}
-                    >
-                        <Text
-                            style={
-                                activeTab === 'info'
-                                    ? styles.segmentActive
-                                    : styles.segment
-                            }
-                        >
-                            정보
+                            <Text
+                                style={
+                                    activeTab === 'info'
+                                        ? styles.segmentActive
+                                        : styles.segment
+                                }
+                            >
+                                정보
+                            </Text>
+                        </Pressable>
+                    </View>
+                    <Pressable style={[styles.smallCta, { marginBottom: 8 }]} onPress={onUpload}>
+                        <Text style={styles.smallCtaText}>
+                            {pod.needsCheckIn ? '인증하기' : '추가 인증'}
                         </Text>
                     </Pressable>
                 </View>
@@ -516,15 +527,24 @@ export function PodDetail({
                                                     styles.feedHeader
                                                 }
                                             >
-                                                <View
+                                                <Pressable
                                                     style={
                                                         styles.smallAvatar
                                                     }
-                                                />
-                                                <View
+                                                    onPress={() => onOpenProfile(item.authorId)}
+                                                >
+                                                    {item.authorAvatarUrl ? (
+                                                        <Image
+                                                            source={{ uri: item.authorAvatarUrl }}
+                                                            style={{ width: '100%', height: '100%', borderRadius: 999 }}
+                                                        />
+                                                    ) : null}
+                                                </Pressable>
+                                                <Pressable
                                                     style={
                                                         styles.flex
                                                     }
+                                                    onPress={() => onOpenProfile(item.authorId)}
                                                 >
                                                     <Text
                                                         style={
@@ -544,7 +564,7 @@ export function PodDetail({
                                                             item,
                                                         )}
                                                     </Text>
-                                                </View>
+                                                </Pressable>
                                                 {item.mine ? (
                                                     <View
                                                         style={
@@ -692,14 +712,17 @@ export function PodDetail({
                                                         </Text>
                                                     </View>
                                                 ) : (
-                                                    <Image
-                                                        source={{
-                                                            uri: item.mediaUrl,
-                                                        }}
-                                                        style={
-                                                            styles.feedMediaImage
-                                                        }
-                                                    />
+                                                    <Pressable onPress={() => setPreviewImageUrl(item.mediaUrl ?? null)}>
+                                                        <Image
+                                                            source={{
+                                                                uri: item.mediaUrl,
+                                                            }}
+                                                            style={
+                                                                styles.feedMediaImage
+                                                            }
+                                                            resizeMode="cover"
+                                                        />
+                                                    </Pressable>
                                                 )
                                             ) : (
                                                 <View
@@ -965,15 +988,23 @@ export function PodDetail({
                         </View>
                         {members.length > 0 ? (
                             members.map((member) => (
-                                <View
+                                <Pressable
                                     style={styles.memberRow}
                                     key={member.id}
+                                    onPress={() => onOpenProfile(member.id)}
                                 >
                                     <View
                                         style={
                                             styles.smallAvatar
                                         }
-                                    />
+                                    >
+                                        {member.avatarUrl ? (
+                                            <Image
+                                                source={{ uri: member.avatarUrl }}
+                                                style={{ width: '100%', height: '100%', borderRadius: 999 }}
+                                            />
+                                        ) : null}
+                                    </View>
                                     <View
                                         style={styles.flex}
                                     >
@@ -1004,7 +1035,7 @@ export function PodDetail({
                                     >
                                         {member.role}
                                     </Text>
-                                </View>
+                                </Pressable>
                             ))
                         ) : (
                             <Text style={styles.bodyCopy}>
@@ -1060,11 +1091,24 @@ export function PodDetail({
                         </View>
                     </View>
                 ) : null}
-                <PrimaryButton
-                    label={pod.needsCheckIn ? "인증하기" : "추가 인증하기"}
-                    onPress={onUpload}
-                />
             </ScrollView>
+            <Modal visible={previewImageUrl != null} transparent animationType="fade" onRequestClose={() => setPreviewImageUrl(null)}>
+                <Pressable
+                    style={{
+                        flex: 1,
+                        backgroundColor: 'rgba(0,0,0,0.88)',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        padding: 18,
+                    }}
+                    onPress={() => setPreviewImageUrl(null)}
+                >
+                    {previewImageUrl ? (
+                        <Image source={{ uri: previewImageUrl }} style={{ width: '100%', height: '82%' }} resizeMode="contain" />
+                    ) : null}
+                    <Text style={{ color: '#ffffff', fontSize: 13, fontWeight: '800', marginTop: 16 }}>탭해서 닫기</Text>
+                </Pressable>
+            </Modal>
         </KeyboardAvoidingView>
     );
 }
