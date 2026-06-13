@@ -12,6 +12,7 @@ export type Profile = {
   handle: string;
   email: string;
   bio: string;
+  avatarUrl?: string | null;
   currentStreak: number;
   bestStreak: number;
   totalChecks: number;
@@ -112,6 +113,8 @@ export type EmailVerificationResponse = {
   expires_at: number;
 };
 
+export type PushPlatform = "ios" | "android";
+
 type AuthResponse = {
   access_token: string;
   refresh_token?: string;
@@ -184,6 +187,30 @@ export async function kakaoLogin(tokens: { accessToken: string; refreshToken?: s
   return session;
 }
 
+export async function googleLogin(idToken: string) {
+  const auth = await request<AuthResponse>("/api/auth/google", {
+    method: "POST",
+    body: JSON.stringify({ id_token: idToken }),
+    skipAuth: true
+  });
+  const session = toSession(auth);
+  setApiSession(session);
+  await saveSession(session);
+  return session;
+}
+
+export async function appleLogin(idToken: string, fullName?: string) {
+  const auth = await request<AuthResponse>("/api/auth/apple", {
+    method: "POST",
+    body: JSON.stringify({ id_token: idToken, full_name: fullName }),
+    skipAuth: true
+  });
+  const session = toSession(auth);
+  setApiSession(session);
+  await saveSession(session);
+  return session;
+}
+
 export async function logout() {
   try {
     await request<void>("/api/auth/logout", {
@@ -216,6 +243,11 @@ export const fetchNotifications = (type?: string) =>
   request<AppNotification[]>(`/api/notifications${type ? `?type=${encodeURIComponent(type)}` : ""}`);
 export const markNotificationsRead = () =>
   request<AppNotification[]>("/api/notifications/read-all", { method: "PATCH" });
+export const registerPushToken = (token: string, platform: PushPlatform) =>
+  request<void>("/api/notifications/push-token", {
+    method: "POST",
+    body: JSON.stringify({ token, platform })
+  });
 export const fetchPodFeed = (podId: string) =>
   request<CheckIn[]>(`/api/pods/${encodeURIComponent(podId)}/feed`);
 export const fetchPodMembers = (podId: string) =>
@@ -279,7 +311,7 @@ export const joinPod = (inviteCode: string) =>
     method: "POST",
     body: JSON.stringify({ inviteCode })
   });
-export const updateProfile = (profile: Pick<Profile, "name" | "handle" | "bio">) =>
+export const updateProfile = (profile: Pick<Profile, "name" | "handle" | "bio" | "avatarUrl">) =>
   request<Profile>("/api/profile/me", {
     method: "PATCH",
     body: JSON.stringify(profile)

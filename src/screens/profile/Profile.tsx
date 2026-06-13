@@ -1,8 +1,10 @@
-import { Pressable, ScrollView, Text, View } from "react-native";
+import { Image, Linking, Pressable, ScrollView, Text, View } from "react-native";
 import { BottomTabs, SectionHeader, StatCard } from "../../components";
 import type { Pod, Profile as ProfileData } from "../../api";
 import type { Tab } from "../../navigation";
 import { styles } from "../../styles";
+
+const PRIVACY_POLICY_URL = "https://mystreak.duckdns.org/privacy";
 
 export function Profile({
   profile,
@@ -26,7 +28,11 @@ export function Profile({
       <ScrollView contentContainerStyle={styles.screenWithTab}>
         <Text style={styles.pageTitle}>프로필</Text>
         <View style={styles.profileCard}>
-          <View style={styles.profileAvatar} />
+          <View style={styles.profileAvatar}>
+            {profile?.avatarUrl ? (
+              <Image source={{ uri: profile.avatarUrl }} style={{ width: "100%", height: "100%", borderRadius: 999 }} />
+            ) : null}
+          </View>
           <View style={[styles.flex, styles.profileInfo]}>
             <Text style={styles.profileName}>{profile?.name || "프로필 이름 없음"}</Text>
             <Text style={styles.profileHandle}>{profile?.handle || "@handle"}</Text>
@@ -53,12 +59,18 @@ export function Profile({
         </View>
         <Text style={styles.title}>설정</Text>
         <View style={styles.settingsCard}>
-          {["알림 설정", "개인정보 · 데이터", "도움말 · 문의하기"].map((label) => (
-            <View style={styles.settingRow} key={label}>
-              <Text style={styles.bodyText}>{label}</Text>
-              <Text style={styles.caption}>›</Text>
-            </View>
-          ))}
+          <View style={styles.settingRow}>
+            <Text style={styles.bodyText}>알림 설정</Text>
+            <Text style={styles.caption}>›</Text>
+          </View>
+          <Pressable style={styles.settingRow} onPress={() => Linking.openURL(PRIVACY_POLICY_URL)}>
+            <Text style={styles.bodyText}>개인정보 · 데이터</Text>
+            <Text style={styles.caption}>›</Text>
+          </Pressable>
+          <View style={styles.settingRow}>
+            <Text style={styles.bodyText}>도움말 · 문의하기</Text>
+            <Text style={styles.caption}>›</Text>
+          </View>
           <Pressable onPress={onLogout}>
             <Text style={styles.logoutText}>로그아웃</Text>
           </Pressable>

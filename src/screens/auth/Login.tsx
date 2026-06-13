@@ -2,17 +2,22 @@ import { useState } from 'react';
 import { Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 import { Divider, PrimaryButton, TopBar } from '../../components';
 import { useKakaoAuth, type KakaoAuthResult } from '../../kakaoAuth';
+import { promptApple, useGoogleAuth, type AppleAuthResult, type GoogleAuthResult } from '../../socialAuth';
 import { styles } from '../../styles';
 
 export function Login({
     onBack,
     onLogin,
     onKakaoLogin,
+    onGoogleLogin,
+    onAppleLogin,
     onOpenSignUp,
 }: {
     onBack: () => void;
     onLogin: (email: string, password: string) => Promise<void>;
     onKakaoLogin: (result: KakaoAuthResult) => Promise<void>;
+    onGoogleLogin: (result: GoogleAuthResult) => Promise<void>;
+    onAppleLogin: (result: AppleAuthResult) => Promise<void>;
     onOpenSignUp: () => void;
 }) {
     const [email, setEmail] = useState('');
@@ -20,6 +25,7 @@ export function Login({
     const [error, setError] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const { promptKakao, ready: kakaoReady } = useKakaoAuth();
+    const { promptGoogle } = useGoogleAuth();
 
     const submit = async () => {
         setError('');
@@ -41,6 +47,32 @@ export function Login({
             await onKakaoLogin(result);
         } catch (error) {
             setError(error instanceof Error ? error.message : '카카오 로그인에 실패했습니다.');
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    const submitGoogle = async () => {
+        setError('');
+        setIsSubmitting(true);
+        try {
+            const result = await promptGoogle();
+            await onGoogleLogin(result);
+        } catch (error) {
+            setError(error instanceof Error ? error.message : '구글 로그인에 실패했습니다.');
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    const submitApple = async () => {
+        setError('');
+        setIsSubmitting(true);
+        try {
+            const result = await promptApple();
+            await onAppleLogin(result);
+        } catch (error) {
+            setError(error instanceof Error ? error.message : 'Apple 로그인에 실패했습니다.');
         } finally {
             setIsSubmitting(false);
         }
@@ -82,10 +114,10 @@ export function Login({
             >
                 <Text style={styles.socialStrong}>카카오로 시작하기</Text>
             </Pressable>
-            <Pressable style={[styles.socialButton, styles.appleButton]}>
+            <Pressable style={[styles.socialButton, styles.appleButton]} onPress={submitApple} disabled={isSubmitting}>
                 <Text style={styles.socialLight}>Apple로 시작하기</Text>
             </Pressable>
-            <Pressable style={styles.socialButton}>
+            <Pressable style={styles.socialButton} onPress={submitGoogle} disabled={isSubmitting}>
                 <Text style={styles.socialStrong}>G Google로 시작하기</Text>
             </Pressable>
             <Pressable style={styles.textButton} onPress={onOpenSignUp}>

@@ -1060,18 +1060,10 @@ export function PodDetail({
                         </View>
                     </View>
                 ) : null}
-                {pod.needsCheckIn ? (
-                    <PrimaryButton
-                        label="인증하기"
-                        onPress={onUpload}
-                    />
-                ) : (
-                    <View style={styles.doneButton}>
-                        <Text style={styles.doneButtonText}>
-                            ✓ 오늘 인증 완료
-                        </Text>
-                    </View>
-                )}
+                <PrimaryButton
+                    label={pod.needsCheckIn ? "인증하기" : "추가 인증하기"}
+                    onPress={onUpload}
+                />
             </ScrollView>
         </KeyboardAvoidingView>
     );
