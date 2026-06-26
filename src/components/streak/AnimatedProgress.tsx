@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
-import { Animated, Easing } from "react-native";
+import { Animated } from "react-native";
 import { styles } from "../../styles";
-import { supportsNativeAnimatedDriver } from "../animation/driver";
+import { motion } from "../animation/motion";
 
 export function AnimatedProgress({ progress: targetProgress }: { progress: number }) {
   const progress = useRef(new Animated.Value(0)).current;
@@ -9,9 +9,9 @@ export function AnimatedProgress({ progress: targetProgress }: { progress: numbe
   useEffect(() => {
     Animated.timing(progress, {
       toValue: targetProgress,
-      duration: 850,
-      delay: 180,
-      easing: Easing.out(Easing.cubic),
+      duration: motion.progressDuration,
+      delay: 120,
+      easing: motion.easeInOut,
       useNativeDriver: false
     }).start();
   }, [progress, targetProgress]);

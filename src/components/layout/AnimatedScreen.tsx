@@ -1,8 +1,9 @@
 import { useEffect, useRef, type ReactNode } from "react";
-import { Animated, Easing } from "react-native";
+import { Animated } from "react-native";
 import type { Screen } from "../../navigation";
 import { styles } from "../../styles";
 import { supportsNativeAnimatedDriver } from "../animation/driver";
+import { motion } from "../animation/motion";
 
 type TabSlideDirection = -1 | 0 | 1;
 
@@ -28,8 +29,8 @@ export function AnimatedScreen({
     progress.setValue(0);
     Animated.timing(progress, {
       toValue: 1,
-      duration: 360,
-      easing: Easing.out(Easing.cubic),
+      duration: motion.screenDuration,
+      easing: motion.easeInOut,
       useNativeDriver: supportsNativeAnimatedDriver
     }).start();
     previousScreen.current = screenKey;
@@ -40,7 +41,7 @@ export function AnimatedScreen({
         {
           translateX: progress.interpolate({
             inputRange: [0, 1],
-            outputRange: [32 * tabSlideDirection, 0]
+            outputRange: [18 * tabSlideDirection, 0]
           })
         }
       ]
@@ -48,13 +49,13 @@ export function AnimatedScreen({
         {
           translateY: progress.interpolate({
             inputRange: [0, 1],
-            outputRange: [18, 0]
+            outputRange: [10, 0]
           })
         },
         {
           scale: progress.interpolate({
             inputRange: [0, 1],
-            outputRange: [0.98, 1]
+            outputRange: [0.992, 1]
           })
         }
       ];

@@ -1,6 +1,7 @@
 import { useRef, type ReactNode } from "react";
 import { Animated, Pressable, type StyleProp, type ViewStyle } from "react-native";
 import { supportsNativeAnimatedDriver } from "../animation/driver";
+import { motion } from "../animation/motion";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -15,11 +16,11 @@ export function PressScale({
 }) {
   const scale = useRef(new Animated.Value(1)).current;
 
-  const animateTo = (toValue: number) => {
-    Animated.spring(scale, {
+  const animateTo = (toValue: number, duration: number) => {
+    Animated.timing(scale, {
       toValue,
-      speed: 26,
-      bounciness: 6,
+      duration,
+      easing: motion.easeInOut,
       useNativeDriver: supportsNativeAnimatedDriver
     }).start();
   };
@@ -27,8 +28,8 @@ export function PressScale({
   return (
     <AnimatedPressable
       onPress={onPress}
-      onPressIn={() => animateTo(0.96)}
-      onPressOut={() => animateTo(1)}
+      onPressIn={() => animateTo(0.975, motion.pressInDuration)}
+      onPressOut={() => animateTo(1, motion.pressOutDuration)}
       style={[style, { transform: [{ scale }] }]}
     >
       {children}
