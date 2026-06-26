@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 import { colors, radii, shadow } from './theme';
 
 export const styles = StyleSheet.create({
@@ -16,14 +16,14 @@ export const styles = StyleSheet.create({
     screen: {
         paddingHorizontal: 20,
         paddingTop: 22,
-        paddingBottom: 28,
+        paddingBottom: Platform.OS === 'android' ? 72 : 28,
         backgroundColor: colors.background,
         gap: 14,
     },
     uploadScreen: {
         paddingHorizontal: 20,
         paddingTop: 22,
-        paddingBottom: 44,
+        paddingBottom: Platform.OS === 'android' ? 88 : 44,
         backgroundColor: colors.background,
         gap: 14,
     },
@@ -35,7 +35,7 @@ export const styles = StyleSheet.create({
     screenWithTab: {
         paddingHorizontal: 20,
         paddingTop: 24,
-        paddingBottom: 108,
+        paddingBottom: Platform.OS === 'android' ? 148 : 108,
         backgroundColor: colors.background,
         gap: 14,
     },
@@ -566,15 +566,15 @@ export const styles = StyleSheet.create({
     fab: {
         position: 'absolute',
         right: 20,
-        bottom: 92,
         width: 60,
         height: 60,
         borderRadius: 30,
         backgroundColor: colors.accent,
         alignItems: 'center',
         justifyContent: 'center',
-        zIndex: 20,
+        zIndex: 40,
         ...shadow,
+        elevation: 12,
     },
     fabText: {
         color: colors.surface,
@@ -587,7 +587,7 @@ export const styles = StyleSheet.create({
         left: 0,
         right: 0,
         bottom: 0,
-        height: 86,
+        minHeight: 86,
         borderTopWidth: 1,
         borderColor: colors.mutedBorder,
         backgroundColor: colors.surface,
@@ -603,7 +603,7 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         paddingTop: 8,
-        paddingBottom: 18,
+        paddingBottom: 0,
     },
     tabText: {
         color: colors.secondaryText,
@@ -758,6 +758,10 @@ export const styles = StyleSheet.create({
         width: '100%',
         height: '100%',
         borderRadius: 999,
+    },
+    podImageFill: {
+        width: '100%',
+        height: '100%',
     },
     feedText: {
         color: colors.text,
@@ -1505,12 +1509,14 @@ export const styles = StyleSheet.create({
     },
     addBadge: {
         position: 'absolute',
-        right: -4,
-        bottom: 0,
+        right: -2,
+        bottom: -2,
         width: 26,
         height: 26,
         borderRadius: 13,
         backgroundColor: colors.accent,
+        borderWidth: 2,
+        borderColor: colors.surface,
         alignItems: 'center',
         justifyContent: 'center',
     },

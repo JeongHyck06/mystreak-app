@@ -137,6 +137,19 @@ export function getApiSession() {
   return currentSession;
 }
 
+export function mediaFileUrl(objectKey: string) {
+  return `${API_BASE_URL}/api/media/files?objectKey=${encodeURIComponent(objectKey)}`;
+}
+
+export function resolveMediaUrl(url?: string | null) {
+  if (!url) {
+    return null;
+  }
+
+  const objectKey = objectKeyFromS3Url(url);
+  return objectKey ? mediaFileUrl(objectKey) : url;
+}
+
 export async function restoreApiSession() {
   currentSession = await loadSession();
   return currentSession;
@@ -248,6 +261,8 @@ export const fetchNotifications = (type?: string) =>
   request<AppNotification[]>(`/api/notifications${type ? `?type=${encodeURIComponent(type)}` : ""}`);
 export const markNotificationsRead = () =>
   request<AppNotification[]>("/api/notifications/read-all", { method: "PATCH" });
+export const deleteReadNotifications = () =>
+  request<AppNotification[]>("/api/notifications/read", { method: "DELETE" });
 export const registerPushToken = (token: string, platform: PushPlatform) =>
   request<void>("/api/notifications/push-token", {
     method: "POST",
@@ -268,11 +283,16 @@ export const addComment = (checkInId: string, text: string) =>
     method: "POST",
     body: JSON.stringify({ text })
   });
-export const createMediaUpload = (upload: MediaUploadRequest) =>
-  request<MediaUploadResponse>("/api/media/uploads", {
+export const createMediaUpload = async (upload: MediaUploadRequest) => {
+  const response = await request<MediaUploadResponse>("/api/media/uploads", {
     method: "POST",
     body: JSON.stringify(upload)
   });
+  return {
+    ...response,
+    mediaUrl: mediaFileUrl(response.objectKey)
+  };
+};
 export const uploadMediaToS3 = async (uploadUrl: string, uri: string, contentType: string) => {
   const response = await FileSystem.uploadAsync(uploadUrl, uri, {
     httpMethod: "PUT",
@@ -375,8 +395,8 @@ async function refreshSession(refreshToken: string) {
     await saveSession(session);
     return session;
   } catch {
-    setApiSession(null);
-    await clearSession();
+    // 명시적인 로그아웃 전에는 저장된 세션을 지우지 않는다.
+    // 일시적인 401/네트워크 오류나 refresh token 만료로 앱이 자동 로그아웃되는 것을 막는다.
     return null;
   }
 }
@@ -396,4 +416,17 @@ function toSession(auth: AuthResponse): Session {
     refreshToken: auth.refresh_token,
     expiresAt: auth.expires_at
   };
+}
+
+function objectKeyFromS3Url(url: string) {
+  try {
+    const parsed = new URL(url);
+    if (!parsed.hostname.includes(".s3.") || !parsed.hostname.endsWith(".amazonaws.com")) {
+      return null;
+    }
+    const objectKey = parsed.pathname.replace(/^\/+/, "");
+    return objectKey || null;
+  } catch {
+    return null;
+  }
 }

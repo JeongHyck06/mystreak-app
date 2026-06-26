@@ -11,6 +11,8 @@ type SelectedPodAvatar = {
   contentType: string;
 };
 
+const DEFAULT_MAX_MEMBERS = 30;
+
 export function CreatePod({
   onClose,
   onCreate
@@ -27,7 +29,6 @@ export function CreatePod({
 }) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [maxMembers, setMaxMembers] = useState("8");
   const [tagLine, setTagLine] = useState("");
   const [tags, setTags] = useState("");
   const [selectedAvatar, setSelectedAvatar] = useState<SelectedPodAvatar | null>(null);
@@ -51,7 +52,7 @@ export function CreatePod({
       const pod = await onCreate({
         name: name.trim(),
         description: description.trim(),
-        maxMembers: Number(maxMembers),
+        maxMembers: DEFAULT_MAX_MEMBERS,
         tagLine: tagLine.trim(),
         tags: tags.split(",").map((tag) => tag.trim()).filter(Boolean),
         avatarUrl
@@ -109,7 +110,6 @@ export function CreatePod({
       </Pressable>
       <LabeledInput label="팟 이름" value={name} onChangeText={setName} active />
       <LabeledInput label="소개" value={description} onChangeText={setDescription} multiline />
-      <LabeledInput label="최대 인원" value={maxMembers} onChangeText={setMaxMembers} />
       <LabeledInput label="인증 방식" value={tagLine} onChangeText={setTagLine} />
       <LabeledInput label="태그" value={tags} onChangeText={setTags} helper="쉼표로 구분해 주세요" />
       <View style={styles.previewCard}>
@@ -120,7 +120,7 @@ export function CreatePod({
           </View>
           <View>
             <Text style={styles.cardTitle}>{name || "팟 이름"}</Text>
-            <Text style={styles.caption}>{tagLine || "인증 방식"} · 최대 {maxMembers || 0}명</Text>
+            <Text style={styles.caption}>{tagLine || "인증 방식"}</Text>
           </View>
         </View>
       </View>

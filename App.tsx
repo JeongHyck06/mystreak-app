@@ -6,6 +6,7 @@ import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import {
   createCheckIn,
   createPod,
+  deleteReadNotifications,
   appleLogin,
   fetchNotifications,
   fetchPods,
@@ -14,7 +15,6 @@ import {
   fetchStats,
   googleLogin,
   getApiSession,
-  inviteMember,
   joinPod,
   kakaoLogin,
   leavePod,
@@ -387,7 +387,19 @@ export default function App() {
   };
   const handleCreatePod = async (request: Parameters<typeof createPod>[0]) => {
     const pod = await createPod(request);
+    setSelectedPodId(pod.id);
+    setPods((current) => {
+      const withoutCreated = current.filter((item) => item.id !== pod.id);
+      return [pod, ...withoutCreated];
+    });
     await refreshAppData();
+    setPods((current) =>
+      current.map((item) =>
+        item.id === pod.id && !item.avatarUrl && pod.avatarUrl
+          ? { ...item, avatarUrl: pod.avatarUrl }
+          : item
+      )
+    );
     setSelectedPodId(pod.id);
     return pod;
   };
@@ -414,6 +426,9 @@ export default function App() {
   };
   const handleMarkAllRead = async () => {
     setNotifications(await markNotificationsRead());
+  };
+  const handleClearReadNotifications = async () => {
+    setNotifications(await deleteReadNotifications());
   };
 
   if (isBooting) {
@@ -479,6 +494,7 @@ export default function App() {
             onOpenProfile={handleOpenPublicProfile}
             onTab={handleTab}
             onChanged={refreshAppData}
+            currentProfileId={profile?.id ?? null}
           />
         )}
         {screen === "upload" && <Upload pod={selectedPod} onClose={goHome} onSubmit={handleUpload} />}
@@ -501,7 +517,12 @@ export default function App() {
           />
         )}
         {screen === "notifications" && (
-          <Notifications notifications={notifications} onBack={goHome} onMarkAllRead={handleMarkAllRead} />
+          <Notifications
+            notifications={notifications}
+            onBack={goHome}
+            onMarkAllRead={handleMarkAllRead}
+            onClearRead={handleClearReadNotifications}
+          />
         )}
         {screen === "managePods" && (
           <PodManagement
@@ -535,12 +556,6 @@ export default function App() {
           <InvitePod
             pod={selectedPod}
             onBack={() => setScreen("pod")}
-            onInvite={(handle) => {
-              if (!selectedPod) {
-                throw new Error("초대할 팟이 없습니다.");
-              }
-              return inviteMember(selectedPod.id, handle).then(() => undefined);
-            }}
           />
         )}
         {screen === "joinPod" && <JoinPod onBack={goHome} onPreview={previewJoin} onJoin={handleJoinPod} />}

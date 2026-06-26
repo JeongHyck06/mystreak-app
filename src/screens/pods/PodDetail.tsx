@@ -1,5 +1,6 @@
 import {
     Fragment,
+    type ComponentType,
     useEffect,
     useState,
 } from 'react';
@@ -23,6 +24,7 @@ import {
     fetchPodMembers,
     likeCheckIn,
     reactToCheckIn,
+    resolveMediaUrl,
     updateCheckIn,
     type CheckIn,
     type CheckInComment,
@@ -33,6 +35,26 @@ import type { Tab } from '../../navigation';
 import { styles } from '../../styles';
 
 type PodDetailTab = 'feed' | 'members' | 'info';
+type ExpoVideoModule = {
+    useVideoPlayer: (
+        source: string,
+        setup?: (player: { loop: boolean }) => void,
+    ) => unknown;
+    VideoView: ComponentType<{
+        player: unknown;
+        style: unknown;
+        nativeControls?: boolean;
+        contentFit?: 'contain' | 'cover' | 'fill';
+    }>;
+};
+
+let expoVideo: ExpoVideoModule | null = null;
+try {
+    // Native modules can be absent until the dev client is rebuilt.
+    expoVideo = require('expo-video') as ExpoVideoModule;
+} catch {
+    expoVideo = null;
+}
 
 export function PodDetail({
     pod,
@@ -46,6 +68,7 @@ export function PodDetail({
     onOpenProfile,
     onTab,
     onChanged,
+    currentProfileId,
 }: {
     pod: Pod;
     pods: Pod[];
@@ -58,6 +81,7 @@ export function PodDetail({
     onOpenProfile: (profileId: string) => void;
     onTab: (tab: Tab) => void;
     onChanged: () => Promise<void> | void;
+    currentProfileId?: string | null;
 }) {
     const [isPickerOpen, setIsPickerOpen] = useState(false);
     const [activeTab, setActiveTab] =
@@ -119,6 +143,7 @@ export function PodDetail({
         members.length > 0
             ? members.length
             : pod.memberCount;
+    const podAvatarUrl = resolveMediaUrl(pod.avatarUrl);
 
     const replaceItem = (next: CheckIn) =>
         setFeed((items) =>
@@ -385,10 +410,10 @@ export function PodDetail({
                     </Text>
                     <View style={styles.row}>
                         <View style={styles.podAvatarLarge}>
-                            {pod.avatarUrl ? (
+                            {podAvatarUrl ? (
                                 <Image
-                                    source={{ uri: pod.avatarUrl }}
-                                    style={styles.avatarFill}
+                                    source={{ uri: podAvatarUrl }}
+                                    style={styles.podImageFill}
                                 />
                             ) : null}
                         </View>
@@ -690,27 +715,7 @@ export function PodDetail({
                                                 isVideoMedia(
                                                     item.mediaUrl,
                                                 ) ? (
-                                                    <View
-                                                        style={
-                                                            styles.feedVideoPreview
-                                                        }
-                                                    >
-                                                        <Text
-                                                            style={
-                                                                styles.feedVideoIcon
-                                                            }
-                                                        >
-                                                            ▶
-                                                        </Text>
-                                                        <Text
-                                                            style={
-                                                                styles.feedVideoText
-                                                            }
-                                                        >
-                                                            동영상
-                                                            인증
-                                                        </Text>
-                                                    </View>
+                                                    <FeedVideo uri={item.mediaUrl} />
                                                 ) : (
                                                     <Pressable onPress={() => setPreviewImageUrl(item.mediaUrl ?? null)}>
                                                         <Image
@@ -987,56 +992,64 @@ export function PodDetail({
                             </Text>
                         </View>
                         {members.length > 0 ? (
-                            members.map((member) => (
-                                <Pressable
-                                    style={styles.memberRow}
-                                    key={member.id}
-                                    onPress={() => onOpenProfile(member.id)}
-                                >
-                                    <View
-                                        style={
-                                            styles.smallAvatar
-                                        }
+                            members.map((member) => {
+                                const isMe = member.id === currentProfileId;
+                                const roleLabel = isMe
+                                    ? '나'
+                                    : member.role === '나'
+                                      ? '멤버'
+                                      : member.role;
+
+                                return (
+                                    <Pressable
+                                        style={styles.memberRow}
+                                        key={member.id}
+                                        onPress={() => onOpenProfile(member.id)}
                                     >
-                                        {member.avatarUrl ? (
-                                            <Image
-                                                source={{ uri: member.avatarUrl }}
-                                                style={{ width: '100%', height: '100%', borderRadius: 999 }}
-                                            />
-                                        ) : null}
-                                    </View>
-                                    <View
-                                        style={styles.flex}
-                                    >
-                                        <Text
+                                        <View
                                             style={
-                                                styles.cardTitle
+                                                styles.smallAvatar
                                             }
                                         >
-                                            {member.name}
-                                        </Text>
+                                            {member.avatarUrl ? (
+                                                <Image
+                                                    source={{ uri: member.avatarUrl }}
+                                                    style={{ width: '100%', height: '100%', borderRadius: 999 }}
+                                                />
+                                            ) : null}
+                                        </View>
+                                        <View
+                                            style={styles.flex}
+                                        >
+                                            <Text
+                                                style={
+                                                    styles.cardTitle
+                                                }
+                                            >
+                                                {member.name}
+                                            </Text>
+                                            <Text
+                                                style={
+                                                    styles.caption
+                                                }
+                                            >
+                                                {member.checkedInToday
+                                                    ? '오늘 인증 완료'
+                                                    : `${member.streak}일째 참여 중`}
+                                            </Text>
+                                        </View>
                                         <Text
                                             style={
-                                                styles.caption
+                                                isMe
+                                                    ? styles.accentText
+                                                    : styles.caption
                                             }
                                         >
-                                            {member.checkedInToday
-                                                ? '오늘 인증 완료'
-                                                : `${member.streak}일째 참여 중`}
+                                            {roleLabel}
                                         </Text>
-                                    </View>
-                                    <Text
-                                        style={
-                                            member.role ===
-                                            '나'
-                                                ? styles.accentText
-                                                : styles.caption
-                                        }
-                                    >
-                                        {member.role}
-                                    </Text>
-                                </Pressable>
-                            ))
+                                    </Pressable>
+                                );
+                            })
                         ) : (
                             <Text style={styles.bodyCopy}>
                                 멤버 정보를 불러오는
@@ -1062,8 +1075,7 @@ export function PodDetail({
                                 <Text
                                     style={styles.cardTitle}
                                 >
-                                    {pod.certifiedToday}/
-                                    {pod.maxMembers}명
+                                    {pod.certifiedToday}명
                                 </Text>
                             </View>
                             <View
@@ -1111,6 +1123,33 @@ export function PodDetail({
             </Modal>
             <BottomTabs active="pod" onTab={onTab} />
         </KeyboardAvoidingView>
+    );
+}
+
+function FeedVideo({ uri }: { uri: string }) {
+    if (!expoVideo) {
+        return (
+            <View style={styles.feedVideoPreview}>
+                <Text style={styles.feedVideoIcon}>▶</Text>
+                <Text style={styles.feedVideoText}>
+                    앱을 다시 빌드하면 재생돼요
+                </Text>
+            </View>
+        );
+    }
+
+    const { VideoView, useVideoPlayer } = expoVideo;
+    const player = useVideoPlayer(uri, (player) => {
+        player.loop = false;
+    });
+
+    return (
+        <VideoView
+            player={player}
+            style={styles.feedVideoPreview}
+            nativeControls
+            contentFit="cover"
+        />
     );
 }
 

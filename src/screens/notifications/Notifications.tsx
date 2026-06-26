@@ -16,11 +16,13 @@ type NotificationFilter = (typeof FILTERS)[number]["type"];
 export function Notifications({
   notifications,
   onBack,
-  onMarkAllRead
+  onMarkAllRead,
+  onClearRead
 }: {
   notifications: AppNotification[];
   onBack: () => void;
   onMarkAllRead: () => void;
+  onClearRead: () => void;
 }) {
   const [activeFilter, setActiveFilter] = useState<NotificationFilter>("all");
   const filteredNotifications = useMemo(
@@ -49,7 +51,14 @@ export function Notifications({
       {unread.length > 0 ? unread.map((item) => <NotificationItem key={item.id} item={item} />) : (
         <Text style={styles.bodyCopy}>새 알림이 없습니다.</Text>
       )}
-      <Text style={styles.sectionCaption}>읽은 알림</Text>
+      <View style={styles.rowBetween}>
+        <Text style={styles.sectionCaption}>읽은 알림</Text>
+        {read.length > 0 ? (
+          <Pressable onPress={onClearRead} hitSlop={8} accessibilityRole="button">
+            <Text style={styles.accentText}>지우기</Text>
+          </Pressable>
+        ) : null}
+      </View>
       {read.length > 0 ? read.map((item) => <NotificationItem key={item.id} item={item} />) : (
         <Text style={styles.bodyCopy}>읽은 알림이 없습니다.</Text>
       )}

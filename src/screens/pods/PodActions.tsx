@@ -24,7 +24,7 @@ export function PodActions({
         </View>
         <View style={styles.flex}>
           <Text style={styles.actionTitle}>팟 만들기</Text>
-          <Text style={styles.actionDescription}>목표, 인증 방식, 최대 인원을 정하고 새 팟을 열어요.</Text>
+          <Text style={styles.actionDescription}>목표와 인증 방식을 정하고 새 팟을 열어요.</Text>
         </View>
         <Text style={styles.actionArrow}>›</Text>
       </PressScale>
