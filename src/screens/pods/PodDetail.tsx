@@ -1163,13 +1163,7 @@ function isVideoMedia(url: string) {
 }
 
 function formatFeedMeta(item: CheckIn) {
-    const dateTime = formatFeedDateTime(item.createdAt);
-    if (!dateTime) {
-        return item.meta;
-    }
-    return item.meta
-        ? `${item.meta} · ${dateTime}`
-        : dateTime;
+    return formatFeedDateTime(item.createdAt);
 }
 
 function formatFeedDate(value?: string | null) {

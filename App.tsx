@@ -1,7 +1,7 @@
 import { StatusBar } from "expo-status-bar";
 import { NativeModulesProxy } from "expo-modules-core";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { AppState, Platform, Text } from "react-native";
+import { Alert, AppState, Platform, Text } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import {
   createCheckIn,
@@ -54,6 +54,8 @@ import {
 } from "./src/screens";
 import { styles } from "./src/styles";
 import type { AppleAuthResult, GoogleAuthResult } from "./src/socialAuth";
+import { showPostCheckInAd } from "./src/monetization/ads";
+import { loadAdsRemoved, purchaseRemoveAds, restoreRemoveAdsPurchase } from "./src/monetization/purchases";
 
 const EXPO_PROJECT_ID = "a7be7bfe-8ed8-4695-9285-ee36c274f2a3";
 
@@ -99,6 +101,7 @@ export default function App() {
   const [pods, setPods] = useState<Pod[]>([]);
   const [stats, setStats] = useState<StatsData | null>(null);
   const [notifications, setNotifications] = useState<AppNotification[]>([]);
+  const [adsRemoved, setAdsRemoved] = useState(false);
   const lastForegroundRefreshAt = useRef(0);
   const [statsMonth, setStatsMonth] = useState(() => {
     const now = new Date();
@@ -126,6 +129,7 @@ export default function App() {
         }
 
         setApiSession(session);
+        setAdsRemoved(await loadAdsRemoved());
         void registerForPushNotifications();
         try {
           await refreshAppData();
@@ -414,6 +418,9 @@ export default function App() {
     }
     await createCheckIn(selectedPod.id, text, mediaUrl);
     await refreshAppData();
+    if (!adsRemoved) {
+      void showPostCheckInAd();
+    }
   };
   const handleLeavePod = async (podId: string) => {
     await leavePod(podId);
@@ -429,6 +436,25 @@ export default function App() {
   };
   const handleClearReadNotifications = async () => {
     setNotifications(await deleteReadNotifications());
+  };
+  const handlePurchaseRemoveAds = async () => {
+    try {
+      if (await purchaseRemoveAds()) {
+        setAdsRemoved(true);
+        Alert.alert("광고 제거 완료", "이제 인증 후 광고가 재생되지 않습니다.");
+      }
+    } catch (error) {
+      Alert.alert("결제 실패", error instanceof Error ? error.message : "결제를 완료하지 못했습니다.");
+    }
+  };
+  const handleRestoreRemoveAds = async () => {
+    try {
+      const restored = await restoreRemoveAdsPurchase();
+      setAdsRemoved(restored || adsRemoved);
+      Alert.alert(restored ? "복원 완료" : "복원할 구매가 없습니다.", restored ? "광고 제거 구매를 복원했습니다." : "스토어 계정에서 광고 제거 구매를 찾지 못했습니다.");
+    } catch (error) {
+      Alert.alert("복원 실패", error instanceof Error ? error.message : "구매 복원에 실패했습니다.");
+    }
   };
 
   if (isBooting) {
@@ -514,6 +540,9 @@ export default function App() {
             onManage={() => setScreen("managePods")}
             onLogout={handleLogout}
             onTab={handleTab}
+            adsRemoved={adsRemoved}
+            onPurchaseRemoveAds={handlePurchaseRemoveAds}
+            onRestoreRemoveAds={handleRestoreRemoveAds}
           />
         )}
         {screen === "notifications" && (

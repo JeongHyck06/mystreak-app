@@ -12,7 +12,10 @@ export function Profile({
   onEdit,
   onManage,
   onLogout,
-  onTab
+  onTab,
+  adsRemoved,
+  onPurchaseRemoveAds,
+  onRestoreRemoveAds
 }: {
   profile: ProfileData | null;
   pods: Pod[];
@@ -20,6 +23,9 @@ export function Profile({
   onManage: () => void;
   onLogout: () => void;
   onTab: (tab: Tab) => void;
+  adsRemoved: boolean;
+  onPurchaseRemoveAds: () => void;
+  onRestoreRemoveAds: () => void;
 }) {
   const currentStreak = profile?.currentStreak ?? 0;
 
@@ -65,6 +71,17 @@ export function Profile({
           </View>
           <Pressable style={styles.settingRow} onPress={() => Linking.openURL(PRIVACY_POLICY_URL)}>
             <Text style={styles.bodyText}>개인정보 · 데이터</Text>
+            <Text style={styles.caption}>›</Text>
+          </Pressable>
+          <Pressable style={styles.settingRow} onPress={onPurchaseRemoveAds}>
+            <View>
+              <Text style={styles.bodyText}>광고 제거</Text>
+              <Text style={styles.caption}>{adsRemoved ? "구매 완료" : "인증 후 광고를 없애요"}</Text>
+            </View>
+            <Text style={styles.caption}>›</Text>
+          </Pressable>
+          <Pressable style={styles.settingRow} onPress={onRestoreRemoveAds}>
+            <Text style={styles.bodyText}>광고 제거 구매 복원</Text>
             <Text style={styles.caption}>›</Text>
           </Pressable>
           <View style={styles.settingRow}>

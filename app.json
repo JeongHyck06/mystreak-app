@@ -36,7 +36,16 @@
       "expo-image-picker",
       "expo-apple-authentication",
       "expo-notifications",
-      "expo-video"
+      "expo-video",
+      [
+        "react-native-google-mobile-ads",
+        {
+          "androidAppId": "ca-app-pub-1582609839942668~8764226072",
+          "iosAppId": "ca-app-pub-1582609839942668~4681098140",
+          "userTrackingUsageDescription": "맞춤형 광고 제공을 위해 앱 사용 데이터를 사용할 수 있습니다."
+        }
+      ],
+      "react-native-iap"
     ],
     "extra": {
       "eas": {
